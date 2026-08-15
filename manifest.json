@@ -1,0 +1,25 @@
+{
+  "name": "Nyghto — Digital Product Design & Engineering Studio",
+  "short_name": "Nyghto",
+  "description": "Independent digital product studio building web applications, mobile apps, SaaS, and custom ERP software.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#01249D",
+  "theme_color": "#01249D",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "favicon.png",
+      "sizes": "192x192 512x512 864x864",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "logo.png",
+      "sizes": "822x179",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "categories": ["business", "productivity", "utilities"]
+}

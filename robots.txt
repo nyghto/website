@@ -1,0 +1,34 @@
+# ==============================================================================
+# NYGHTO.IN — Robots Exclusion & Search Crawlers Configuration
+# Official Website: https://nyghto.in
+# ==============================================================================
+
+User-agent: *
+Allow: /
+Disallow: /scratch/
+Disallow: /.git/
+
+# Explicitly Allow Major Search Engines & Generative AI Crawlers
+User-agent: Googlebot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+# Canonical Sitemaps
+Sitemap: https://nyghto.in/sitemap.xml
