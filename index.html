@@ -1061,94 +1061,81 @@
       </div>
     </section>
 
-    <!-- BESPOKE & INTERACTIVE STUDIO DIRECT DESK -->
-    <section class="creative-contact-section" id="contact" aria-label="Talk with the Team">
+    <!-- INTERACTIVE 1-ON-1 MEETING & CONSULTATION SCHEDULER -->
+    <section class="creative-contact-section" id="contact" aria-label="Schedule a 1-on-1 Consultation">
       
-      <div class="contact-hud-header">
-        <span class="hud-tag font-mono">Founder Desk</span>
-        <h2 class="contact-big-title font-display">Talk Directly with the Builders.</h2>
-        <p class="contact-subtitle font-sans">
-          No account managers or salespeople. Speak directly with the engineers designing and shipping your product.
-        </p>
-      </div>
-
-      <!-- THE TACTILE FOUNDER DESK CONSOLE -->
-      <div class="founder-desk-console">
+      <div class="cal-scheduler-card">
         
-        <!-- Live Status Bar -->
-        <div class="desk-top-bar font-mono">
-          <div class="desk-status-badge">
-            <span class="pulse-live-dot"></span>
-            <span>STUDIO DIRECT DISPATCH • KERALA (IST)</span>
+        <!-- Left Column: Meeting Info -->
+        <div class="cal-info-side">
+          <span class="cal-tag font-mono">1-on-1 Strategy Call</span>
+          <h2 class="cal-title font-display">Schedule a Consultation.</h2>
+          <p class="cal-desc font-sans">
+            Talk directly with our engineering founders about your product vision, system architecture, and timeline. No sales reps.
+          </p>
+
+          <div class="cal-meta-list font-mono">
+            <div class="cal-meta-item">
+              <span class="meta-icon">⏱</span>
+              <span>30-minute discovery call</span>
+            </div>
+            <div class="cal-meta-item">
+              <span class="meta-icon">📹</span>
+              <span>Google Meet / Video</span>
+            </div>
+            <div class="cal-meta-item">
+              <span class="meta-icon">⚡</span>
+              <span>Free &amp; confidential</span>
+            </div>
           </div>
-          <div class="desk-clock" id="deskLiveClock">--:--:-- IST</div>
+
+          <div class="cal-direct-links font-mono">
+            <span class="direct-label">Or reach out directly:</span>
+            <div class="direct-row">
+              <a href="mailto:hello@nyghto.in" class="cal-link">hello@nyghto.in</a>
+              <span class="sep">•</span>
+              <a href="https://wa.me/917012028379" target="_blank" rel="noopener noreferrer" class="cal-link">WhatsApp ↗</a>
+              <span class="sep">•</span>
+              <a href="tel:+917012028379" class="cal-link">+91 70120 28379</a>
+            </div>
+          </div>
         </div>
 
-        <!-- 3 Tactical Hotline Channels -->
-        <div class="desk-channels-grid">
+        <!-- Right Column: Interactive 7-Day & Time Picker -->
+        <div class="cal-interactive-side">
           
-          <!-- Channel 1: WhatsApp Instant Voice/Chat -->
-          <a href="https://wa.me/917012028379?text=Hi%20Nyghto,%20I'd%20like%20to%20discuss%20building%20a%20project%20with%20your%20team" target="_blank" rel="noopener noreferrer" class="desk-channel-card dot-box" id="channelWhatsapp">
-            <div class="channel-num font-mono">01</div>
-            <div class="channel-body">
-              <div class="channel-tag font-mono">INSTANT CHAT / VOICE NOTE</div>
-              <h3 class="channel-title font-display">WhatsApp Hotline</h3>
-              <p class="channel-desc font-sans">Drop a voice note or message directly to our engineering founders. Response within minutes.</p>
-            </div>
-            <div class="channel-action font-mono">
-              <span>OPEN WHATSAPP ↗</span>
-            </div>
-          </a>
-
-          <!-- Channel 2: 15-Min Discovery Video Call -->
-          <div class="desk-channel-card dot-box" id="channelMeet" onclick="triggerQuickMeetingModal()">
-            <div class="channel-num font-mono">02</div>
-            <div class="channel-body">
-              <div class="channel-tag font-mono">1-ON-1 DISCOVERY</div>
-              <h3 class="channel-title font-display">15-Min Strategy Call</h3>
-              <p class="channel-desc font-sans">Pick a slot for a direct Google Meet call to discuss tech stack, feasibility, and timelines.</p>
-            </div>
-            <div class="channel-action font-mono">
-              <span>REQUEST 15-MIN CALL ↗</span>
-            </div>
+          <div class="cal-step-label font-mono">1. SELECT A DAY</div>
+          
+          <!-- 7-Day Visual Date Strip -->
+          <div class="cal-dates-strip" id="calDatesStrip">
+            <!-- Rendered dynamically via app.js -->
           </div>
 
-          <!-- Channel 3: Direct Studio Calling Line -->
-          <a href="tel:+917012028379" class="desk-channel-card dot-box" id="channelPhone">
-            <div class="channel-num font-mono">03</div>
-            <div class="channel-body">
-              <div class="channel-tag font-mono">DIRECT CELLULAR</div>
-              <h3 class="channel-title font-display">Immediate Phone Line</h3>
-              <p class="channel-desc font-sans">+91 70120 28379 / +91 80759 11860 / +91 95392 02847 for immediate urgent conversations.</p>
-            </div>
-            <div class="channel-action font-mono">
-              <span>CALL NOW ↗</span>
-            </div>
-          </a>
-
-        </div>
-
-        <!-- QUICK INSTANT SIGNAL DISPATCHER -->
-        <div class="instant-signal-box">
-          <div class="signal-header font-mono">
-            <span>⚡ QUICK SIGNAL TO FOUNDERS</span>
-            <span class="signal-sub">Dispatches directly to our active Discord room</span>
+          <div class="cal-step-label font-mono" style="margin-top: 1.5rem;">2. SELECT A TIME (IST)</div>
+          
+          <!-- Available Slots Grid -->
+          <div class="cal-slots-grid" id="calSlotsGrid">
+            <button type="button" class="slot-pill active" data-time="11:00 AM">11:00 AM</button>
+            <button type="button" class="slot-pill" data-time="02:30 PM">02:30 PM</button>
+            <button type="button" class="slot-pill" data-time="04:30 PM">04:30 PM</button>
+            <button type="button" class="slot-pill" data-time="07:00 PM">07:00 PM</button>
+            <button type="button" class="slot-pill" data-time="09:00 PM">09:00 PM</button>
           </div>
 
-          <div class="signal-composer">
-            <input 
-              type="text" 
-              id="signalQuickInput" 
-              class="signal-input font-sans" 
-              placeholder="e.g. 'Hey, I want to build an AI SaaS for healthcare. Reach me at alex@health.io or +91 9876543210'"
-              aria-label="Quick Message to Founders"
-            >
-            <button type="button" class="signal-send-btn font-mono" id="sendSignalBtn">
-              <span>TRANSMIT SIGNAL ↵</span>
+          <!-- Confirm Inputs -->
+          <div class="cal-confirm-box font-sans" style="margin-top: 1.8rem;">
+            <div class="cal-inputs-row">
+              <input type="text" id="calClientName" class="cal-input" placeholder="Your name" aria-label="Your Name">
+              <input type="text" id="calClientContact" class="cal-input" placeholder="Email or WhatsApp" aria-label="Email or WhatsApp">
+            </div>
+
+            <button type="button" class="cal-confirm-btn font-mono dot-box" id="calConfirmBtn">
+              <span>CONFIRM 30-MIN CALL ↗</span>
             </button>
+
+            <div class="cal-status-text font-mono" id="calStatusText" aria-live="polite"></div>
           </div>
 
-          <div class="signal-status-line font-mono" id="signalStatusText" aria-live="polite"></div>
         </div>
 
       </div>

@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initGlitchFreeScrollPhysics();
   initInteractiveEyeTracking();
   initPaperCard3DTilt();
-  initFounderDesk();
+  initCalScheduler();
   initConversationalBrief();
   initServiceInquireLinks();
   initCrosshairIntersectionTracker();
@@ -652,122 +652,159 @@ function initServiceInquireLinks() {
 const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/1536735455633211535/GlxsOfAJPAUx-lnfZVuMLk2r7w3K5tXR5gcfQ7NIEEpWPtZI10elGf21j9udxA8xpdn3';
 
 /* ==========================================================================
-   7. Founder Desk & Live Signal Dispatch Engine
+   7. Cal-Style Visual Calendar Scheduler
    ========================================================================== */
-function initFounderDesk() {
-  // Live IST Clock
-  const clockEl = document.getElementById('deskLiveClock');
-  if (clockEl) {
-    function updateClock() {
-      const now = new Date();
-      const timeStr = now.toLocaleTimeString('en-US', {
-        timeZone: 'Asia/Kolkata',
-        hour12: true,
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit'
-      });
-      clockEl.textContent = `${timeStr} IST`;
-    }
-    updateClock();
-    setInterval(updateClock, 1000);
-  }
+function initCalScheduler() {
+  const datesStrip = document.getElementById('calDatesStrip');
+  const slotsGrid = document.getElementById('calSlotsGrid');
+  const confirmBtn = document.getElementById('calConfirmBtn');
+  const nameInput = document.getElementById('calClientName');
+  const contactInput = document.getElementById('calClientContact');
+  const statusText = document.getElementById('calStatusText');
 
-  // Quick Signal Dispatcher
-  const signalInput = document.getElementById('signalQuickInput');
-  const signalBtn = document.getElementById('sendSignalBtn');
-  const signalStatus = document.getElementById('signalStatusText');
+  if (!datesStrip || !confirmBtn) return;
 
-  if (signalBtn && signalInput) {
-    async function transmitSignal() {
-      const text = signalInput.value.trim();
-      if (!text) {
-        signalInput.focus();
-        signalInput.style.borderColor = '#F43F5E';
-        if (signalStatus) signalStatus.innerHTML = `<span style="color:#F43F5E;">Please type a quick thought or inquiry first.</span>`;
-        return;
-      }
+  let selectedDateStr = '';
+  let selectedTimeSlot = '11:00 AM';
 
-      signalInput.style.borderColor = '';
-      signalBtn.disabled = true;
-      signalBtn.innerHTML = '<span>DISPATCHING...</span>';
-      if (signalStatus) signalStatus.innerHTML = `<span style="color:var(--c-text-muted);">Transmitting directly to founder channel...</span>`;
+  // Generate next 7 days
+  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  
+  datesStrip.innerHTML = '';
+  for (let i = 0; i < 7; i++) {
+    const d = new Date();
+    d.setDate(d.getDate() + i);
 
-      const payload = {
-        username: "Nyghto Founder Desk",
-        avatar_url: "https://nyghto.in/favicon.png",
-        embeds: [
-          {
-            title: "⚡ Quick Founder Signal Transmitted",
-            description: `**"${text}"**`,
-            color: 74909, // Nyghto Cobalt
-            fields: [
-              { name: "⏰ Sent At", value: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }) + " IST", inline: true },
-              { name: "🌐 Source", value: "nyghto.in Founder Desk", inline: true }
-            ],
-            footer: {
-              text: "Nyghto Studio Direct Signal",
-              icon_url: "https://nyghto.in/favicon.png"
-            },
-            timestamp: new Date().toISOString()
-          }
-        ]
-      };
+    const dayName = days[d.getDay()];
+    const monthName = months[d.getMonth()];
+    const dateNum = d.getDate();
+    const dateFormatted = `${dayName}, ${monthName} ${dateNum}`;
 
-      try {
-        const response = await fetch(DISCORD_WEBHOOK_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
+    if (i === 0) selectedDateStr = dateFormatted;
 
-        if (response.ok || response.status === 204) {
-          signalBtn.innerHTML = '<span>SIGNAL RECEIVED ✓</span>';
-          signalBtn.style.background = '#34D399';
-          signalBtn.style.color = '#064E3B';
-          signalInput.value = '';
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = `date-card ${i === 0 ? 'active' : ''} font-mono`;
+    btn.setAttribute('data-date', dateFormatted);
+    btn.innerHTML = `
+      <span class="d-sub">${i === 0 ? 'TODAY' : (i === 1 ? 'TOMORROW' : dayName)}</span>
+      <span class="d-num">${dateNum}</span>
+      <span class="d-mon">${monthName}</span>
+    `;
 
-          if (signalStatus) {
-            signalStatus.innerHTML = `✓ Signal received in our Discord channel. We will reply to your contact shortly!`;
-          }
-
-          if (typeof playSynthTone === 'function') {
-            playSynthTone(523.25);
-            setTimeout(() => playSynthTone(659.25), 120);
-            setTimeout(() => playSynthTone(783.99), 240);
-          }
-        } else {
-          throw new Error('Webhook error');
-        }
-      } catch (err) {
-        console.warn('Signal fallback to email:', err);
-        signalBtn.innerHTML = '<span>OPENING EMAIL...</span>';
-        window.location.href = `mailto:hello@nyghto.in?subject=${encodeURIComponent('[Quick Signal] Direct Studio Inquiry')}&body=${encodeURIComponent(text)}`;
-      } finally {
-        setTimeout(() => {
-          signalBtn.disabled = false;
-          signalBtn.innerHTML = '<span>TRANSMIT SIGNAL ↵</span>';
-          signalBtn.style.background = '';
-          signalBtn.style.color = '';
-        }, 4000);
-      }
-    }
-
-    signalBtn.addEventListener('click', transmitSignal);
-    signalInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') transmitSignal();
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.date-card').forEach(c => c.classList.remove('active'));
+      btn.classList.add('active');
+      selectedDateStr = dateFormatted;
+      if (typeof playSynthTone === 'function') playSynthTone(587.33);
     });
-  }
-}
 
-window.triggerQuickMeetingModal = function() {
-  const signalInput = document.getElementById('signalQuickInput');
-  if (signalInput) {
-    signalInput.value = "Hey Nyghto, I'd like to book a 15-min Google Meet discovery call. Reach me at: ";
-    signalInput.focus();
-    if (typeof playSynthTone === 'function') playSynthTone(659.25);
+    datesStrip.appendChild(btn);
   }
-};
+
+  // Time slot selection
+  const slotPills = document.querySelectorAll('.slot-pill');
+  slotPills.forEach(pill => {
+    pill.addEventListener('click', () => {
+      slotPills.forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      selectedTimeSlot = pill.getAttribute('data-time') || '11:00 AM';
+      if (typeof playSynthTone === 'function') playSynthTone(659.25);
+    });
+  });
+
+  // Confirm Booking Button
+  confirmBtn.addEventListener('click', async () => {
+    const name = nameInput ? nameInput.value.trim() : '';
+    const contact = contactInput ? contactInput.value.trim() : '';
+
+    if (!name) {
+      if (nameInput) {
+        nameInput.focus();
+        nameInput.style.borderColor = '#F43F5E';
+      }
+      if (statusText) statusText.innerHTML = `<span style="color:#F43F5E;">Please enter your name.</span>`;
+      return;
+    }
+
+    if (!contact) {
+      if (contactInput) {
+        contactInput.focus();
+        contactInput.style.borderColor = '#F43F5E';
+      }
+      if (statusText) statusText.innerHTML = `<span style="color:#F43F5E;">Please enter your Email or WhatsApp number.</span>`;
+      return;
+    }
+
+    if (nameInput) nameInput.style.borderColor = '';
+    if (contactInput) contactInput.style.borderColor = '';
+
+    confirmBtn.disabled = true;
+    confirmBtn.innerHTML = '<span>CONFIRMING SLOT...</span>';
+    if (statusText) statusText.innerHTML = `<span style="color:var(--c-text-muted);">Confirming 30-min strategy call with founders...</span>`;
+
+    const payload = {
+      username: "Nyghto Strategy Desk",
+      avatar_url: "https://nyghto.in/favicon.png",
+      embeds: [
+        {
+          title: "🗓️ 30-Min Discovery Strategy Call Booked",
+          description: `A new client has scheduled a consultation call on **[nyghto.in](https://nyghto.in/#contact)**.`,
+          color: 3462009, // Emerald
+          fields: [
+            { name: "👤 Client Name", value: name, inline: true },
+            { name: "📞 Contact (Email/Phone)", value: contact, inline: true },
+            { name: "📅 Scheduled Day", value: selectedDateStr, inline: true },
+            { name: "⏰ Scheduled Time", value: `${selectedTimeSlot} (IST)`, inline: true },
+            { name: "📹 Platform", value: "Google Meet", inline: true }
+          ],
+          footer: {
+            text: "Nyghto Direct Strategy Scheduling",
+            icon_url: "https://nyghto.in/favicon.png"
+          },
+          timestamp: new Date().toISOString()
+        }
+      ]
+    };
+
+    try {
+      const res = await fetch(DISCORD_WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (res.ok || res.status === 204) {
+        confirmBtn.innerHTML = '<span>CALL CONFIRMED ✓</span>';
+        confirmBtn.style.background = '#34D399';
+        confirmBtn.style.color = '#064E3B';
+
+        if (statusText) {
+          statusText.innerHTML = `✓ Call confirmed for <strong>${selectedDateStr} at ${selectedTimeSlot} IST</strong>. We sent details to <strong>${contact}</strong>.`;
+        }
+
+        if (typeof playSynthTone === 'function') {
+          playSynthTone(523.25);
+          setTimeout(() => playSynthTone(659.25), 120);
+          setTimeout(() => playSynthTone(783.99), 240);
+        }
+      } else {
+        throw new Error('Webhook error');
+      }
+    } catch (err) {
+      console.warn('Meeting fallback to email:', err);
+      confirmBtn.innerHTML = '<span>OPENING EMAIL...</span>';
+      const subject = `[Strategy Call] ${name} — ${selectedDateStr} at ${selectedTimeSlot}`;
+      const body = `Hello Nyghto Team,\n\nI would like to confirm a 30-min strategy call.\n\nName: ${name}\nContact: ${contact}\nPreferred Date: ${selectedDateStr}\nTime: ${selectedTimeSlot} IST\n\nSent from nyghto.in`;
+      window.location.href = `mailto:hello@nyghto.in?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    } finally {
+      setTimeout(() => {
+        confirmBtn.disabled = false;
+      }, 5000);
+    }
+  });
+}
 
 /* ==========================================================================
    8. Conversational Brief Generator & Actions (Direct Discord Webhook Connection)
