@@ -1171,11 +1171,9 @@ body.theme-yellow .pinned-tag-inline {
   padding: 3.5rem 4rem;
   border-radius: 24px;
   box-sizing: border-box;
-  background: rgba(1, 30, 130, 0.94);
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  backdrop-filter: blur(28px);
-  -webkit-backdrop-filter: blur(28px);
-  box-shadow: 0 30px 70px rgba(0, 5, 25, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  background: #011D7D;
+  border: 1px solid var(--c-border);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
   margin-bottom: 120px;
   display: flex;
   flex-direction: column;
@@ -1426,15 +1424,13 @@ body.theme-yellow .stack-inquire-btn {
    ========================================================================== */
 .cal-scheduler-card {
   max-width: 1100px;
-  background: rgba(1, 30, 130, 0.94);
-  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: #011D7D;
+  border: 1px solid var(--c-border);
   border-radius: 20px;
   display: grid;
   grid-template-columns: 1fr 1.2fr;
   overflow: hidden;
-  backdrop-filter: blur(28px);
-  -webkit-backdrop-filter: blur(28px);
-  box-shadow: 0 30px 70px rgba(0, 5, 25, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
 }
 
 body.theme-yellow .cal-scheduler-card {
