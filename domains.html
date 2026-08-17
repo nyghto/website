@@ -43,7 +43,6 @@
   <!-- Lenis & GSAP -->
   <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 
   <link rel="stylesheet" href="styles.css">
 
@@ -64,29 +63,7 @@
           "@type": "Organization",
           "name": "Nyghto",
           "url": "https://nyghto.in"
-        },
-        "offers": {
-          "@type": "Offer",
-          "price": "0",
-          "priceCurrency": "USD"
         }
-      },
-      {
-        "@type": "BreadcrumbList",
-        "itemListElement": [
-          {
-            "@type": "ListItem",
-            "position": 1,
-            "name": "Home",
-            "item": "https://nyghto.in/"
-          },
-          {
-            "@type": "ListItem",
-            "position": 2,
-            "name": "Domain Checker",
-            "item": "https://nyghto.in/domains.html"
-          }
-        ]
       }
     ]
   }
@@ -102,16 +79,6 @@
   </div>
 
   <div class="cinematic-vignette-overlay" aria-hidden="true"></div>
-
-  <!-- HAOQI-STYLE FIXED GRID BACKGROUND -->
-  <div class="crosshair-grid-bg" aria-hidden="true">
-    <div class="grid-line h-line" style="top: 25%;"></div>
-    <div class="grid-line h-line" style="top: 50%;"></div>
-    <div class="grid-line h-line" style="top: 75%;"></div>
-    <div class="grid-line v-line" style="left: 25%;"></div>
-    <div class="grid-line v-line" style="left: 50%;"></div>
-    <div class="grid-line v-line" style="left: 75%;"></div>
-  </div>
 
   <!-- FIXED FRAME HEADER OVERLAY -->
   <div class="fixed-frame-overlay">
@@ -187,125 +154,107 @@
   </div>
 
   <!-- MAIN SCROLLABLE VIEWPORT -->
-  <main class="page-container domains-tool-page">
+  <main class="page-container simple-domains-page">
     
-    <!-- TOOL HERO HEADER -->
-    <header class="domains-hero-header">
-      <div class="domains-meta-tag font-mono">[TOOLS // DOMAIN &amp; DNS INTELLIGENCE]</div>
-      <h1 class="domains-headline font-display">Find your next brand name.</h1>
-      <p class="domains-sub-lead font-sans">
-        Instant real-time multi-TLD availability, live DNS inspection, and sub-second Cloudflare DoH telemetry for founders and engineers.
+    <!-- CLEAN MINIMAL HERO -->
+    <header class="simple-domains-hero">
+      <span class="simple-tag font-mono">[DOMAIN &amp; DNS INTELLIGENCE]</span>
+      <h1 class="simple-headline font-display">Instant Domain Checker.</h1>
+      <p class="simple-sub font-sans">
+        Check live availability across 14 major TLDs with sub-second Cloudflare 1.1.1.1 DNS-over-HTTPS queries.
       </p>
     </header>
 
-    <!-- SEARCH & CONTROLS COMPOSER -->
-    <section class="domain-composer-section">
-      <div class="domain-input-hud dot-box">
-        <div class="hud-search-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
-            <circle cx="11" cy="11" r="8"></circle>
-            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-          </svg>
-        </div>
-        
+    <!-- CLEAN CENTERED SEARCH COMPOSER -->
+    <div class="simple-search-wrap">
+      <div class="simple-search-bar">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+
         <input 
           type="text" 
           id="domainSearchInput" 
-          class="domain-main-input font-mono" 
-          placeholder="type a name (e.g. nyghto, fixowe, ecoshop)..." 
+          class="simple-search-input font-mono" 
+          placeholder="type a brand name (e.g. nyghto, fixowe, ecoshop)..." 
           autocomplete="off" 
           spellcheck="false"
           autofocus
           aria-label="Domain Name to Check"
         >
 
-        <button type="button" class="domain-clear-btn" id="domainClearBtn" aria-label="Clear Search Input" style="display: none;">✕</button>
+        <button type="button" class="simple-clear-btn" id="domainClearBtn" aria-label="Clear Search Input" style="display: none;">✕</button>
 
-        <button type="button" class="domain-submit-btn dot-box font-mono" id="domainSearchBtn">
-          <span>SCAN ALL TLDS ↵</span>
+        <button type="button" class="simple-scan-btn font-mono" id="domainSearchBtn">
+          <span>SCAN ↵</span>
         </button>
       </div>
 
-      <!-- Quick TLD Category Filters -->
-      <div class="tld-filter-bar font-mono">
-        <span class="filter-label">Filter:</span>
-        <button type="button" class="tld-pill-btn active" data-filter="all">ALL (14 TLDS)</button>
-        <button type="button" class="tld-pill-btn" data-filter="popular">POPULAR (.com, .in, .io, .co)</button>
-        <button type="button" class="tld-pill-btn" data-filter="tech">TECH (.ai, .dev, .tech, .app)</button>
-        <button type="button" class="tld-pill-btn" data-filter="creative">CREATIVE (.design, .studio, .me)</button>
-        <button type="button" class="tld-pill-btn" data-filter="india">INDIA (.in, .co.in)</button>
+      <!-- Quick Category Pills -->
+      <div class="simple-filter-row font-mono">
+        <button type="button" class="filter-pill active" data-filter="all">All TLDs (14)</button>
+        <button type="button" class="filter-pill" data-filter="popular">Popular (.com, .in, .io, .co)</button>
+        <button type="button" class="filter-pill" data-filter="tech">Tech (.ai, .dev, .tech, .app)</button>
+        <button type="button" class="filter-pill" data-filter="india">India (.in, .co.in)</button>
+        <button type="button" class="filter-pill" data-filter="creative">Creative (.design, .studio)</button>
       </div>
 
-      <!-- Live Search Status Bar -->
-      <div class="domain-status-bar font-mono" id="domainStatusBar">
-        <span class="status-indicator-dot"></span>
-        <span id="domainStatusText">Ready for search. Type a brand name to run real-time Cloudflare DoH queries.</span>
+      <!-- Live Status Line -->
+      <div class="simple-status-line font-mono" id="domainStatusText">
+        Ready for search.
       </div>
-    </section>
+    </div>
 
-    <!-- LIVE RESULTS GRID -->
-    <section class="domain-results-section" id="domainResultsSection">
-      <div class="results-grid" id="domainResultsGrid">
+    <!-- DOMAIN RESULTS LIST -->
+    <section class="simple-results-container">
+      <div class="simple-results-grid" id="domainResultsGrid">
         <!-- Rendered dynamically via domains.js -->
       </div>
     </section>
 
-    <!-- DEEP DNS LOOKUP & TELEMETRY TOOL -->
-    <section class="dns-inspector-section" id="dnsInspectorSection">
-      <div class="dns-hud-header">
-        <span class="hud-tag font-mono">[DNS TELEMETRY // REAL-TIME LOOKUP]</span>
-        <h2 class="dns-inspector-title font-display">Deep DNS Record Inspector</h2>
-        <p class="dns-inspector-sub font-sans">
-          Query live A, AAAA, MX, TXT, NS, and CNAME records directly from Cloudflare 1.1.1.1 and Google DNS resolvers.
-        </p>
-      </div>
+    <!-- SLIM COLLAPSIBLE DNS RECORD INSPECTOR -->
+    <section class="simple-dns-section" id="dnsInspectorSection">
+      <details class="dns-details-card" id="dnsDetailsCard">
+        <summary class="dns-summary-header font-mono">
+          <span class="dns-summary-title">⚡ Deep DNS Record Inspector (A, MX, TXT, NS)</span>
+          <span class="dns-summary-toggle">EXPAND +</span>
+        </summary>
 
-      <div class="dns-lookup-card">
-        <div class="dns-query-bar">
-          <input type="text" id="dnsLookupDomain" class="dns-query-input font-mono" placeholder="nyghto.in" aria-label="Domain for DNS Lookup">
-          
-          <select id="dnsRecordType" class="dns-type-select font-mono" aria-label="DNS Record Type">
-            <option value="A" selected>A (IPv4)</option>
-            <option value="AAAA">AAAA (IPv6)</option>
-            <option value="MX">MX (Mail Servers)</option>
-            <option value="TXT">TXT (Verification &amp; SPF)</option>
-            <option value="NS">NS (Nameservers)</option>
-            <option value="CNAME">CNAME (Alias)</option>
-            <option value="SOA">SOA (Start of Authority)</option>
-          </select>
+        <div class="dns-expanded-content">
+          <div class="dns-inline-form">
+            <input type="text" id="dnsLookupDomain" class="dns-inline-input font-mono" placeholder="nyghto.in" aria-label="Domain for DNS Lookup">
+            
+            <select id="dnsRecordType" class="dns-inline-select font-mono" aria-label="DNS Record Type">
+              <option value="A" selected>A (IPv4)</option>
+              <option value="AAAA">AAAA (IPv6)</option>
+              <option value="MX">MX (Mail Servers)</option>
+              <option value="TXT">TXT (Verification)</option>
+              <option value="NS">NS (Nameservers)</option>
+              <option value="CNAME">CNAME (Alias)</option>
+              <option value="SOA">SOA (Authority)</option>
+            </select>
 
-          <button type="button" class="dns-query-btn dot-box font-mono" id="dnsQueryBtn">
-            <span>RESOLVE RECORDS ↗</span>
-          </button>
-        </div>
-
-        <!-- Terminal Console Output -->
-        <div class="dns-console-wrap font-mono" id="dnsConsoleWrap">
-          <div class="console-header">
-            <span class="console-dot dot-red"></span>
-            <span class="console-dot dot-yellow"></span>
-            <span class="console-dot dot-green"></span>
-            <span class="console-title">DNS RESOLVER TELEMETRY (1.1.1.1 DoH)</span>
+            <button type="button" class="dns-inline-btn font-mono" id="dnsQueryBtn">
+              <span>RESOLVE ↗</span>
+            </button>
           </div>
-          <pre class="console-body" id="dnsConsoleBody">// Enter a domain above and click "Resolve Records" to inspect live DNS entries.</pre>
+
+          <pre class="dns-console-output font-mono" id="dnsConsoleBody">// Select record type and click "RESOLVE" to inspect live DNS entries via 1.1.1.1.</pre>
         </div>
-      </div>
+      </details>
     </section>
 
-    <!-- BOTTOM CALLOUT: ENGINEER ON YOUR DOMAIN WITH NYGHTO -->
-    <section class="domains-bottom-cta">
-      <div class="domain-cta-box dot-box">
-        <div class="cta-left">
-          <h3 class="cta-headline font-display">Found the perfect name? Let's build it.</h3>
-          <p class="cta-sub font-sans">
-            From high-speed web flagships to iOS/Android applications and SaaS backends, we turn domains into world-class digital products.
-          </p>
+    <!-- SIMPLE BOTTOM BANNER -->
+    <section class="simple-bottom-banner">
+      <div class="banner-inner">
+        <div class="banner-text">
+          <h3 class="banner-title font-display">Ready to build your digital product?</h3>
+          <p class="banner-sub font-sans">We design and engineer bespoke web platforms, applications, and SaaS systems.</p>
         </div>
-        <div class="cta-right font-mono">
-          <a href="index.html#contact" class="cta-action-btn dot-box">
-            <span>START A PROJECT ↗</span>
-          </a>
-        </div>
+        <a href="index.html#contact" class="banner-cta-btn font-mono">
+          <span>START A PROJECT ↗</span>
+        </a>
       </div>
     </section>
 

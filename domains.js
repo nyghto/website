@@ -1,135 +1,116 @@
 /**
- * NYGHTO.DESIGN — Domain & DNS Intelligence Engine
- * Sub-second Cloudflare 1.1.1.1 & Google DoH Multi-TLD Resolver
+ * NYGHTO.DESIGN — Simple & Ultra-Fast Domain Availability Engine
+ * Powered by Cloudflare 1.1.1.1 DNS-over-HTTPS
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  initDomainCheckerEngine();
-  initDnsInspectorEngine();
+  initSimpleDomainChecker();
+  initSimpleDnsInspector();
 });
 
 const SUPPORTED_TLDS = [
-  { tld: '.com', category: ['all', 'popular'], desc: 'Global Commercial Standard' },
-  { tld: '.in', category: ['all', 'popular', 'india'], desc: 'Official Republic of India' },
-  { tld: '.io', category: ['all', 'popular', 'tech'], desc: 'Tech Startups & Developer Platforms' },
-  { tld: '.ai', category: ['all', 'tech'], desc: 'Artificial Intelligence & Machine Learning' },
-  { tld: '.co', category: ['all', 'popular'], desc: 'Modern Company Flagship' },
-  { tld: '.design', category: ['all', 'creative'], desc: 'Design Studios & Creative Agencies' },
-  { tld: '.dev', category: ['all', 'tech'], desc: 'Developers & Software Engineering' },
-  { tld: '.studio', category: ['all', 'creative'], desc: 'Bespoke Production & Craft Studios' },
-  { tld: '.tech', category: ['all', 'tech'], desc: 'Technology & Hardware Innovations' },
-  { tld: '.app', category: ['all', 'tech'], desc: 'Mobile & Web Applications' },
-  { tld: '.co.in', category: ['all', 'india'], desc: 'Indian Corporate Commercial' },
-  { tld: '.me', category: ['all', 'creative'], desc: 'Personal Brands & Portfolio Projects' },
-  { tld: '.org', category: ['all', 'popular'], desc: 'Organizations & Open Source Foundations' },
-  { tld: '.net', category: ['all', 'popular'], desc: 'Networks & Infrastructure' }
+  { tld: '.in', category: ['all', 'popular', 'india'] },
+  { tld: '.com', category: ['all', 'popular'] },
+  { tld: '.io', category: ['all', 'popular', 'tech'] },
+  { tld: '.ai', category: ['all', 'tech'] },
+  { tld: '.co', category: ['all', 'popular'] },
+  { tld: '.dev', category: ['all', 'tech'] },
+  { tld: '.design', category: ['all', 'creative'] },
+  { tld: '.studio', category: ['all', 'creative'] },
+  { tld: '.tech', category: ['all', 'tech'] },
+  { tld: '.app', category: ['all', 'tech'] },
+  { tld: '.co.in', category: ['all', 'india'] },
+  { tld: '.me', category: ['all', 'creative'] },
+  { tld: '.org', category: ['all', 'popular'] },
+  { tld: '.net', category: ['all', 'popular'] }
 ];
 
 let activeFilter = 'all';
-let currentSearchQuery = '';
 let searchDebounceTimer = null;
 
-function initDomainCheckerEngine() {
+function initSimpleDomainChecker() {
   const searchInput = document.getElementById('domainSearchInput');
   const searchBtn = document.getElementById('domainSearchBtn');
   const clearBtn = document.getElementById('domainClearBtn');
-  const filterBtns = document.querySelectorAll('.tld-pill-btn');
+  const filterBtns = document.querySelectorAll('.filter-pill');
   const resultsGrid = document.getElementById('domainResultsGrid');
   const statusText = document.getElementById('domainStatusText');
 
   if (!searchInput || !resultsGrid) return;
 
-  // Initialize with initial search query if present in URL hash or default
+  // Run initial search
   const initialQuery = window.location.hash ? window.location.hash.replace('#', '') : 'nyghto';
   searchInput.value = initialQuery;
-  executeMultiTldSearch(initialQuery);
+  executeScan(initialQuery);
 
-  // Input change with debounce
+  // Real-time live input
   searchInput.addEventListener('input', (e) => {
-    const query = e.target.value.trim().toLowerCase();
-    if (clearBtn) clearBtn.style.display = query.length > 0 ? 'block' : 'none';
+    const val = e.target.value.trim().toLowerCase();
+    if (clearBtn) clearBtn.style.display = val.length > 0 ? 'block' : 'none';
 
     clearTimeout(searchDebounceTimer);
     searchDebounceTimer = setTimeout(() => {
-      if (query.length >= 2) {
-        executeMultiTldSearch(query);
-      } else if (query.length === 0) {
-        resultsGrid.innerHTML = `
-          <div class="empty-state-notice font-mono">
-            <span class="empty-icon">⌨</span>
-            <p>Type any brand name or venture keyword above to check availability across all 14 TLDs simultaneously.</p>
-          </div>
-        `;
+      if (val.length >= 2) {
+        executeScan(val);
+      } else if (val.length === 0) {
+        resultsGrid.innerHTML = `<div class="empty-state font-mono">Type any name above to scan availability in real-time.</div>`;
         if (statusText) statusText.textContent = 'Ready for search.';
       }
-    }, 450);
+    }, 400);
   });
 
-  // Enter Key trigger
   searchInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
       clearTimeout(searchDebounceTimer);
-      const query = searchInput.value.trim().toLowerCase();
-      if (query) executeMultiTldSearch(query);
+      const val = searchInput.value.trim().toLowerCase();
+      if (val) executeScan(val);
     }
   });
 
-  // Search button click
   if (searchBtn) {
     searchBtn.addEventListener('click', () => {
-      const query = searchInput.value.trim().toLowerCase();
-      if (query) executeMultiTldSearch(query);
+      const val = searchInput.value.trim().toLowerCase();
+      if (val) executeScan(val);
     });
   }
 
-  // Clear button click
   if (clearBtn) {
     clearBtn.addEventListener('click', () => {
       searchInput.value = '';
       clearBtn.style.display = 'none';
       searchInput.focus();
-      resultsGrid.innerHTML = `
-        <div class="empty-state-notice font-mono">
-          <span class="empty-icon">⌨</span>
-          <p>Type any brand name or venture keyword above to check availability across all 14 TLDs simultaneously.</p>
-        </div>
-      `;
-      if (statusText) statusText.textContent = 'Search cleared. Ready.';
+      resultsGrid.innerHTML = `<div class="empty-state font-mono">Type any name above to scan availability in real-time.</div>`;
+      if (statusText) statusText.textContent = 'Ready.';
     });
   }
 
-  // Category filter tabs
+  // Category Filters
   filterBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       filterBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       activeFilter = btn.getAttribute('data-filter') || 'all';
       if (typeof playSynthTone === 'function') playSynthTone(587.33);
-      filterResultsCards();
+      filterCards();
     });
   });
 }
 
-/**
- * Execute parallel Cloudflare DoH & Google DoH queries across all supported TLDs
- */
-async function executeMultiTldSearch(rawQuery) {
+async function executeScan(rawQuery) {
   const resultsGrid = document.getElementById('domainResultsGrid');
   const statusText = document.getElementById('domainStatusText');
   if (!resultsGrid) return;
 
-  // Clean raw query (remove spaces, protocols, existing extension if user typed it)
   let cleanName = rawQuery.replace(/^(https?:\/\/)?(www\.)?/, '').split('/')[0].split('.')[0].trim();
   cleanName = cleanName.replace(/[^a-z0-9-]/gi, '').toLowerCase();
 
   if (!cleanName) {
-    if (statusText) statusText.textContent = 'Please enter valid alphanumeric characters.';
+    if (statusText) statusText.textContent = 'Please enter alphanumeric characters.';
     return;
   }
 
-  currentSearchQuery = cleanName;
   if (statusText) {
-    statusText.innerHTML = `Scanning <strong>${SUPPORTED_TLDS.length} TLDs</strong> for <strong>"${cleanName}"</strong> via Cloudflare 1.1.1.1 DoH...`;
+    statusText.innerHTML = `Scanning <strong>${SUPPORTED_TLDS.length} TLDs</strong> for <strong>"${cleanName}"</strong>...`;
   }
 
   if (typeof playSynthTone === 'function') playSynthTone(440);
@@ -138,31 +119,38 @@ async function executeMultiTldSearch(rawQuery) {
   resultsGrid.innerHTML = '';
   SUPPORTED_TLDS.forEach(item => {
     const fullDomain = `${cleanName}${item.tld}`;
-    const card = createSkeletonCard(fullDomain, item);
+    const card = document.createElement('div');
+    card.className = 'simple-domain-card loading font-mono';
+    card.id = `card-${fullDomain.replace(/\./g, '-')}`;
+    card.setAttribute('data-category', item.category.join(' '));
+
+    card.innerHTML = `
+      <div class="card-left">
+        <span class="domain-main-name font-mono">${fullDomain}</span>
+        <span class="status-tag scanning">Scanning...</span>
+      </div>
+      <div class="card-right"></div>
+    `;
     resultsGrid.appendChild(card);
   });
 
-  filterResultsCards();
+  filterCards();
 
-  // Execute Parallel DNS Queries
-  const queryPromises = SUPPORTED_TLDS.map(async (item) => {
+  // Run parallel Cloudflare DoH queries
+  const promises = SUPPORTED_TLDS.map(async (item) => {
     const fullDomain = `${cleanName}${item.tld}`;
-    const result = await checkDomainAvailability(fullDomain);
-    updateCardWithResult(fullDomain, result, item);
+    const res = await queryDns(fullDomain);
+    renderCardResult(fullDomain, res);
   });
 
-  await Promise.allSettled(queryPromises);
+  await Promise.allSettled(promises);
 
   if (statusText) {
-    statusText.innerHTML = `✓ Scan complete for <strong>"${cleanName}"</strong> across all TLDs. Click any available domain to build with Nyghto.`;
+    statusText.innerHTML = `✓ Scan complete for <strong>"${cleanName}"</strong>.`;
   }
 }
 
-/**
- * Perform DNS Over HTTPS (DoH) lookup to check if A/AAAA/CNAME/NS records exist
- */
-async function checkDomainAvailability(domain) {
-  // Query Cloudflare 1.1.1.1 DoH first
+async function queryDns(domain) {
   try {
     const cfUrl = `https://cloudflare-dns.com/dns-query?name=${encodeURIComponent(domain)}&type=A`;
     const response = await fetch(cfUrl, {
@@ -172,291 +160,160 @@ async function checkDomainAvailability(domain) {
 
     if (response.ok) {
       const data = await response.json();
-      
-      // Status 3 = NXDOMAIN (Domain does not exist / unassigned DNS)
-      // Status 0 = NOERROR (Domain has DNS records or delegation)
       const hasAnswers = data.Answer && data.Answer.length > 0;
-      const isNxDomain = data.Status === 3;
-      const isServFail = data.Status === 2;
-
-      // Secondary check for NS/SOA if no Answer
+      const isNx = data.Status === 3;
       const hasAuthority = data.Authority && data.Authority.length > 0;
 
-      if (isNxDomain || (!hasAnswers && !hasAuthority)) {
-        return {
-          status: 'available',
-          domain: domain,
-          dnsStatus: data.Status,
-          records: [],
-          confidence: 'High (No DNS records resolved)'
-        };
+      if (isNx || (!hasAnswers && !hasAuthority)) {
+        return { isAvailable: true, domain };
       } else {
-        const ips = (data.Answer || []).map(a => a.data).filter(Boolean);
-        return {
-          status: 'taken',
-          domain: domain,
-          dnsStatus: data.Status,
-          records: ips,
-          confidence: 'Active (Resolves to IP / Nameservers)'
-        };
+        return { isAvailable: false, domain, records: (data.Answer || []).map(a => a.data) };
       }
     }
-  } catch (cfErr) {
-    // Fallback to Google DNS DoH
+  } catch (e) {
     try {
-      const googleUrl = `https://dns.google/resolve?name=${encodeURIComponent(domain)}&type=A`;
-      const gResponse = await fetch(googleUrl);
-      if (gResponse.ok) {
-        const gData = await gResponse.json();
-        const hasAnswers = gData.Answer && gData.Answer.length > 0;
-        if (gData.Status === 3 || !hasAnswers) {
-          return { status: 'available', domain: domain, records: [] };
+      const gUrl = `https://dns.google/resolve?name=${encodeURIComponent(domain)}&type=A`;
+      const gRes = await fetch(gUrl);
+      if (gRes.ok) {
+        const gData = await gRes.json();
+        if (gData.Status === 3 || (!gData.Answer && !gData.Authority)) {
+          return { isAvailable: true, domain };
         } else {
-          return { status: 'taken', domain: domain, records: (gData.Answer || []).map(a => a.data) };
+          return { isAvailable: false, domain };
         }
       }
-    } catch (gErr) {
-      console.warn(`DNS check failed for ${domain}:`, gErr);
-    }
+    } catch (err) {}
   }
-
-  // Generic fallback status
-  return { status: 'check_registrar', domain: domain, records: [] };
+  return { isAvailable: true, domain };
 }
 
-/**
- * Create initial loading skeleton card
- */
-function createSkeletonCard(fullDomain, item) {
-  const card = document.createElement('div');
-  card.className = 'domain-card dot-box loading font-mono';
-  card.id = `card-${fullDomain.replace(/\./g, '-')}`;
-  card.setAttribute('data-category', item.category.join(' '));
-
-  card.innerHTML = `
-    <div class="domain-card-top">
-      <div class="domain-name-wrap">
-        <span class="domain-fqdn">${fullDomain}</span>
-        <span class="domain-tld-desc">${item.desc}</span>
-      </div>
-      <div class="domain-badge-wrap">
-        <span class="badge-pill badge-scanning">SCANNING...</span>
-      </div>
-    </div>
-
-    <div class="domain-card-bottom">
-      <span class="domain-sub-info">Querying 1.1.1.1 resolver...</span>
-      <div class="domain-actions"></div>
-    </div>
-  `;
-  return card;
-}
-
-/**
- * Update the skeleton card with live resolution data
- */
-function updateCardWithResult(fullDomain, result, item) {
-  const cardId = `card-${fullDomain.replace(/\./g, '-')}`;
-  const card = document.getElementById(cardId);
+function renderCardResult(fullDomain, res) {
+  const card = document.getElementById(`card-${fullDomain.replace(/\./g, '-')}`);
   if (!card) return;
 
   card.classList.remove('loading');
 
-  const isAvailable = result.status === 'available';
-  const isTaken = result.status === 'taken';
+  if (res.isAvailable) {
+    card.classList.add('status-available');
+    const godaddyUrl = `https://www.godaddy.com/domainsearch/find?checkAvail=1&domainToCheck=${encodeURIComponent(fullDomain)}`;
 
-  card.classList.toggle('status-available', isAvailable);
-  card.classList.toggle('status-taken', isTaken);
-
-  const badgeHtml = isAvailable 
-    ? `<span class="badge-pill badge-available">🟢 AVAILABLE</span>`
-    : isTaken
-      ? `<span class="badge-pill badge-taken">🔵 ACTIVE / RESOLVING</span>`
-      : `<span class="badge-pill badge-unknown">⚪ CHECK REGISTRAR</span>`;
-
-  const infoHtml = isAvailable
-    ? `<span class="domain-sub-info" style="color: #34D399;">✓ Unregistered DNS • Ready for venture launch</span>`
-    : isTaken
-      ? `<span class="domain-sub-info">IP: ${result.records.slice(0, 2).join(', ') || 'Active Nameservers'}</span>`
-      : `<span class="domain-sub-info">Status unverified</span>`;
-
-  const projectUrl = `index.html#contact`;
-  const godaddyUrl = `https://www.godaddy.com/domainsearch/find?checkAvail=1&domainToCheck=${encodeURIComponent(fullDomain)}`;
-
-  const actionsHtml = isAvailable
-    ? `
-      <a href="${godaddyUrl}" target="_blank" rel="noopener noreferrer" class="domain-btn domain-btn-register dot-box">
-        <span>Register ↗</span>
-      </a>
-      <a href="${projectUrl}" class="domain-btn domain-btn-build dot-box" onclick="prefillProjectBrief('${fullDomain}')">
-        <span>Build with Nyghto ↗</span>
-      </a>
-    `
-    : `
-      <button type="button" class="domain-btn domain-btn-dns dot-box" onclick="inspectSpecificDomain('${fullDomain}')">
-        <span>Inspect DNS ↗</span>
-      </button>
-      <a href="http://${fullDomain}" target="_blank" rel="noopener noreferrer" class="domain-btn domain-btn-visit dot-box">
-        <span>Visit Site ↗</span>
-      </a>
+    card.innerHTML = `
+      <div class="card-left">
+        <span class="domain-main-name font-mono">${fullDomain}</span>
+        <span class="status-tag available">● Available</span>
+      </div>
+      <div class="card-right">
+        <a href="${godaddyUrl}" target="_blank" rel="noopener noreferrer" class="card-action-btn outline">Register ↗</a>
+        <a href="index.html#contact" class="card-action-btn primary" onclick="prefillTargetDomain('${fullDomain}')">Build with Nyghto ↗</a>
+      </div>
     `;
-
-  card.innerHTML = `
-    <div class="domain-card-top">
-      <div class="domain-name-wrap">
-        <span class="domain-fqdn">${fullDomain}</span>
-        <span class="domain-tld-desc">${item.desc}</span>
+  } else {
+    card.classList.add('status-taken');
+    card.innerHTML = `
+      <div class="card-left">
+        <span class="domain-main-name font-mono">${fullDomain}</span>
+        <span class="status-tag taken">● Registered</span>
       </div>
-      <div class="domain-badge-wrap">
-        ${badgeHtml}
+      <div class="card-right">
+        <button type="button" class="card-action-btn outline" onclick="inspectDnsDomain('${fullDomain}')">Inspect DNS</button>
+        <a href="http://${fullDomain}" target="_blank" rel="noopener noreferrer" class="card-action-btn outline">Visit ↗</a>
       </div>
-    </div>
-
-    <div class="domain-card-bottom">
-      ${infoHtml}
-      <div class="domain-actions">
-        ${actionsHtml}
-      </div>
-    </div>
-  `;
+    `;
+  }
 }
 
-/**
- * Filter results based on active TLD category pill
- */
-function filterResultsCards() {
-  const cards = document.querySelectorAll('.domain-card');
-  cards.forEach(card => {
-    const categories = (card.getAttribute('data-category') || '').split(' ');
-    if (activeFilter === 'all' || categories.includes(activeFilter)) {
-      card.style.display = 'flex';
+function filterCards() {
+  const cards = document.querySelectorAll('.simple-domain-card');
+  cards.forEach(c => {
+    const cats = (c.getAttribute('data-category') || '').split(' ');
+    if (activeFilter === 'all' || cats.includes(activeFilter)) {
+      c.style.display = 'flex';
     } else {
-      card.style.display = 'none';
+      c.style.display = 'none';
     }
   });
 }
 
-/**
- * Quick jump to brief form on index.html with domain parameter
- */
-window.prefillProjectBrief = function(domainName) {
+window.prefillTargetDomain = function(dom) {
   try {
-    sessionStorage.setItem('nyghto_target_domain', domainName);
+    sessionStorage.setItem('nyghto_target_domain', dom);
   } catch (e) {}
 };
 
-/**
- * Inspect a specific domain in the deep DNS inspector panel
- */
-window.inspectSpecificDomain = function(domainName) {
+window.inspectDnsDomain = function(dom) {
   const input = document.getElementById('dnsLookupDomain');
-  const section = document.getElementById('dnsInspectorSection');
-  if (input) input.value = domainName;
-  if (section) {
-    section.scrollIntoView({ behavior: 'smooth' });
+  const details = document.getElementById('dnsDetailsCard');
+  if (input) input.value = dom;
+  if (details) {
+    details.open = true;
+    details.scrollIntoView({ behavior: 'smooth' });
   }
-  executeDeepDnsQuery();
+  executeDeepDns();
 };
 
 /* ==========================================================================
-   Deep DNS Inspector Engine (Cloudflare DoH Terminal Output)
+   Deep DNS Inspector
    ========================================================================== */
-function initDnsInspectorEngine() {
-  const queryBtn = document.getElementById('dnsQueryBtn');
-  const domainInput = document.getElementById('dnsLookupDomain');
-  const typeSelect = document.getElementById('dnsRecordType');
+function initSimpleDnsInspector() {
+  const btn = document.getElementById('dnsQueryBtn');
+  const input = document.getElementById('dnsLookupDomain');
+  const select = document.getElementById('dnsRecordType');
 
-  if (queryBtn) {
-    queryBtn.addEventListener('click', executeDeepDnsQuery);
-  }
-
-  if (domainInput) {
-    domainInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') executeDeepDnsQuery();
+  if (btn) btn.addEventListener('click', executeDeepDns);
+  if (input) {
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') executeDeepDns();
     });
   }
-
-  if (typeSelect) {
-    typeSelect.addEventListener('change', executeDeepDnsQuery);
-  }
+  if (select) select.addEventListener('change', executeDeepDns);
 }
 
-async function executeDeepDnsQuery() {
-  const domainInput = document.getElementById('dnsLookupDomain');
-  const typeSelect = document.getElementById('dnsRecordType');
+async function executeDeepDns() {
+  const input = document.getElementById('dnsLookupDomain');
+  const select = document.getElementById('dnsRecordType');
   const consoleBody = document.getElementById('dnsConsoleBody');
-  const queryBtn = document.getElementById('dnsQueryBtn');
+  const btn = document.getElementById('dnsQueryBtn');
 
-  if (!domainInput || !consoleBody) return;
+  if (!input || !consoleBody) return;
 
-  const rawDomain = domainInput.value.trim().toLowerCase().replace(/^(https?:\/\/)?(www\.)?/, '').split('/')[0];
-  const recordType = typeSelect ? typeSelect.value : 'A';
+  const domain = input.value.trim().toLowerCase().replace(/^(https?:\/\/)?(www\.)?/, '').split('/')[0];
+  const type = select ? select.value : 'A';
 
-  if (!rawDomain) {
-    consoleBody.textContent = '// Please enter a domain to resolve.';
+  if (!domain) {
+    consoleBody.textContent = '// Enter a domain to resolve.';
     return;
   }
 
-  if (queryBtn) {
-    queryBtn.innerHTML = '<span>RESOLVING...</span>';
-  }
-
-  consoleBody.textContent = `// Sending DNS Query (${recordType}) for "${rawDomain}" to 1.1.1.1 resolver...\n// Endpoint: https://cloudflare-dns.com/dns-query\n`;
-
-  if (typeof playSynthTone === 'function') playSynthTone(587.33);
+  if (btn) btn.innerHTML = '<span>RESOLVING...</span>';
+  consoleBody.textContent = `// Querying 1.1.1.1 resolver for ${domain} [Type: ${type}]...\n`;
 
   try {
-    const cfUrl = `https://cloudflare-dns.com/dns-query?name=${encodeURIComponent(rawDomain)}&type=${encodeURIComponent(recordType)}`;
-    const response = await fetch(cfUrl, {
+    const cfUrl = `https://cloudflare-dns.com/dns-query?name=${encodeURIComponent(domain)}&type=${encodeURIComponent(type)}`;
+    const res = await fetch(cfUrl, {
       headers: { 'Accept': 'application/dns-json' },
       cache: 'no-store'
     });
 
-    if (response.ok) {
-      const data = await response.json();
-      
-      const rcodeMap = {
-        0: 'NOERROR (0) - Query completed successfully',
-        1: 'FORMERR (1) - Format error',
-        2: 'SERVFAIL (2) - Server failure',
-        3: 'NXDOMAIN (3) - Non-existent domain',
-        4: 'NOTIMP (4) - Not implemented',
-        5: 'REFUSED (5) - Query refused'
-      };
-
-      let output = `// ========================================================\n`;
-      output += `// RESOLUTION RESULTS: ${rawDomain} [Type: ${recordType}]\n`;
-      output += `// Resolver: Cloudflare Public DNS (1.1.1.1)\n`;
-      output += `// Status: ${rcodeMap[data.Status] || data.Status}\n`;
-      output += `// TC: ${data.TC ? 'True (Truncated)' : 'False'} | RD: ${data.RD ? 'True' : 'False'} | RA: ${data.RA ? 'True' : 'False'}\n`;
-      output += `// ========================================================\n\n`;
+    if (res.ok) {
+      const data = await res.json();
+      let out = `// DNS Telemetry for ${domain} (${type})\n`;
+      out += `// Status: ${data.Status === 0 ? 'NOERROR (0)' : 'Status ' + data.Status}\n\n`;
 
       if (data.Answer && data.Answer.length > 0) {
-        output += `[ANSWER SECTION (${data.Answer.length} records found)]:\n`;
-        data.Answer.forEach((ans, idx) => {
-          output += `  [${idx + 1}] Name: ${ans.name.padEnd(24)} TTL: ${String(ans.TTL).padEnd(6)} Type: ${String(ans.type).padEnd(4)} Data: ${ans.data}\n`;
+        out += `Records (${data.Answer.length}):\n`;
+        data.Answer.forEach((a, i) => {
+          out += `  [${i+1}] ${a.name.padEnd(22)} TTL: ${a.TTL}s -> ${a.data}\n`;
         });
       } else {
-        output += `[ANSWER SECTION]:\n  // No ${recordType} records returned for ${rawDomain}.\n`;
+        out += `// No ${type} records returned for ${domain}.\n`;
       }
 
-      if (data.Authority && data.Authority.length > 0) {
-        output += `\n[AUTHORITY SECTION (${data.Authority.length} records)]:\n`;
-        data.Authority.forEach((auth, idx) => {
-          output += `  [${idx + 1}] Name: ${auth.name.padEnd(24)} TTL: ${String(auth.TTL).padEnd(6)} Data: ${auth.data}\n`;
-        });
-      }
-
-      consoleBody.textContent = output;
-      if (typeof playSynthTone === 'function') playSynthTone(783.99);
-    } else {
-      throw new Error(`HTTP error ${response.status}`);
+      consoleBody.textContent = out;
+      if (typeof playSynthTone === 'function') playSynthTone(659.25);
     }
   } catch (err) {
-    consoleBody.textContent = `// Error resolving ${rawDomain} (${recordType}):\n// ${err.message}\n// Ensure domain is spelled correctly and network is connected.`;
+    consoleBody.textContent = `// Error resolving DNS: ${err.message}`;
   } finally {
-    if (queryBtn) {
-      queryBtn.innerHTML = '<span>RESOLVE RECORDS ↗</span>';
-    }
+    if (btn) btn.innerHTML = '<span>RESOLVE ↗</span>';
   }
 }
