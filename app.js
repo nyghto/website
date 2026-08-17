@@ -776,12 +776,30 @@ function initCalScheduler() {
       });
 
       if (res.ok || res.status === 204) {
-        confirmBtn.innerHTML = '<span>CALL CONFIRMED ✓</span>';
-        confirmBtn.style.background = '#34D399';
-        confirmBtn.style.color = '#064E3B';
+        // Switch to success state
+        const bookingFlow = document.getElementById('calBookingFlow');
+        const successState = document.getElementById('calSuccessState');
+        const ticketTimeVal = document.getElementById('ticketTimeVal');
+        const successDetails = document.getElementById('successBookingDetails');
+        const gcalLink = document.getElementById('successGcalLink');
 
-        if (statusText) {
-          statusText.innerHTML = `✓ Call confirmed for <strong>${selectedDateStr} at ${selectedTimeSlot} IST</strong>. We sent details to <strong>${contact}</strong>.`;
+        if (bookingFlow && successState) {
+          bookingFlow.style.display = 'none';
+          successState.style.display = 'block';
+
+          if (ticketTimeVal) {
+            ticketTimeVal.textContent = `${selectedDateStr} @ ${selectedTimeSlot} IST`;
+          }
+
+          if (successDetails) {
+            successDetails.innerHTML = `Your 30-minute discovery consultation with Nyghto founders is confirmed for <strong>${selectedDateStr} at ${selectedTimeSlot} IST</strong>. Confirmation sent to <strong>${contact}</strong>.`;
+          }
+
+          if (gcalLink) {
+            const title = encodeURIComponent("Nyghto Studio • 1-on-1 Strategy Call");
+            const details = encodeURIComponent(`Discovery consultation with Nyghto engineering founders.\nClient: ${name}\nContact: ${contact}\nPlatform: Google Meet\nWebsite: https://nyghto.in`);
+            gcalLink.href = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${details}`;
+          }
         }
 
         if (typeof playSynthTone === 'function') {
@@ -801,10 +819,20 @@ function initCalScheduler() {
     } finally {
       setTimeout(() => {
         confirmBtn.disabled = false;
-      }, 5000);
+        confirmBtn.innerHTML = '<span>CONFIRM 30-MIN DISCOVERY CALL ↗</span>';
+      }, 4000);
     }
   });
 }
+
+window.resetCalScheduler = function() {
+  const bookingFlow = document.getElementById('calBookingFlow');
+  const successState = document.getElementById('calSuccessState');
+  if (bookingFlow && successState) {
+    bookingFlow.style.display = 'block';
+    successState.style.display = 'none';
+  }
+};
 
 /* ==========================================================================
    8. Conversational Brief Generator & Actions (Direct Discord Webhook Connection)

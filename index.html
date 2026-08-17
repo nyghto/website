@@ -1068,29 +1068,41 @@
         
         <!-- Left Column: Meeting Info -->
         <div class="cal-info-side">
-          <span class="cal-tag font-mono">1-on-1 Strategy Call</span>
-          <h2 class="cal-title font-display">Schedule a Consultation.</h2>
-          <p class="cal-desc font-sans">
-            Talk directly with our engineering founders about your product vision, system architecture, and timeline. No sales reps.
-          </p>
+          <div>
+            <div class="cal-host-profile">
+              <div class="host-avatar font-mono">NY</div>
+              <div class="host-details">
+                <span class="host-name font-sans">Nyghto Studio</span>
+                <span class="host-status font-mono">
+                  <span class="pulse-radar-dot"></span>
+                  <span>Founders Available</span>
+                </span>
+              </div>
+            </div>
 
-          <div class="cal-meta-list font-mono">
-            <div class="cal-meta-item">
-              <span class="meta-icon">⏱</span>
-              <span>30-minute discovery call</span>
-            </div>
-            <div class="cal-meta-item">
-              <span class="meta-icon">📹</span>
-              <span>Google Meet / Video</span>
-            </div>
-            <div class="cal-meta-item">
-              <span class="meta-icon">⚡</span>
-              <span>Free &amp; confidential</span>
+            <h2 class="cal-title font-display">1-on-1 Strategy &amp; Discovery Call.</h2>
+            <p class="cal-desc font-sans">
+              Talk directly with our engineering founders about your product roadmap, system architecture, and launch timelines.
+            </p>
+
+            <div class="cal-meta-list font-mono">
+              <div class="cal-meta-item">
+                <span class="meta-icon">⏱</span>
+                <span>30-minute discovery consultation</span>
+              </div>
+              <div class="cal-meta-item">
+                <span class="meta-icon">📹</span>
+                <span>Google Meet (Video Conference)</span>
+              </div>
+              <div class="cal-meta-item">
+                <span class="meta-icon">🔒</span>
+                <span>100% Confidential &amp; Free</span>
+              </div>
             </div>
           </div>
 
           <div class="cal-direct-links font-mono">
-            <span class="direct-label">Or reach out directly:</span>
+            <span class="direct-label">Need an immediate answer?</span>
             <div class="direct-row">
               <a href="mailto:hello@nyghto.in" class="cal-link">hello@nyghto.in</a>
               <span class="sep">•</span>
@@ -1104,36 +1116,83 @@
         <!-- Right Column: Interactive 7-Day & Time Picker -->
         <div class="cal-interactive-side">
           
-          <div class="cal-step-label font-mono">1. SELECT A DAY</div>
-          
-          <!-- 7-Day Visual Date Strip -->
-          <div class="cal-dates-strip" id="calDatesStrip">
-            <!-- Rendered dynamically via app.js -->
-          </div>
-
-          <div class="cal-step-label font-mono" style="margin-top: 1.5rem;">2. SELECT A TIME (IST)</div>
-          
-          <!-- Available Slots Grid -->
-          <div class="cal-slots-grid" id="calSlotsGrid">
-            <button type="button" class="slot-pill active" data-time="11:00 AM">11:00 AM</button>
-            <button type="button" class="slot-pill" data-time="02:30 PM">02:30 PM</button>
-            <button type="button" class="slot-pill" data-time="04:30 PM">04:30 PM</button>
-            <button type="button" class="slot-pill" data-time="07:00 PM">07:00 PM</button>
-            <button type="button" class="slot-pill" data-time="09:00 PM">09:00 PM</button>
-          </div>
-
-          <!-- Confirm Inputs -->
-          <div class="cal-confirm-box font-sans" style="margin-top: 1.8rem;">
-            <div class="cal-inputs-row">
-              <input type="text" id="calClientName" class="cal-input" placeholder="Your name" aria-label="Your Name">
-              <input type="text" id="calClientContact" class="cal-input" placeholder="Email or WhatsApp" aria-label="Email or WhatsApp">
+          <!-- Default Booking Flow -->
+          <div id="calBookingFlow">
+            <div class="cal-step-header">
+              <span class="cal-step-badge font-mono">STEP 01</span>
+              <span class="cal-step-title font-mono">Select a Date</span>
+            </div>
+            
+            <!-- 7-Day Visual Date Strip -->
+            <div class="cal-dates-strip" id="calDatesStrip">
+              <!-- Rendered dynamically via app.js -->
             </div>
 
-            <button type="button" class="cal-confirm-btn font-mono dot-box" id="calConfirmBtn">
-              <span>CONFIRM 30-MIN CALL ↗</span>
-            </button>
+            <div class="cal-step-header" style="margin-top: 1.8rem;">
+              <span class="cal-step-badge font-mono">STEP 02</span>
+              <span class="cal-step-title font-mono">Select a Time Slot (IST)</span>
+            </div>
+            
+            <!-- Available Slots Grid -->
+            <div class="cal-slots-grid" id="calSlotsGrid">
+              <button type="button" class="slot-pill active" data-time="11:00 AM">11:00 AM</button>
+              <button type="button" class="slot-pill" data-time="02:30 PM">02:30 PM</button>
+              <button type="button" class="slot-pill" data-time="04:30 PM">04:30 PM</button>
+              <button type="button" class="slot-pill" data-time="07:00 PM">07:00 PM</button>
+              <button type="button" class="slot-pill" data-time="09:00 PM">09:00 PM</button>
+            </div>
 
-            <div class="cal-status-text font-mono" id="calStatusText" aria-live="polite"></div>
+            <div class="cal-step-header" style="margin-top: 1.8rem;">
+              <span class="cal-step-badge font-mono">STEP 03</span>
+              <span class="cal-step-title font-mono">Your Contact Details</span>
+            </div>
+
+            <!-- Confirm Inputs -->
+            <div class="cal-confirm-box font-sans">
+              <div class="cal-inputs-row">
+                <input type="text" id="calClientName" class="cal-input" placeholder="Your name" aria-label="Your Name">
+                <input type="text" id="calClientContact" class="cal-input" placeholder="Email or WhatsApp (+91)" aria-label="Email or WhatsApp">
+              </div>
+
+              <button type="button" class="cal-confirm-btn font-mono" id="calConfirmBtn">
+                <span>CONFIRM 30-MIN DISCOVERY CALL ↗</span>
+              </button>
+
+              <div class="cal-status-text font-mono" id="calStatusText" aria-live="polite"></div>
+            </div>
+          </div>
+
+          <!-- Interactive Success Confirmation State (Hidden until booked) -->
+          <div class="cal-success-state" id="calSuccessState" style="display: none;">
+            <div class="success-icon-wrap font-mono">✓</div>
+            <h3 class="success-title font-display">Call Scheduled!</h3>
+            <p class="success-sub font-sans" id="successBookingDetails">
+              Your 30-minute discovery consultation has been confirmed.
+            </p>
+
+            <div class="success-ticket font-mono">
+              <div class="ticket-row">
+                <span class="t-label">HOST</span>
+                <span class="t-val">Nyghto Studio Founders</span>
+              </div>
+              <div class="ticket-row">
+                <span class="t-label">TIME</span>
+                <span class="t-val" id="ticketTimeVal">--</span>
+              </div>
+              <div class="ticket-row">
+                <span class="t-label">PLATFORM</span>
+                <span class="t-val">Google Meet</span>
+              </div>
+            </div>
+
+            <div class="success-actions">
+              <a href="#" id="successGcalLink" target="_blank" rel="noopener noreferrer" class="success-action-btn primary font-mono">
+                <span>+ ADD TO GOOGLE CALENDAR</span>
+              </a>
+              <button type="button" class="success-action-btn secondary font-mono" onclick="resetCalScheduler()">
+                <span>BOOK ANOTHER SLOT</span>
+              </button>
+            </div>
           </div>
 
         </div>

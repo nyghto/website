@@ -1422,46 +1422,85 @@ body.theme-yellow .stack-inquire-btn {
 }
 
 /* ==========================================================================
-   CAL-STYLE INTERACTIVE MEETING SCHEDULER
+   ELEVATED CAL-STYLE INTERACTIVE MEETING SCHEDULER
    ========================================================================== */
 .cal-scheduler-card {
   max-width: 1100px;
   background: var(--c-card-bg);
   border: 1px solid var(--c-border);
-  border-radius: 12px;
+  border-radius: 16px;
   display: grid;
   grid-template-columns: 1fr 1.2fr;
   overflow: hidden;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.2);
 }
 
 .cal-info-side {
-  padding: 3rem 2.8rem;
+  padding: 3.2rem 3rem;
   border-right: 1px solid var(--c-border);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  background: rgba(255, 255, 255, 0.015);
 }
 
-.cal-tag {
-  font-size: 0.76rem;
-  color: #34D399;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+body.theme-yellow .cal-info-side {
+  background: rgba(0, 0, 0, 0.015);
+}
+
+/* Host Profile Badge */
+.cal-host-profile {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin-bottom: 1.5rem;
+}
+
+.host-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--c-text);
+  color: var(--c-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.9rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.host-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.host-name {
+  font-size: 1rem;
   font-weight: 700;
-  margin-bottom: 0.6rem;
+  color: var(--c-text);
+}
+
+.host-status {
+  font-size: 0.72rem;
+  color: var(--c-text-muted);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .cal-title {
-  font-size: clamp(2rem, 3.2vw, 3rem);
+  font-size: clamp(1.8rem, 2.8vw, 2.6rem);
   font-weight: 800;
   color: var(--c-text);
-  line-height: 1.1;
+  line-height: 1.15;
   letter-spacing: -0.03em;
   margin-bottom: 1rem;
 }
 
 .cal-desc {
-  font-size: 1rem;
+  font-size: 0.96rem;
   color: var(--c-text-sub);
   line-height: 1.6;
   margin-bottom: 2rem;
@@ -1471,7 +1510,7 @@ body.theme-yellow .stack-inquire-btn {
   display: flex;
   flex-direction: column;
   gap: 0.8rem;
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   color: var(--c-text);
   margin-bottom: 2.5rem;
 }
@@ -1480,6 +1519,10 @@ body.theme-yellow .stack-inquire-btn {
   display: flex;
   align-items: center;
   gap: 0.6rem;
+}
+
+.meta-icon {
+  font-size: 0.95rem;
 }
 
 .cal-direct-links {
@@ -1510,18 +1553,34 @@ body.theme-yellow .stack-inquire-btn {
 
 /* Right Side: Interactive Calendar */
 .cal-interactive-side {
-  padding: 3rem 2.8rem;
+  padding: 3.2rem 3rem;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
 }
 
-.cal-step-label {
-  font-size: 0.74rem;
+.cal-step-header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.8rem;
+}
+
+.cal-step-badge {
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: var(--c-bg);
+  background: var(--c-text);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.cal-step-title {
+  font-size: 0.76rem;
   font-weight: 800;
   color: var(--c-text-muted);
-  letter-spacing: 0.08em;
-  margin-bottom: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 /* 7-Day Date Strip */
@@ -1535,7 +1594,7 @@ body.theme-yellow .stack-inquire-btn {
   background: transparent;
   border: 1px solid var(--c-border);
   border-radius: 8px;
-  padding: 10px 4px;
+  padding: 12px 4px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1554,16 +1613,17 @@ body.theme-yellow .stack-inquire-btn {
   background: var(--c-text);
   color: var(--c-bg);
   border-color: var(--c-text);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .d-sub {
   font-size: 0.62rem;
   font-weight: 800;
-  opacity: 0.7;
+  opacity: 0.75;
 }
 
 .d-num {
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   font-weight: 800;
 }
 
@@ -1584,7 +1644,7 @@ body.theme-yellow .stack-inquire-btn {
   border: 1px solid var(--c-badge-border);
   color: var(--c-text);
   font-family: var(--font-mono);
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   font-weight: 700;
   padding: 8px 14px;
   border-radius: 6px;
@@ -1600,9 +1660,14 @@ body.theme-yellow .stack-inquire-btn {
   background: var(--c-text);
   color: var(--c-bg);
   border-color: var(--c-text);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 /* Confirm Box */
+.cal-confirm-box {
+  margin-top: 1rem;
+}
+
 .cal-inputs-row {
   display: flex;
   gap: 0.8rem;
@@ -1614,8 +1679,8 @@ body.theme-yellow .stack-inquire-btn {
   background: transparent;
   border: 1px solid var(--c-border);
   border-radius: 6px;
-  padding: 10px 14px;
-  font-size: 0.95rem;
+  padding: 11px 14px;
+  font-size: 0.92rem;
   color: var(--c-text);
   outline: none;
   transition: border-color 0.2s ease;
@@ -1635,7 +1700,7 @@ body.theme-yellow .stack-inquire-btn {
   background: var(--c-btn-primary-bg);
   color: var(--c-btn-primary-text);
   font-weight: 800;
-  font-size: 0.92rem;
+  font-size: 0.9rem;
   padding: 14px 20px;
   border: none;
   border-radius: 6px;
@@ -1645,6 +1710,7 @@ body.theme-yellow .stack-inquire-btn {
 
 .cal-confirm-btn:hover {
   transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
 }
 
 .cal-status-text {
@@ -1652,6 +1718,102 @@ body.theme-yellow .stack-inquire-btn {
   color: #34D399;
   margin-top: 0.8rem;
   text-align: center;
+}
+
+/* Success Confirmation State */
+.cal-success-state {
+  text-align: center;
+  padding: 1.5rem 0;
+}
+
+.success-icon-wrap {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #34D399;
+  color: #064E3B;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+}
+
+.success-title {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--c-text);
+  margin-bottom: 0.5rem;
+}
+
+.success-sub {
+  font-size: 0.95rem;
+  color: var(--c-text-sub);
+  line-height: 1.5;
+  max-width: 440px;
+  margin: 0 auto 1.8rem auto;
+}
+
+.success-ticket {
+  background: var(--c-badge-bg);
+  border: 1px solid var(--c-border);
+  border-radius: 8px;
+  padding: 1.2rem 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  text-align: left;
+  margin-bottom: 1.8rem;
+}
+
+.ticket-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+}
+
+.t-label {
+  color: var(--c-text-muted);
+}
+
+.t-val {
+  color: var(--c-text);
+  font-weight: 700;
+}
+
+.success-actions {
+  display: flex;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.success-action-btn {
+  font-size: 0.8rem;
+  font-weight: 800;
+  padding: 10px 18px;
+  border-radius: 6px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.success-action-btn.primary {
+  background: var(--c-btn-primary-bg);
+  color: var(--c-btn-primary-text);
+  border: none;
+}
+
+.success-action-btn.secondary {
+  background: transparent;
+  border: 1px solid var(--c-border);
+  color: var(--c-text);
+}
+
+.success-action-btn.secondary:hover {
+  background: var(--c-text);
+  color: var(--c-bg);
 }
 
 @media (max-width: 900px) {
@@ -1675,6 +1837,15 @@ body.theme-yellow .stack-inquire-btn {
 
   .cal-inputs-row {
     flex-direction: column;
+  }
+
+  .success-actions {
+    flex-direction: column;
+  }
+
+  .success-action-btn {
+    width: 100%;
+    text-align: center;
   }
 }
 
