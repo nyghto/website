@@ -9,20 +9,20 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 const SUPPORTED_TLDS = [
-  { tld: '.in', price: '₹499/yr', category: ['all', 'popular', 'india'] },
-  { tld: '.com', price: '₹999/yr', category: ['all', 'popular'] },
-  { tld: '.io', price: '₹3,299/yr', category: ['all', 'popular', 'tech'] },
-  { tld: '.ai', price: '₹6,499/yr', category: ['all', 'tech'] },
-  { tld: '.co', price: '₹2,199/yr', category: ['all', 'popular'] },
-  { tld: '.dev', price: '₹1,199/yr', category: ['all', 'tech'] },
-  { tld: '.design', price: '₹1,899/yr', category: ['all', 'creative'] },
-  { tld: '.studio', price: '₹1,999/yr', category: ['all', 'creative'] },
-  { tld: '.tech', price: '₹799/yr', category: ['all', 'tech'] },
-  { tld: '.app', price: '₹1,299/yr', category: ['all', 'tech'] },
-  { tld: '.co.in', price: '₹399/yr', category: ['all', 'india'] },
-  { tld: '.me', price: '₹899/yr', category: ['all', 'creative'] },
-  { tld: '.org', price: '₹899/yr', category: ['all', 'popular'] },
-  { tld: '.net', price: '₹1,099/yr', category: ['all', 'popular'] }
+  { tld: '.in', label: 'India', category: ['all', 'popular', 'india'] },
+  { tld: '.com', label: 'Global', category: ['all', 'popular'] },
+  { tld: '.io', label: 'Tech', category: ['all', 'popular', 'tech'] },
+  { tld: '.ai', label: 'AI', category: ['all', 'tech'] },
+  { tld: '.co', label: 'Company', category: ['all', 'popular'] },
+  { tld: '.dev', label: 'Developer', category: ['all', 'tech'] },
+  { tld: '.design', label: 'Design', category: ['all', 'creative'] },
+  { tld: '.studio', label: 'Studio', category: ['all', 'creative'] },
+  { tld: '.tech', label: 'Tech', category: ['all', 'tech'] },
+  { tld: '.app', label: 'App', category: ['all', 'tech'] },
+  { tld: '.co.in', label: 'India', category: ['all', 'india'] },
+  { tld: '.me', label: 'Personal', category: ['all', 'creative'] },
+  { tld: '.org', label: 'Org', category: ['all', 'popular'] },
+  { tld: '.net', label: 'Network', category: ['all', 'popular'] }
 ];
 
 let activeFilter = 'all';
@@ -128,7 +128,6 @@ async function executeScan(rawQuery) {
       <div class="card-left">
         <span class="domain-main-name font-mono">${fullDomain}</span>
         <span class="status-tag scanning">Scanning...</span>
-        <span class="domain-price-tag font-mono">${item.price}</span>
       </div>
       <div class="card-right"></div>
     `;
@@ -202,10 +201,9 @@ function renderCardResult(fullDomain, res, item) {
       <div class="card-left">
         <span class="domain-main-name font-mono">${fullDomain}</span>
         <span class="status-tag available">● Available</span>
-        <span class="domain-price-tag available font-mono">${item.price}</span>
       </div>
       <div class="card-right">
-        <a href="${godaddyUrl}" target="_blank" rel="noopener noreferrer" class="card-action-btn outline">Register ↗</a>
+        <a href="${godaddyUrl}" target="_blank" rel="noopener noreferrer" class="card-action-btn outline">Live Price &amp; Register ↗</a>
         <a href="index.html#contact" class="card-action-btn primary" onclick="prefillTargetDomain('${fullDomain}')">Build with Nyghto ↗</a>
       </div>
     `;
@@ -215,7 +213,6 @@ function renderCardResult(fullDomain, res, item) {
       <div class="card-left">
         <span class="domain-main-name font-mono">${fullDomain}</span>
         <span class="status-tag taken">● Registered</span>
-        <span class="domain-price-tag muted font-mono">${item.price}</span>
       </div>
       <div class="card-right">
         <button type="button" class="card-action-btn outline" onclick="inspectDnsDomain('${fullDomain}')">Inspect DNS</button>
