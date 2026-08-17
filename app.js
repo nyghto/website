@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initGlitchFreeScrollPhysics();
   initInteractiveEyeTracking();
   initPaperCard3DTilt();
+  initConsultationAndTabs();
   initConversationalBrief();
   initServiceInquireLinks();
   initCrosshairIntersectionTracker();
@@ -651,7 +652,149 @@ function initServiceInquireLinks() {
 const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/1536735455633211535/GlxsOfAJPAUx-lnfZVuMLk2r7w3K5tXR5gcfQ7NIEEpWPtZI10elGf21j9udxA8xpdn3';
 
 /* ==========================================================================
-   7. Conversational Brief Generator & Actions (Direct Discord Webhook Connection)
+   7. Consultation Meeting Scheduler & Tab Switcher
+   ========================================================================== */
+function initConsultationAndTabs() {
+  const tabMeeting = document.getElementById('tabMeetingBtn');
+  const tabBrief = document.getElementById('tabBriefBtn');
+  const panelMeeting = document.getElementById('meetingSchedulerPanel');
+  const panelBrief = document.getElementById('briefFormPanel');
+
+  if (tabMeeting && tabBrief && panelMeeting && panelBrief) {
+    tabMeeting.addEventListener('click', () => {
+      tabMeeting.classList.add('active');
+      tabBrief.classList.remove('active');
+      panelMeeting.style.display = 'block';
+      panelBrief.style.display = 'none';
+      if (typeof playSynthTone === 'function') playSynthTone(523.25);
+    });
+
+    tabBrief.addEventListener('click', () => {
+      tabBrief.classList.add('active');
+      tabMeeting.classList.remove('active');
+      panelBrief.style.display = 'block';
+      panelMeeting.style.display = 'none';
+      if (typeof playSynthTone === 'function') playSynthTone(659.25);
+    });
+  }
+
+  // Set default minimum date to today
+  const dateInput = document.getElementById('meetDate');
+  if (dateInput) {
+    const today = new Date().toISOString().split('T')[0];
+    dateInput.min = today;
+    dateInput.value = today;
+  }
+
+  // Schedule meeting button handler
+  const scheduleBtn = document.getElementById('scheduleMeetingBtn');
+  const meetNameInput = document.getElementById('meetName');
+  const meetContactInput = document.getElementById('meetContact');
+  const meetTopicSelect = document.getElementById('meetTopic');
+  const meetPlatformSelect = document.getElementById('meetPlatform');
+  const meetDateInput = document.getElementById('meetDate');
+  const meetTimeSlotSelect = document.getElementById('meetTimeSlot');
+  const meetNotesInput = document.getElementById('meetNotes');
+  const meetStatusText = document.getElementById('meetStatusText');
+
+  if (scheduleBtn && meetNameInput && meetContactInput) {
+    scheduleBtn.addEventListener('click', async () => {
+      const name = meetNameInput.value.trim();
+      const contact = meetContactInput.value.trim();
+      const topic = meetTopicSelect ? meetTopicSelect.value : 'General Consultation';
+      const platform = meetPlatformSelect ? meetPlatformSelect.value : 'Google Meet';
+      const date = meetDateInput ? meetDateInput.value : 'Flexible';
+      const slot = meetTimeSlotSelect ? meetTimeSlotSelect.value : 'Flexible';
+      const notes = meetNotesInput ? meetNotesInput.value.trim() : 'None provided';
+
+      if (!name) {
+        meetNameInput.focus();
+        meetNameInput.style.borderColor = '#F43F5E';
+        if (meetStatusText) meetStatusText.innerHTML = `<span style="color:#F43F5E;">Please enter your name.</span>`;
+        return;
+      }
+
+      if (!contact) {
+        meetContactInput.focus();
+        meetContactInput.style.borderColor = '#F43F5E';
+        if (meetStatusText) meetStatusText.innerHTML = `<span style="color:#F43F5E;">Please provide your Email or WhatsApp number.</span>`;
+        return;
+      }
+
+      meetNameInput.style.borderColor = '';
+      meetContactInput.style.borderColor = '';
+
+      scheduleBtn.disabled = true;
+      scheduleBtn.innerHTML = '<span>DISPATCHING REQUEST...</span>';
+      if (meetStatusText) meetStatusText.innerHTML = `<span style="color:var(--c-text-muted);">Scheduling 1-on-1 discovery call with Nyghto team...</span>`;
+
+      const payload = {
+        username: "Nyghto Consultation Desk",
+        avatar_url: "https://nyghto.in/favicon.png",
+        embeds: [
+          {
+            title: "📅 New 1-on-1 Consultation Requested",
+            description: `A client has requested a discovery consultation on **[nyghto.in](https://nyghto.in/#contact)**.`,
+            color: 3462009, // Emerald green
+            fields: [
+              { name: "👤 Client Name", value: name, inline: true },
+              { name: "📞 Contact (Email/Phone)", value: contact, inline: true },
+              { name: "🎯 Consultation Topic", value: topic, inline: true },
+              { name: "💻 Meeting Platform", value: platform, inline: true },
+              { name: "🗓 Preferred Date", value: date, inline: true },
+              { name: "⏰ Preferred Time Slot", value: slot, inline: true },
+              { name: "📝 Notes / Project Idea", value: notes || "None provided", inline: false }
+            ],
+            footer: {
+              text: "Nyghto Studio Direct Consultation Dispatch",
+              icon_url: "https://nyghto.in/favicon.png"
+            },
+            timestamp: new Date().toISOString()
+          }
+        ]
+      };
+
+      try {
+        const response = await fetch(DISCORD_WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (response.ok || response.status === 204) {
+          scheduleBtn.innerHTML = '<span>MEETING REQUEST SENT ✓</span>';
+          scheduleBtn.style.background = '#34D399';
+          scheduleBtn.style.color = '#064E3B';
+
+          if (meetStatusText) {
+            meetStatusText.innerHTML = `✓ Consultation requested! Our founders will confirm at <strong>${contact}</strong>.`;
+          }
+
+          if (typeof playSynthTone === 'function') {
+            playSynthTone(523.25);
+            setTimeout(() => playSynthTone(659.25), 120);
+            setTimeout(() => playSynthTone(783.99), 240);
+          }
+        } else {
+          throw new Error('Webhook error');
+        }
+      } catch (e) {
+        console.warn('Direct consultation webhook fallback to mailto:', e);
+        scheduleBtn.innerHTML = '<span>OPENING EMAIL...</span>';
+        const subject = `[Consultation Request] ${name} — ${topic}`;
+        const bodyText = `Hello Nyghto Team,\n\nI would like to schedule a 1-on-1 consultation.\n\nName: ${name}\nContact: ${contact}\nTopic: ${topic}\nPlatform: ${platform}\nPreferred Date: ${date}\nTime Slot: ${slot}\nNotes: ${notes}\n\nSent from nyghto.in`;
+        window.location.href = `mailto:hello@nyghto.in?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyText)}`;
+      } finally {
+        setTimeout(() => {
+          scheduleBtn.disabled = false;
+        }, 4000);
+      }
+    });
+  }
+}
+
+/* ==========================================================================
+   8. Conversational Brief Generator & Actions (Direct Discord Webhook Connection)
    ========================================================================== */
 function initConversationalBrief() {
   const sendBtn = document.getElementById('sendBriefBtn');

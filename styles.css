@@ -1413,6 +1413,114 @@ body.theme-yellow .stack-inquire-btn {
   transition: color 0.25s ease;
 }
 
+.contact-subtitle {
+  font-size: 1.15rem;
+  color: var(--c-text-sub);
+  margin-top: 0.8rem;
+  max-width: 650px;
+  line-height: 1.5;
+}
+
+/* Contact Mode Tabs */
+.contact-mode-tabs {
+  display: flex;
+  gap: 0.8rem;
+  margin-bottom: 2.8rem;
+  flex-wrap: wrap;
+}
+
+.mode-tab-btn {
+  background: var(--c-badge-bg);
+  border: 1px solid var(--c-border);
+  color: var(--c-text-sub);
+  padding: 10px 18px;
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mode-tab-btn:hover {
+  border-color: var(--c-text);
+  color: var(--c-text);
+}
+
+.mode-tab-btn.active {
+  background: var(--c-text);
+  color: var(--c-bg);
+  border-color: var(--c-text);
+}
+
+/* Consultation Form Grid */
+.consult-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.6rem;
+  margin-bottom: 1.6rem;
+}
+
+.consult-field-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.consult-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--c-text-muted);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.consult-input, .consult-select, .consult-textarea {
+  background: var(--c-card-bg);
+  border: 1px solid var(--c-border);
+  border-radius: 6px;
+  padding: 12px 16px;
+  font-size: 1rem;
+  color: var(--c-text);
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.consult-input:focus, .consult-select:focus, .consult-textarea:focus {
+  border-color: var(--c-text);
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.08);
+}
+
+body.theme-yellow .consult-input:focus,
+body.theme-yellow .consult-select:focus,
+body.theme-yellow .consult-textarea:focus {
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.06);
+}
+
+.consult-select option {
+  background: var(--c-bg);
+  color: var(--c-text);
+}
+
+.consult-notes-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.consult-textarea {
+  resize: vertical;
+  min-height: 80px;
+  line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+  .consult-form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .conversational-brief-card {
   max-width: 1100px;
 }

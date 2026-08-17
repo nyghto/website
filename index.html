@@ -1061,15 +1061,108 @@
       </div>
     </section>
 
-    <!-- SIMPLE & CREATIVE CONVERSATIONAL CONTACT SECTION -->
-    <section class="creative-contact-section" id="contact">
+    <!-- SIMPLE & ELEVATED CONSULTATION & CONTACT SECTION -->
+    <section class="creative-contact-section" id="contact" aria-label="Book Consultation or Send Brief">
       <div class="contact-hud-header">
-        <span class="hud-tag font-mono">Direct Inquiry</span>
-        <h2 class="contact-big-title font-display">Start a Conversation</h2>
+        <span class="hud-tag font-mono">Direct Consultation</span>
+        <h2 class="contact-big-title font-display">Talk with the Team</h2>
+        <p class="contact-subtitle font-sans">
+          Schedule a direct 1-on-1 strategy call with our engineering founders or send an instant project brief.
+        </p>
       </div>
 
-      <!-- Interactive Conversational Brief Generator -->
-      <div class="conversational-brief-card">
+      <!-- Mode Switch Tabs -->
+      <div class="contact-mode-tabs font-mono" role="tablist">
+        <button type="button" class="mode-tab-btn active" id="tabMeetingBtn" role="tab" aria-selected="true" aria-controls="meetingSchedulerPanel">
+          <span>🗓 BOOK A CONSULTATION</span>
+        </button>
+        <button type="button" class="mode-tab-btn" id="tabBriefBtn" role="tab" aria-selected="false" aria-controls="briefFormPanel">
+          <span>✍ SEND PROJECT BRIEF</span>
+        </button>
+      </div>
+
+      <!-- PANEL 1: 1-ON-1 MEETING & CONSULTATION SCHEDULER -->
+      <div class="conversational-brief-card" id="meetingSchedulerPanel" role="tabpanel">
+        <div class="consult-form-grid">
+          
+          <div class="consult-field-wrap">
+            <label for="meetName" class="consult-label font-mono">Your Name *</label>
+            <input type="text" id="meetName" class="consult-input font-sans" placeholder="e.g. Zack" required>
+          </div>
+
+          <div class="consult-field-wrap">
+            <label for="meetContact" class="consult-label font-mono">Email / WhatsApp *</label>
+            <input type="text" id="meetContact" class="consult-input font-sans" placeholder="e.g. zack@company.com or +91 98765 43210" required>
+          </div>
+
+          <div class="consult-field-wrap">
+            <label for="meetTopic" class="consult-label font-mono">Consultation Topic</label>
+            <select id="meetTopic" class="consult-select font-mono">
+              <option value="Product Architecture & Tech Stack" selected>Product Architecture &amp; Tech Stack</option>
+              <option value="New Web App / SaaS Build">New Web App / SaaS Platform</option>
+              <option value="Mobile App (iOS & Android)">Mobile App (iOS &amp; Android)</option>
+              <option value="Cost, Timeline & Discovery">Cost Estimate &amp; Timeline Discovery</option>
+              <option value="General Studio Consultation">General Studio Consultation</option>
+            </select>
+          </div>
+
+          <div class="consult-field-wrap">
+            <label for="meetPlatform" class="consult-label font-mono">Preferred Platform</label>
+            <select id="meetPlatform" class="consult-select font-mono">
+              <option value="Google Meet (Video Call)" selected>Google Meet (Video Call)</option>
+              <option value="Direct Phone Call">Direct Phone Call (+91)</option>
+              <option value="WhatsApp Audio / Chat">WhatsApp Audio / Chat</option>
+            </select>
+          </div>
+
+          <div class="consult-field-wrap">
+            <label for="meetDate" class="consult-label font-mono">Preferred Date</label>
+            <input type="date" id="meetDate" class="consult-input font-mono">
+          </div>
+
+          <div class="consult-field-wrap">
+            <label for="meetTimeSlot" class="consult-label font-mono">Preferred Time Slot (IST)</label>
+            <select id="meetTimeSlot" class="consult-select font-mono">
+              <option value="Morning (10:00 AM – 1:00 PM IST)" selected>Morning (10:00 AM – 1:00 PM IST)</option>
+              <option value="Afternoon (2:00 PM – 5:00 PM IST)">Afternoon (2:00 PM – 5:00 PM IST)</option>
+              <option value="Evening (6:00 PM – 9:00 PM IST)">Evening (6:00 PM – 9:00 PM IST)</option>
+              <option value="ASAP / Flexible">ASAP / Any Time Today</option>
+            </select>
+          </div>
+
+        </div>
+
+        <div class="consult-notes-wrap">
+          <label for="meetNotes" class="consult-label font-mono">Brief Description of what you want to build (Optional)</label>
+          <textarea id="meetNotes" class="consult-textarea font-sans" rows="2" placeholder="Tell us a little about your venture, idea, or timeline..."></textarea>
+        </div>
+
+        <!-- Consultation Action Bar -->
+        <div class="brief-action-bar">
+          <button type="button" class="brief-send-btn dot-box" id="scheduleMeetingBtn">
+            <span>SCHEDULE CONSULTATION ↗</span>
+          </button>
+
+          <a href="https://wa.me/917012028379?text=Hi%20Nyghto,%20I'd%20like%20to%20schedule%20a%20consultation%20for%20a%20project" target="_blank" rel="noopener noreferrer" class="copy-email-btn dot-box" id="directWhatsappBtn">
+            <span>WHATSAPP TEAM ↗</span>
+          </a>
+
+          <span class="brief-status font-mono" id="meetStatusText" aria-live="polite"></span>
+        </div>
+
+        <!-- Direct Calling Strip -->
+        <div class="direct-lines-strip font-mono">
+          <span class="direct-lines-label">Immediate call:</span>
+          <a href="tel:+917012028379" class="phone-link dot-box">+91 70120 28379</a>
+          <span class="sep">•</span>
+          <a href="tel:+918075911860" class="phone-link dot-box">+91 80759 11860</a>
+          <span class="sep">•</span>
+          <a href="tel:+919539202847" class="phone-link dot-box">+91 95392 02847</a>
+        </div>
+      </div>
+
+      <!-- PANEL 2: CONVERSATIONAL PROJECT BRIEF (Hidden by default or toggled) -->
+      <div class="conversational-brief-card" id="briefFormPanel" role="tabpanel" style="display: none;">
         <div class="brief-sentence font-sans">
           <span>Hello Nyghto, I am</span>
           <span class="inline-fillable-wrap">
