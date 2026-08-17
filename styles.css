@@ -1402,38 +1402,39 @@ body.theme-yellow .stack-inquire-btn {
 }
 
 /* ==========================================================================
-   OFF-WHITE CAL-STYLE INTERACTIVE MEETING SCHEDULER (PERFECTLY CENTERED)
+   AUTHENTIC NYGHTO COBALT CAL-STYLE INTERACTIVE MEETING SCHEDULER
    ========================================================================== */
 .cal-scheduler-card {
   width: 100%;
   max-width: 1100px;
   margin: 0 auto;
-  background: #F4F4F0;
-  color: #0A0A0A;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: #011E82;
+  color: var(--c-text);
+  border: 1px solid rgba(219, 234, 254, 0.2);
   border-radius: 20px;
   display: grid;
   grid-template-columns: 1fr 1.2fr;
   overflow: hidden;
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 25px 60px rgba(0, 5, 30, 0.4);
 }
 
 body.theme-yellow .cal-scheduler-card {
   background: #FFFFFF;
+  color: #0A0A0A;
   border: 2px solid #0A0A0A;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12);
 }
 
 .cal-info-side {
   padding: 3.2rem 3rem;
-  border-right: 1px solid rgba(0, 0, 0, 0.1);
+  border-right: 1px solid rgba(219, 234, 254, 0.15);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
 
 body.theme-yellow .cal-info-side {
-  border-right: 1px solid rgba(0, 0, 0, 0.1);
+  border-right: 1px solid rgba(10, 10, 10, 0.15);
 }
 
 /* Host Profile Badge */
@@ -1448,14 +1449,14 @@ body.theme-yellow .cal-info-side {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: #01249D;
-  color: #FFFFFF;
+  background: #FFFFFF;
+  color: #01249D;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 800;
   font-size: 0.9rem;
-  box-shadow: 0 4px 12px rgba(1, 36, 157, 0.25);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 body.theme-yellow .host-avatar {
@@ -1472,12 +1473,16 @@ body.theme-yellow .host-avatar {
 .host-name {
   font-size: 1rem;
   font-weight: 700;
+  color: var(--c-text);
+}
+
+body.theme-yellow .host-name {
   color: #0A0A0A;
 }
 
 .host-status {
   font-size: 0.72rem;
-  color: #6B7280;
+  color: var(--c-text-muted);
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -1486,17 +1491,25 @@ body.theme-yellow .host-avatar {
 .cal-title {
   font-size: clamp(1.8rem, 2.8vw, 2.6rem);
   font-weight: 800;
-  color: #0A0A0A;
+  color: var(--c-text);
   line-height: 1.15;
   letter-spacing: -0.03em;
   margin-bottom: 1rem;
 }
 
+body.theme-yellow .cal-title {
+  color: #0A0A0A;
+}
+
 .cal-desc {
   font-size: 0.96rem;
-  color: #4B5563;
+  color: var(--c-text-sub);
   line-height: 1.6;
   margin-bottom: 2rem;
+}
+
+body.theme-yellow .cal-desc {
+  color: #4B5563;
 }
 
 .cal-meta-list {
@@ -1504,8 +1517,12 @@ body.theme-yellow .host-avatar {
   flex-direction: column;
   gap: 0.8rem;
   font-size: 0.82rem;
-  color: #1F2937;
+  color: var(--c-text);
   margin-bottom: 2.5rem;
+}
+
+body.theme-yellow .cal-meta-list {
+  color: #1F2937;
 }
 
 .cal-meta-item {
@@ -1520,9 +1537,14 @@ body.theme-yellow .host-avatar {
 
 .cal-direct-links {
   font-size: 0.8rem;
-  color: #6B7280;
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  color: var(--c-text-muted);
+  border-top: 1px solid rgba(219, 234, 254, 0.15);
   padding-top: 1.2rem;
+}
+
+body.theme-yellow .cal-direct-links {
+  color: #6B7280;
+  border-top: 1px solid rgba(10, 10, 10, 0.15);
 }
 
 .direct-label {
@@ -1538,10 +1560,14 @@ body.theme-yellow .host-avatar {
 }
 
 .cal-link {
-  color: #0A0A0A;
+  color: var(--c-text);
   text-decoration: underline;
   text-underline-offset: 3px;
   font-weight: 600;
+}
+
+body.theme-yellow .cal-link {
+  color: #0A0A0A;
 }
 
 /* Right Side: Interactive Calendar */
@@ -1563,17 +1589,28 @@ body.theme-yellow .host-avatar {
   font-size: 0.68rem;
   font-weight: 800;
   color: #FFFFFF;
-  background: #0A0A0A;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   padding: 2px 6px;
   border-radius: 4px;
+}
+
+body.theme-yellow .cal-step-badge {
+  background: #0A0A0A;
+  color: #FFFFFF;
+  border: none;
 }
 
 .cal-step-title {
   font-size: 0.76rem;
   font-weight: 800;
-  color: #6B7280;
+  color: var(--c-text-muted);
   letter-spacing: 0.06em;
   text-transform: uppercase;
+}
+
+body.theme-yellow .cal-step-title {
+  color: #6B7280;
 }
 
 /* 7-Day Date Strip */
@@ -1584,8 +1621,8 @@ body.theme-yellow .host-avatar {
 }
 
 .date-card {
-  background: #FFFFFF;
-  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(219, 234, 254, 0.15);
   border-radius: 8px;
   padding: 12px 4px;
   display: flex;
@@ -1593,20 +1630,30 @@ body.theme-yellow .host-avatar {
   align-items: center;
   gap: 3px;
   cursor: pointer;
-  color: #111827;
+  color: var(--c-text);
   transition: all 0.15s ease;
 }
 
+body.theme-yellow .date-card {
+  background: #F3F4F6;
+  border: 1px solid #D1D5DB;
+  color: #111827;
+}
+
 .date-card:hover {
+  border-color: #FFFFFF;
+}
+
+body.theme-yellow .date-card:hover {
   border-color: #0A0A0A;
   color: #0A0A0A;
 }
 
 .date-card.active {
-  background: #01249D;
-  color: #FFFFFF;
-  border-color: #01249D;
-  box-shadow: 0 4px 12px rgba(1, 36, 157, 0.3);
+  background: #FFFFFF;
+  color: #01249D;
+  border-color: #FFFFFF;
+  box-shadow: 0 4px 14px rgba(255, 255, 255, 0.25);
 }
 
 body.theme-yellow .date-card.active {
@@ -1639,9 +1686,9 @@ body.theme-yellow .date-card.active {
 }
 
 .slot-pill {
-  background: #FFFFFF;
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  color: #111827;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(219, 234, 254, 0.15);
+  color: var(--c-text);
   font-family: var(--font-mono);
   font-size: 0.8rem;
   font-weight: 700;
@@ -1651,15 +1698,25 @@ body.theme-yellow .date-card.active {
   transition: all 0.15s ease;
 }
 
+body.theme-yellow .slot-pill {
+  background: #F3F4F6;
+  border: 1px solid #D1D5DB;
+  color: #111827;
+}
+
 .slot-pill:hover {
+  border-color: #FFFFFF;
+}
+
+body.theme-yellow .slot-pill:hover {
   border-color: #0A0A0A;
 }
 
 .slot-pill.active {
-  background: #01249D;
-  color: #FFFFFF;
-  border-color: #01249D;
-  box-shadow: 0 4px 12px rgba(1, 36, 157, 0.3);
+  background: #FFFFFF;
+  color: #01249D;
+  border-color: #FFFFFF;
+  box-shadow: 0 4px 14px rgba(255, 255, 255, 0.25);
 }
 
 body.theme-yellow .slot-pill.active {
@@ -1681,33 +1738,45 @@ body.theme-yellow .slot-pill.active {
 
 .cal-input {
   flex: 1;
-  background: #FFFFFF;
-  border: 1px solid rgba(0, 0, 0, 0.15);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(219, 234, 254, 0.2);
   border-radius: 6px;
   padding: 11px 14px;
   font-size: 0.92rem;
-  color: #0A0A0A;
+  color: #FFFFFF;
   outline: none;
   transition: border-color 0.2s ease;
 }
 
+body.theme-yellow .cal-input {
+  background: #F9FAFB;
+  border: 1px solid #D1D5DB;
+  color: #0A0A0A;
+}
+
 .cal-input:focus {
-  border-color: #01249D;
+  border-color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.1);
 }
 
 body.theme-yellow .cal-input:focus {
+  background: #FFFFFF;
   border-color: #0A0A0A;
 }
 
 .cal-input::placeholder {
-  color: #9CA3AF;
+  color: rgba(219, 234, 254, 0.45);
   font-size: 0.9em;
+}
+
+body.theme-yellow .cal-input::placeholder {
+  color: #9CA3AF;
 }
 
 .cal-confirm-btn {
   width: 100%;
-  background: #01249D;
-  color: #FFFFFF;
+  background: #FFFFFF;
+  color: #01249D;
   font-weight: 800;
   font-size: 0.9rem;
   padding: 14px 20px;
@@ -1724,8 +1793,8 @@ body.theme-yellow .cal-confirm-btn {
 
 .cal-confirm-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
-  background: #001A7A;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  background: #E0E7FF;
 }
 
 body.theme-yellow .cal-confirm-btn:hover {
@@ -1734,7 +1803,7 @@ body.theme-yellow .cal-confirm-btn:hover {
 
 .cal-status-text {
   font-size: 0.82rem;
-  color: #059669;
+  color: #34D399;
   margin-top: 0.8rem;
   text-align: center;
 }
@@ -1762,21 +1831,29 @@ body.theme-yellow .cal-confirm-btn:hover {
 .success-title {
   font-size: 1.8rem;
   font-weight: 800;
-  color: #0A0A0A;
+  color: var(--c-text);
   margin-bottom: 0.5rem;
+}
+
+body.theme-yellow .success-title {
+  color: #0A0A0A;
 }
 
 .success-sub {
   font-size: 0.95rem;
-  color: #4B5563;
+  color: var(--c-text-sub);
   line-height: 1.5;
   max-width: 440px;
   margin: 0 auto 1.8rem auto;
 }
 
+body.theme-yellow .success-sub {
+  color: #4B5563;
+}
+
 .success-ticket {
-  background: #EAEAEA;
-  border: 1px solid #D4D4D4;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(219, 234, 254, 0.15);
   border-radius: 8px;
   padding: 1.2rem 1.4rem;
   display: flex;
@@ -1786,6 +1863,11 @@ body.theme-yellow .cal-confirm-btn:hover {
   margin-bottom: 1.8rem;
 }
 
+body.theme-yellow .success-ticket {
+  background: #F3F4F6;
+  border: 1px solid #D1D5DB;
+}
+
 .ticket-row {
   display: flex;
   justify-content: space-between;
@@ -1793,12 +1875,20 @@ body.theme-yellow .cal-confirm-btn:hover {
 }
 
 .t-label {
+  color: var(--c-text-muted);
+}
+
+body.theme-yellow .t-label {
   color: #6B7280;
 }
 
 .t-val {
-  color: #0A0A0A;
+  color: var(--c-text);
   font-weight: 700;
+}
+
+body.theme-yellow .t-val {
+  color: #0A0A0A;
 }
 
 .success-actions {
@@ -1819,8 +1909,8 @@ body.theme-yellow .cal-confirm-btn:hover {
 }
 
 .success-action-btn.primary {
-  background: #01249D;
-  color: #FFFFFF;
+  background: #FFFFFF;
+  color: #01249D;
   border: none;
 }
 
@@ -1830,14 +1920,19 @@ body.theme-yellow .success-action-btn.primary {
 }
 
 .success-action-btn.secondary {
+  background: transparent;
+  border: 1px solid rgba(219, 234, 254, 0.2);
+  color: var(--c-text);
+}
+
+body.theme-yellow .success-action-btn.secondary {
   background: #FFFFFF;
   border: 1px solid #D4D4D4;
   color: #0A0A0A;
 }
 
 .success-action-btn.secondary:hover {
-  background: #0A0A0A;
-  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.1);
 }
 
 @media (max-width: 900px) {
@@ -1847,7 +1942,7 @@ body.theme-yellow .success-action-btn.primary {
 
   .cal-info-side {
     border-right: none;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid rgba(219, 234, 254, 0.15);
     padding: 2.2rem 1.6rem;
   }
 
