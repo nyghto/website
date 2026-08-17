@@ -4,10 +4,10 @@
   <!-- Primary Meta Tags -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Domain &amp; DNS Intelligence Tool — Instant Multi-TLD Availability | Nyghto Studio</title>
-  <meta name="title" content="Domain &amp; DNS Intelligence Tool — Instant Multi-TLD Availability | Nyghto Studio">
-  <meta name="description" content="Check real-time domain availability across .com, .in, .io, .ai, .co, .design, and inspect live DNS records with sub-second Cloudflare DoH queries. Engineered by Nyghto Studio.">
-  <meta name="keywords" content="Domain Checker, Domain Availability Tool, DNS Lookup, Cloudflare DoH, Check .in domains, Check .com domains, Nyghto Domain Tool, Web Development Studio Kerala">
+  <title>Domain Search &amp; DNS Intelligence — Nyghto Studio</title>
+  <meta name="title" content="Domain Search &amp; DNS Intelligence — Nyghto Studio">
+  <meta name="description" content="Instant multi-TLD domain availability search and live DNS inspector powered by Cloudflare 1.1.1.1 DNS-over-HTTPS. Free, fast, and privacy-first by Nyghto Studio.">
+  <meta name="keywords" content="Domain Search, Check Domain Availability, DNS Lookup, Cloudflare DoH, Nyghto Studio, Web Developers Kerala">
   <meta name="author" content="Nyghto Studio">
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
   <meta name="theme-color" content="#01249D">
@@ -15,63 +15,58 @@
   <!-- Canonical Target -->
   <link rel="canonical" href="https://nyghto.in/domains.html">
 
-  <!-- Open Graph / Facebook / LinkedIn -->
+  <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://nyghto.in/domains.html">
   <meta property="og:site_name" content="Nyghto Digital Product Studio">
-  <meta property="og:title" content="Domain &amp; DNS Intelligence Tool | Nyghto Studio">
-  <meta property="og:description" content="Real-time multi-TLD availability checker &amp; live DNS telemetry engine. Fast, free, and privacy-first.">
+  <meta property="og:title" content="Domain Search &amp; DNS Intelligence | Nyghto Studio">
+  <meta property="og:description" content="Instant multi-TLD domain availability and live DNS record inspector.">
   <meta property="og:image" content="https://nyghto.in/og-image.png">
   <meta property="og:locale" content="en_IN">
 
-  <!-- Twitter / X Cards -->
+  <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://nyghto.in/domains.html">
-  <meta name="twitter:title" content="Domain &amp; DNS Intelligence Tool | Nyghto Studio">
+  <meta name="twitter:title" content="Domain Search &amp; DNS Intelligence | Nyghto Studio">
   <meta name="twitter:description" content="Instant multi-TLD domain availability and live DNS record inspector.">
   <meta name="twitter:image" content="https://nyghto.in/og-image.png">
 
-  <!-- Favicon & Touch Icons -->
+  <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png">
   <link rel="apple-touch-icon" href="favicon.png">
 
-  <!-- Fonts matching Nyghto Design System -->
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
 
-  <!-- Lenis & GSAP -->
+  <!-- Libraries -->
   <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 
   <link rel="stylesheet" href="styles.css">
 
-  <!-- Structured Data / JSON-LD -->
+  <!-- Schema.org -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "WebApplication",
-        "@id": "https://nyghto.in/domains.html#webapp",
-        "name": "Nyghto Domain & DNS Intelligence Tool",
-        "url": "https://nyghto.in/domains.html",
-        "applicationCategory": "DeveloperApplication",
-        "operatingSystem": "All",
-        "description": "Free real-time multi-TLD domain availability search and live DNS lookup tool.",
-        "creator": {
-          "@type": "Organization",
-          "name": "Nyghto",
-          "url": "https://nyghto.in"
-        }
-      }
-    ]
+    "@type": "WebApplication",
+    "name": "Nyghto Domain Search & DNS Intelligence",
+    "url": "https://nyghto.in/domains.html",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "All",
+    "description": "Free real-time multi-TLD domain availability search and DNS lookup tool.",
+    "creator": {
+      "@type": "Organization",
+      "name": "Nyghto",
+      "url": "https://nyghto.in"
+    }
   }
   </script>
 </head>
 <body>
 
-  <!-- BESPOKE RIGHT VERTICAL SCROLL SLIDER -->
+  <!-- BESPOKE RIGHT SCROLL SLIDER -->
   <div class="vertical-scroll-slider-wrap" id="verticalSliderWrap">
     <div class="vertical-slider-track" id="sliderTrack">
       <div class="vertical-slider-thumb" id="sliderThumb"></div>
@@ -99,7 +94,7 @@
         <a href="index.html#contact" class="frame-link dot-box">CONTACT</a>
       </nav>
 
-      <!-- Top Right Group (Theme Switcher + Mobile Menu Button) -->
+      <!-- Top Right Group -->
       <div class="frame-top-right-group">
         <button type="button" class="theme-icon-btn dot-box" id="themeToggleBtn" aria-label="Toggle Theme (Studio Cobalt / Onam Gold)">
           <svg class="theme-switch-icon theme-icon-cobalt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -154,106 +149,143 @@
   </div>
 
   <!-- MAIN SCROLLABLE VIEWPORT -->
-  <main class="page-container simple-domains-page">
+  <main class="page-container pro-domains-page">
     
-    <!-- CLEAN MINIMAL HERO -->
-    <header class="simple-domains-hero">
-      <span class="simple-tag font-mono">Free Tools</span>
-      <h1 class="simple-headline font-display">Instant Domain Checker.</h1>
-      <p class="simple-sub font-sans">
-        Check live availability across 14 major TLDs with sub-second Cloudflare 1.1.1.1 DNS-over-HTTPS queries.
+    <!-- EDITORIAL HERO HEADER -->
+    <header class="pro-domains-hero">
+      <div class="pro-hero-pill font-mono">
+        <span class="pulse-radar-dot"></span>
+        <span>Real-Time Cloudflare 1.1.1.1 Engine</span>
+      </div>
+      <h1 class="pro-headline font-display">Find &amp; verify your domain.</h1>
+      <p class="pro-sub font-sans">
+        Sub-second availability across 14 major TLDs, instant DNS inspection, and direct venture onboarding.
       </p>
     </header>
 
-    <!-- CLEAN CENTERED SEARCH COMPOSER -->
-    <div class="simple-search-wrap">
-      <div class="simple-search-bar">
-        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="11" cy="11" r="8"></circle>
-          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-        </svg>
+    <!-- SEARCH COMMAND CENTER -->
+    <section class="pro-search-section">
+      <div class="pro-search-bar" id="searchBarWrap">
+        <div class="search-icon-wrap" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="22" height="22">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </div>
 
         <input 
           type="text" 
           id="domainSearchInput" 
-          class="simple-search-input font-mono" 
-          placeholder="type a brand name (e.g. nyghto, fixowe, ecoshop)..." 
+          class="pro-search-input font-mono" 
+          placeholder="type a brand or domain name..." 
           autocomplete="off" 
           spellcheck="false"
           autofocus
           aria-label="Domain Name to Check"
         >
 
-        <button type="button" class="simple-clear-btn" id="domainClearBtn" aria-label="Clear Search Input" style="display: none;">✕</button>
+        <button type="button" class="pro-clear-btn" id="domainClearBtn" aria-label="Clear Search Input" style="display: none;">✕</button>
 
-        <button type="button" class="simple-scan-btn font-mono" id="domainSearchBtn">
-          <span>SCAN ↵</span>
-        </button>
+        <div class="pro-action-btn-group">
+          <button type="button" class="pro-scan-btn font-mono" id="domainSearchBtn">
+            <span>SCAN</span>
+            <kbd class="kbd-hint">↵</kbd>
+          </button>
+        </div>
       </div>
 
-      <!-- Quick Category Pills -->
-      <div class="simple-filter-row font-mono">
-        <button type="button" class="filter-pill active" data-filter="all">All TLDs (14)</button>
-        <button type="button" class="filter-pill" data-filter="popular">Popular (.com, .in, .io, .co)</button>
-        <button type="button" class="filter-pill" data-filter="tech">Tech (.ai, .dev, .tech, .app)</button>
-        <button type="button" class="filter-pill" data-filter="india">India (.in, .co.in)</button>
-        <button type="button" class="filter-pill" data-filter="creative">Creative (.design, .studio)</button>
+      <!-- Quick Suggestion Chips -->
+      <div class="pro-suggestions-row font-mono">
+        <span class="sugg-label">Try:</span>
+        <button type="button" class="sugg-chip" onclick="applySuggestion('nyghto')">nyghto</button>
+        <button type="button" class="sugg-chip" onclick="applySuggestion('fixowe')">fixowe</button>
+        <button type="button" class="sugg-chip" onclick="applySuggestion('ecoshopy')">ecoshopy</button>
+        <button type="button" class="sugg-chip" onclick="applySuggestion('studio')">studio</button>
+        <button type="button" class="sugg-chip" onclick="applySuggestion('venture')">venture</button>
       </div>
 
-      <!-- Live Status Line -->
-      <div class="simple-status-line font-mono" id="domainStatusText">
-        Ready for search.
-      </div>
-    </div>
+      <!-- Category Filter Bar & Live Counters -->
+      <div class="pro-controls-bar font-mono">
+        <div class="pro-filter-group">
+          <button type="button" class="pro-filter-pill active" data-filter="all">All (14)</button>
+          <button type="button" class="pro-filter-pill" data-filter="popular">Popular</button>
+          <button type="button" class="pro-filter-pill" data-filter="tech">Tech</button>
+          <button type="button" class="pro-filter-pill" data-filter="india">India</button>
+          <button type="button" class="pro-filter-pill" data-filter="creative">Creative</button>
+        </div>
 
-    <!-- DOMAIN RESULTS LIST -->
-    <section class="simple-results-container">
-      <div class="simple-results-grid" id="domainResultsGrid">
+        <div class="pro-kpi-summary" id="proKpiSummary">
+          <span id="kpiAvailable">-- Available</span>
+          <span class="kpi-sep">•</span>
+          <span id="kpiRegistered">-- Registered</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- LIVE RESULTS GRID (High-Density 2-Column Cards) -->
+    <section class="pro-results-section">
+      <div class="pro-results-grid" id="domainResultsGrid">
         <!-- Rendered dynamically via domains.js -->
       </div>
     </section>
 
-    <!-- SLIM COLLAPSIBLE DNS RECORD INSPECTOR -->
-    <section class="simple-dns-section" id="dnsInspectorSection">
-      <details class="dns-details-card" id="dnsDetailsCard">
-        <summary class="dns-summary-header font-mono">
-          <span class="dns-summary-title">DNS Record Inspector (A, MX, TXT, NS)</span>
-          <span class="dns-summary-toggle">EXPAND +</span>
+    <!-- INTERACTIVE DNS RECORD INSPECTOR -->
+    <section class="pro-dns-section" id="dnsInspectorSection">
+      <details class="pro-dns-card" id="dnsDetailsCard">
+        <summary class="pro-dns-summary font-mono">
+          <div class="dns-summary-left">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+              <polyline points="4 17 10 11 4 5"></polyline>
+              <line x1="12" y1="19" x2="20" y2="19"></line>
+            </svg>
+            <span>Live DNS Record Inspector</span>
+          </div>
+          <span class="dns-toggle-badge">Click to Expand ▾</span>
         </summary>
 
-        <div class="dns-expanded-content">
-          <div class="dns-inline-form">
-            <input type="text" id="dnsLookupDomain" class="dns-inline-input font-mono" placeholder="nyghto.in" aria-label="Domain for DNS Lookup">
+        <div class="pro-dns-body">
+          <div class="dns-control-row">
+            <input type="text" id="dnsLookupDomain" class="pro-dns-input font-mono" placeholder="nyghto.in" aria-label="Domain for DNS Lookup">
             
-            <select id="dnsRecordType" class="dns-inline-select font-mono" aria-label="DNS Record Type">
-              <option value="A" selected>A (IPv4)</option>
-              <option value="AAAA">AAAA (IPv6)</option>
-              <option value="MX">MX (Mail Servers)</option>
-              <option value="TXT">TXT (Verification)</option>
+            <select id="dnsRecordType" class="pro-dns-select font-mono" aria-label="DNS Record Type">
+              <option value="A" selected>A (IPv4 Address)</option>
+              <option value="AAAA">AAAA (IPv6 Address)</option>
+              <option value="MX">MX (Mail Exchanges)</option>
+              <option value="TXT">TXT (Verification &amp; SPF)</option>
               <option value="NS">NS (Nameservers)</option>
               <option value="CNAME">CNAME (Alias)</option>
               <option value="SOA">SOA (Authority)</option>
             </select>
 
-            <button type="button" class="dns-inline-btn font-mono" id="dnsQueryBtn">
+            <button type="button" class="pro-dns-btn font-mono" id="dnsQueryBtn">
               <span>RESOLVE ↗</span>
             </button>
           </div>
 
-          <pre class="dns-console-output font-mono" id="dnsConsoleBody">// Select record type and click "RESOLVE" to inspect live DNS entries via 1.1.1.1.</pre>
+          <div class="pro-terminal-wrap font-mono">
+            <div class="terminal-bar">
+              <span class="t-dot dot-red"></span>
+              <span class="t-dot dot-yellow"></span>
+              <span class="t-dot dot-green"></span>
+              <span class="t-title">Cloudflare DoH Terminal (1.1.1.1)</span>
+            </div>
+            <pre class="terminal-output" id="dnsConsoleBody">// Select a domain and record type above, then click "RESOLVE" to inspect live DNS telemetry.</pre>
+          </div>
         </div>
       </details>
     </section>
 
-    <!-- SIMPLE BOTTOM BANNER -->
-    <section class="simple-bottom-banner">
-      <div class="banner-inner">
-        <div class="banner-text">
-          <h3 class="banner-title font-display">Ready to build your digital product?</h3>
-          <p class="banner-sub font-sans">We design and engineer bespoke web platforms, applications, and SaaS systems.</p>
+    <!-- BOTTOM CALLOUT BANNER -->
+    <section class="pro-bottom-callout">
+      <div class="callout-card">
+        <div class="callout-content">
+          <h3 class="callout-title font-display">Ready to build your next product?</h3>
+          <p class="callout-sub font-sans">
+            We partner directly with founders to engineer high-speed web platforms, mobile apps, and SaaS systems.
+          </p>
         </div>
-        <a href="index.html#contact" class="banner-cta-btn font-mono">
-          <span>START A PROJECT ↗</span>
+        <a href="index.html#contact" class="callout-cta font-mono">
+          <span>START A CONVERSATION ↗</span>
         </a>
       </div>
     </section>
@@ -299,6 +331,9 @@
       <div>DISCIPLINE &amp; HIGH-CRAFT ENGINEERING.</div>
     </div>
   </footer>
+
+  <!-- Toast Notification -->
+  <div id="proToast" class="pro-toast font-mono" role="status" aria-live="polite"></div>
 
   <script src="app.js"></script>
   <script src="domains.js"></script>
