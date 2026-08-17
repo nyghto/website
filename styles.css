@@ -1528,16 +1528,277 @@ body.theme-yellow .cta1-action-btn {
   transform: translateX(4px);
 }
 
+.cta1-state-wrap {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2.5rem;
+  position: relative;
+  z-index: 2;
+  transition: all 0.3s ease;
+}
+
+/* State Badge */
+.cta1-state-badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: var(--c-text-muted);
+  letter-spacing: 0.08em;
+  margin-bottom: 0.4rem;
+}
+
+.cta1-state-badge.success {
+  color: #34D399;
+}
+
+/* 2. Phone / WhatsApp Prompt Form */
+.cta1-phone-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  flex-shrink: 0;
+  max-width: 440px;
+  width: 100%;
+}
+
+.cta1-input-group {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.cta1-phone-input {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--c-border);
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 0.95rem;
+  color: var(--c-text);
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+body.theme-yellow .cta1-phone-input {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.cta1-phone-input:focus {
+  border-color: var(--c-text);
+  background: rgba(255, 255, 255, 0.14);
+}
+
+body.theme-yellow .cta1-phone-input:focus {
+  background: #FFFFFF;
+}
+
+.cta1-phone-input::placeholder {
+  color: var(--c-text-muted);
+  opacity: 0.7;
+}
+
+.cta1-submit-btn {
+  background: #FFFFFF;
+  color: #01249D;
+  font-weight: 800;
+  font-size: 0.85rem;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+  letter-spacing: 0.03em;
+  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.5), 0 4px 14px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+body.theme-yellow .cta1-submit-btn {
+  background: #0A0A0A;
+  color: #FFEF03;
+}
+
+.cta1-submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.cta1-skip-btn {
+  background: none;
+  border: none;
+  color: var(--c-text-muted);
+  font-size: 0.75rem;
+  cursor: pointer;
+  text-align: right;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  padding: 0;
+  transition: color 0.15s ease;
+}
+
+.cta1-skip-btn:hover {
+  color: var(--c-text);
+}
+
+/* 3. Direct Contact Hub */
+.cta1-contact-hub {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 1.8rem;
+}
+
+.cta1-hub-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.cta1-reset-link {
+  background: none;
+  border: none;
+  color: var(--c-text-muted);
+  font-size: 0.82rem;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  padding: 4px 8px;
+}
+
+.cta1-reset-link:hover {
+  color: var(--c-text);
+}
+
+.cta1-contacts-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.3fr;
+  gap: 1rem;
+}
+
+.cta1-contact-card {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--c-border);
+  border-radius: 10px;
+  padding: 1.2rem 1.4rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.2s ease;
+}
+
+body.theme-yellow .cta1-contact-card {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.cta1-contact-card:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--c-text);
+  transform: translateY(-2px);
+}
+
+body.theme-yellow .cta1-contact-card:hover {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.cta1-contact-card.primary {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.card-icon {
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+
+.card-text-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.card-label {
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: var(--c-text-muted);
+  letter-spacing: 0.06em;
+}
+
+.card-val {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--c-text);
+}
+
+.card-arrow {
+  font-size: 0.95rem;
+  color: var(--c-text-muted);
+  transition: transform 0.2s ease;
+}
+
+.cta1-contact-card:hover .card-arrow {
+  color: var(--c-text);
+  transform: translate(2px, -2px);
+}
+
+.phones-list {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.phones-list a {
+  color: var(--c-text);
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.phones-list a:hover {
+  text-decoration: underline;
+}
+
+.phones-list .sep {
+  color: var(--c-text-muted);
+  opacity: 0.6;
+}
+
 @media (max-width: 900px) {
   .cta1-wrapper {
     padding: 4rem 1.2rem;
   }
 
   .cta1-card {
+    padding: 3rem 1.6rem;
+  }
+
+  .cta1-state-wrap {
     flex-direction: column;
     text-align: center;
-    padding: 3rem 1.8rem;
     gap: 2rem;
+  }
+
+  .cta1-phone-form {
+    max-width: 100%;
+  }
+
+  .cta1-input-group {
+    flex-direction: column;
+  }
+
+  .cta1-submit-btn {
+    width: 100%;
+    padding: 14px;
+  }
+
+  .cta1-skip-btn {
+    text-align: center;
+  }
+
+  .cta1-contacts-grid {
+    grid-template-columns: 1fr;
   }
 
   .cta1-action-btn {

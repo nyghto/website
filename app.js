@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initGlitchFreeScrollPhysics();
   initInteractiveEyeTracking();
   initPaperCard3DTilt();
-  initStudioDispatchForm();
+  initCta1FounderHotline();
   initConversationalBrief();
   initServiceInquireLinks();
   initCrosshairIntersectionTracker();
@@ -652,42 +652,58 @@ function initServiceInquireLinks() {
 const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/1536735455633211535/GlxsOfAJPAUx-lnfZVuMLk2r7w3K5tXR5gcfQ7NIEEpWPtZI10elGf21j9udxA8xpdn3';
 
 /* ==========================================================================
-   7. Editorial Studio Consultation & Direct Brief Dispatch Handler
+   7. Cta1 Interactive Founder Hotline Handler
    ========================================================================== */
-function initStudioDispatchForm() {
-  const form = document.getElementById('dispatchForm');
-  const submitBtn = document.getElementById('dispatchSubmitBtn');
-  const statusEl = document.getElementById('dispatchStatus');
+function initCta1FounderHotline() {
+  const triggerBtn = document.getElementById('cta1TriggerBtn');
+  const initialState = document.getElementById('cta1InitialState');
+  const phoneState = document.getElementById('cta1PhoneState');
+  const contactState = document.getElementById('cta1ContactState');
+  const phoneForm = document.getElementById('cta1PhoneForm');
+  const phoneInput = document.getElementById('cta1UserPhone');
+  const submitBtn = document.getElementById('cta1SubmitBtn');
+  const skipBtn = document.getElementById('cta1SkipBtn');
 
-  if (form && submitBtn) {
-    form.addEventListener('submit', async (e) => {
+  if (triggerBtn && initialState && phoneState) {
+    triggerBtn.addEventListener('click', () => {
+      initialState.style.display = 'none';
+      phoneState.style.display = 'flex';
+      if (phoneInput) setTimeout(() => phoneInput.focus(), 50);
+      if (typeof playSynthTone === 'function') playSynthTone(587.33);
+    });
+  }
+
+  if (skipBtn && phoneState && contactState) {
+    skipBtn.addEventListener('click', () => {
+      phoneState.style.display = 'none';
+      contactState.style.display = 'flex';
+      if (typeof playSynthTone === 'function') playSynthTone(659.25);
+    });
+  }
+
+  if (phoneForm && submitBtn) {
+    phoneForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      
-      const name = document.getElementById('dispName').value.trim();
-      const contact = document.getElementById('dispContact').value.trim();
-      const brief = document.getElementById('dispBrief').value.trim();
-
-      if (!name || !contact || !brief) return;
+      const phoneVal = phoneInput ? phoneInput.value.trim() : '';
+      if (!phoneVal) return;
 
       submitBtn.disabled = true;
-      submitBtn.innerHTML = '<span>DISPATCHING...</span>';
-      if (statusEl) statusEl.innerHTML = `<span style="color:var(--c-text-muted);">Transmitting brief directly to founders...</span>`;
+      submitBtn.innerHTML = '<span>CONNECTING...</span>';
 
       const payload = {
-        username: "Nyghto Studio Dispatch",
+        username: "Nyghto Founder Hotline",
         avatar_url: "https://nyghto.in/favicon.png",
         embeds: [
           {
-            title: "🚀 New Direct Project Brief",
-            description: `**"${brief}"**`,
-            color: 74909, // Cobalt
+            title: "📞 Talk with Founders Hotline Connect",
+            description: `Client entered their phone/WhatsApp number on the **[Cta1 Hotline](https://nyghto.in/#consultation)**: **\`${phoneVal}\`**`,
+            color: 3462009, // Emerald
             fields: [
-              { name: "👤 Client Name", value: name, inline: true },
-              { name: "📞 Contact (Email/Phone)", value: contact, inline: true },
-              { name: "⏰ Sent At", value: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }) + " IST", inline: true }
+              { name: "📱 Client Phone / WhatsApp", value: phoneVal, inline: true },
+              { name: "⏰ Time", value: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }) + " IST", inline: true }
             ],
             footer: {
-              text: "Nyghto Studio Direct Consultation Engine",
+              text: "Nyghto Studio Instant Founder Connect",
               icon_url: "https://nyghto.in/favicon.png"
             },
             timestamp: new Date().toISOString()
@@ -696,47 +712,41 @@ function initStudioDispatchForm() {
       };
 
       try {
-        const response = await fetch(DISCORD_WEBHOOK_URL, {
+        await fetch(DISCORD_WEBHOOK_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
-
-        if (response.ok || response.status === 204) {
-          submitBtn.innerHTML = '<span>BRIEF TRANSMITTED ✓</span>';
-          submitBtn.style.background = '#34D399';
-          submitBtn.style.color = '#064E3B';
-          form.reset();
-
-          if (statusEl) {
-            statusEl.innerHTML = `✓ Brief received! Our engineering founders will reach out to <strong>${contact}</strong> within hours.`;
-          }
-
-          if (typeof playSynthTone === 'function') {
-            playSynthTone(523.25);
-            setTimeout(() => playSynthTone(659.25), 120);
-            setTimeout(() => playSynthTone(783.99), 240);
-          }
-        } else {
-          throw new Error('Webhook error');
-        }
       } catch (err) {
-        console.warn('Dispatch fallback to mailto:', err);
-        submitBtn.innerHTML = '<span>OPENING EMAIL...</span>';
-        const subject = `[Project Brief] ${name}`;
-        const body = `Hello Nyghto Team,\n\nI would like to discuss a project.\n\nName: ${name}\nContact: ${contact}\nBrief: ${brief}\n\nSent from nyghto.in`;
-        window.location.href = `mailto:hello@nyghto.in?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-      } finally {
-        setTimeout(() => {
-          submitBtn.disabled = false;
-          submitBtn.innerHTML = '<span>SEND DIRECT BRIEF ↵</span>';
-          submitBtn.style.background = '';
-          submitBtn.style.color = '';
-        }, 5000);
+        console.warn('Webhook error:', err);
       }
+
+      phoneState.style.display = 'none';
+      contactState.style.display = 'flex';
+
+      if (typeof playSynthTone === 'function') {
+        playSynthTone(523.25);
+        setTimeout(() => playSynthTone(659.25), 120);
+        setTimeout(() => playSynthTone(783.99), 240);
+      }
+
+      // Open WhatsApp directly with founders
+      const waUrl = `https://wa.me/917012028379?text=${encodeURIComponent(`Hi Nyghto Founders, I just connected on your site. My contact is ${phoneVal}. Let's discuss my project.`)}`;
+      window.open(waUrl, '_blank');
     });
   }
 }
+
+window.resetCta1State = function() {
+  const initialState = document.getElementById('cta1InitialState');
+  const phoneState = document.getElementById('cta1PhoneState');
+  const contactState = document.getElementById('cta1ContactState');
+  if (initialState && phoneState && contactState) {
+    initialState.style.display = 'flex';
+    phoneState.style.display = 'none';
+    contactState.style.display = 'none';
+  }
+};
 
 /* ==========================================================================
    8. Conversational Brief Generator & Actions (Direct Discord Webhook Connection)

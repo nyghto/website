@@ -1061,10 +1061,10 @@
       </div>
     </section>
 
-    <!-- MODERN CTA1 BANNER SECTION -->
+    <!-- MODERN CTA1 BANNER SECTION WITH INTERACTIVE FOUNDER HOTLINE -->
     <section class="cta1-wrapper" id="consultation" aria-label="Talk with the Team">
       <div class="cta1-container">
-        <div class="cta1-card">
+        <div class="cta1-card" id="cta1Card">
           <!-- Background Ambient Glow Polygon Shards -->
           <div aria-hidden="true" class="cta1-glow-shard cta1-glow-left">
             <div class="cta1-polygon-mesh"></div>
@@ -1073,23 +1073,92 @@
             <div class="cta1-polygon-mesh"></div>
           </div>
 
-          <!-- Text Block -->
-          <div class="cta1-text-block">
-            <h2 class="cta1-title font-display">Supercharge your project with direct founder engineering</h2>
-            <p class="cta1-description font-sans">
-              Schedule a 30-minute discovery consultation or chat directly on WhatsApp. Technical architecture, cost estimates, and sprint timelines.
-            </p>
+          <!-- 1. Initial State -->
+          <div class="cta1-state-wrap" id="cta1InitialState">
+            <div class="cta1-text-block">
+              <h2 class="cta1-title font-display">Supercharge your project with direct founder engineering</h2>
+              <p class="cta1-description font-sans">
+                Schedule a 30-minute discovery consultation or chat directly on WhatsApp. Technical architecture, cost estimates, and sprint timelines.
+              </p>
+            </div>
+
+            <div class="cta1-btn-wrap font-mono">
+              <button type="button" class="cta1-action-btn" id="cta1TriggerBtn">
+                <span>Talk with Founders</span>
+                <svg class="cta1-arrow-icon" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true">
+                  <path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0-105.5 105.5c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/>
+                </svg>
+              </button>
+            </div>
           </div>
 
-          <!-- Button -->
-          <div class="cta1-btn-wrap font-mono">
-            <a href="https://wa.me/917012028379?text=Hi%20Nyghto,%20I'd%20like%20to%20schedule%20a%20strategy%20consultation%20with%20the%20founders" target="_blank" rel="noopener noreferrer" class="cta1-action-btn">
-              <span>Talk with Founders</span>
-              <svg class="cta1-arrow-icon" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true">
-                <path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0-105.5 105.5c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/>
-              </svg>
-            </a>
+          <!-- 2. Phone / WhatsApp Prompt State -->
+          <div class="cta1-state-wrap" id="cta1PhoneState" style="display: none; width: 100%;">
+            <div class="cta1-text-block">
+              <span class="cta1-state-badge font-mono">DIRECT FOUNDER CONNECTION</span>
+              <h2 class="cta1-title font-display" style="font-size: clamp(1.6rem, 2.6vw, 2.2rem);">What's your WhatsApp or phone number?</h2>
+              <p class="cta1-description font-sans">
+                We'll reach out directly to discuss your project, or connect with you on WhatsApp instantly.
+              </p>
+            </div>
+
+            <form id="cta1PhoneForm" class="cta1-phone-form font-sans">
+              <div class="cta1-input-group">
+                <input type="tel" id="cta1UserPhone" class="cta1-phone-input font-mono" placeholder="Your phone / WhatsApp number *" required aria-label="Your Phone Number">
+                <button type="submit" class="cta1-submit-btn font-mono" id="cta1SubmitBtn">
+                  <span>CONNECT NOW ↗</span>
+                </button>
+              </div>
+              <button type="button" class="cta1-skip-btn font-mono" id="cta1SkipBtn">or view our direct studio lines ↵</button>
+            </form>
           </div>
+
+          <!-- 3. Direct Contact Hub State (Our Email, Phone Numbers, and WhatsApp) -->
+          <div class="cta1-state-wrap cta1-contact-hub" id="cta1ContactState" style="display: none; width: 100%;">
+            <div class="cta1-hub-header">
+              <div>
+                <span class="cta1-state-badge success font-mono">✓ HOTLINE ACTIVE</span>
+                <h2 class="cta1-title font-display" style="font-size: clamp(1.6rem, 2.6vw, 2.2rem);">Talk Directly with Nyghto Founders</h2>
+              </div>
+              <button type="button" class="cta1-reset-link font-mono" onclick="resetCta1State()">← Back</button>
+            </div>
+
+            <!-- Studio Direct Contacts Grid -->
+            <div class="cta1-contacts-grid font-mono">
+              <a href="https://wa.me/917012028379?text=Hi%20Nyghto,%20I'm%20reaching%20out%20to%20discuss%20a%20project" target="_blank" rel="noopener noreferrer" class="cta1-contact-card primary">
+                <span class="card-icon">💬</span>
+                <div class="card-text-group">
+                  <span class="card-label">WHATSAPP DIRECT</span>
+                  <span class="card-val">+91 70120 28379</span>
+                </div>
+                <span class="card-arrow">↗</span>
+              </a>
+
+              <a href="mailto:hello@nyghto.in" class="cta1-contact-card">
+                <span class="card-icon">✉️</span>
+                <div class="card-text-group">
+                  <span class="card-label">STUDIO INBOX</span>
+                  <span class="card-val">hello@nyghto.in</span>
+                </div>
+                <span class="card-arrow">↗</span>
+              </a>
+
+              <div class="cta1-contact-card phones-block">
+                <span class="card-icon">📞</span>
+                <div class="card-text-group">
+                  <span class="card-label">DIRECT FOUNDER LINES</span>
+                  <div class="phones-list">
+                    <a href="tel:+917012028379">+91 70120 28379</a>
+                    <span class="sep">•</span>
+                    <a href="tel:+918075911860">+91 80759 11860</a>
+                    <span class="sep">•</span>
+                    <a href="tel:+919539202847">+91 95392 02847</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </section>
