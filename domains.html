@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en" prefix="og: https://ogp.me/ns#">
+<head>
+  <!-- Primary Meta Tags -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Domain &amp; DNS Intelligence Tool — Instant Multi-TLD Availability | Nyghto Studio</title>
+  <meta name="title" content="Domain &amp; DNS Intelligence Tool — Instant Multi-TLD Availability | Nyghto Studio">
+  <meta name="description" content="Check real-time domain availability across .com, .in, .io, .ai, .co, .design, and inspect live DNS records with sub-second Cloudflare DoH queries. Engineered by Nyghto Studio.">
+  <meta name="keywords" content="Domain Checker, Domain Availability Tool, DNS Lookup, Cloudflare DoH, Check .in domains, Check .com domains, Nyghto Domain Tool, Web Development Studio Kerala">
+  <meta name="author" content="Nyghto Studio">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="theme-color" content="#01249D">
+  
+  <!-- Canonical Target -->
+  <link rel="canonical" href="https://nyghto.in/domains.html">
+
+  <!-- Open Graph / Facebook / LinkedIn -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://nyghto.in/domains.html">
+  <meta property="og:site_name" content="Nyghto Digital Product Studio">
+  <meta property="og:title" content="Domain &amp; DNS Intelligence Tool | Nyghto Studio">
+  <meta property="og:description" content="Real-time multi-TLD availability checker &amp; live DNS telemetry engine. Fast, free, and privacy-first.">
+  <meta property="og:image" content="https://nyghto.in/og-image.png">
+  <meta property="og:locale" content="en_IN">
+
+  <!-- Twitter / X Cards -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://nyghto.in/domains.html">
+  <meta name="twitter:title" content="Domain &amp; DNS Intelligence Tool | Nyghto Studio">
+  <meta name="twitter:description" content="Instant multi-TLD domain availability and live DNS record inspector.">
+  <meta name="twitter:image" content="https://nyghto.in/og-image.png">
+
+  <!-- Favicon & Touch Icons -->
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="apple-touch-icon" href="favicon.png">
+
+  <!-- Fonts matching Nyghto Design System -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Lenis & GSAP -->
+  <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- Structured Data / JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "@id": "https://nyghto.in/domains.html#webapp",
+        "name": "Nyghto Domain & DNS Intelligence Tool",
+        "url": "https://nyghto.in/domains.html",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "All",
+        "description": "Free real-time multi-TLD domain availability search and live DNS lookup tool.",
+        "creator": {
+          "@type": "Organization",
+          "name": "Nyghto",
+          "url": "https://nyghto.in"
+        },
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://nyghto.in/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Domain Checker",
+            "item": "https://nyghto.in/domains.html"
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+
+  <!-- BESPOKE RIGHT VERTICAL SCROLL SLIDER -->
+  <div class="vertical-scroll-slider-wrap" id="verticalSliderWrap">
+    <div class="vertical-slider-track" id="sliderTrack">
+      <div class="vertical-slider-thumb" id="sliderThumb"></div>
+    </div>
+  </div>
+
+  <div class="cinematic-vignette-overlay" aria-hidden="true"></div>
+
+  <!-- HAOQI-STYLE FIXED GRID BACKGROUND -->
+  <div class="crosshair-grid-bg" aria-hidden="true">
+    <div class="grid-line h-line" style="top: 25%;"></div>
+    <div class="grid-line h-line" style="top: 50%;"></div>
+    <div class="grid-line h-line" style="top: 75%;"></div>
+    <div class="grid-line v-line" style="left: 25%;"></div>
+    <div class="grid-line v-line" style="left: 50%;"></div>
+    <div class="grid-line v-line" style="left: 75%;"></div>
+  </div>
+
+  <!-- FIXED FRAME HEADER OVERLAY -->
+  <div class="fixed-frame-overlay">
+    <header class="frame-top">
+      <a href="index.html" class="brand-wordmark dot-box" aria-label="Nyghto Studio Home">
+        <img src="logo.png" alt="Nyghto Studio Logo" class="brand-logo-img">
+      </a>
+
+      <!-- Desktop Nav -->
+      <nav class="frame-nav" aria-label="Main Navigation">
+        <a href="index.html#about" class="frame-link dot-box">ABOUT</a>
+        <a href="index.html#services" class="frame-link dot-box">SERVICES</a>
+        <a href="work.html" class="frame-link dot-box">WORK ↗</a>
+        <a href="manifesto.html" class="frame-link dot-box">MANIFESTO ↗</a>
+        <a href="domains.html" class="frame-link dot-box" style="color: var(--c-text); font-weight: 700;">DOMAINS ↗</a>
+        <a href="index.html#faq" class="frame-link dot-box">FAQ</a>
+        <a href="index.html#location" class="frame-link dot-box">LOCATION</a>
+        <a href="index.html#contact" class="frame-link dot-box">CONTACT</a>
+      </nav>
+
+      <!-- Top Right Group (Theme Switcher + Mobile Menu Button) -->
+      <div class="frame-top-right-group">
+        <button type="button" class="theme-icon-btn dot-box" id="themeToggleBtn" aria-label="Toggle Theme (Studio Cobalt / Onam Gold)">
+          <svg class="theme-switch-icon theme-icon-cobalt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9"></circle>
+            <path d="M12 3v18A9 9 0 0 0 12 3z" fill="currentColor"></path>
+          </svg>
+          <svg class="theme-switch-icon theme-icon-onam" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4" fill="currentColor"></circle>
+            <path d="M12 2v2"></path>
+            <path d="M12 20v2"></path>
+            <path d="m4.93 4.93 1.41 1.41"></path>
+            <path d="m17.66 17.66 1.41 1.41"></path>
+            <path d="M2 12h2"></path>
+            <path d="M20 12h2"></path>
+            <path d="m6.34 17.66-1.41 1.41"></path>
+            <path d="m19.07 4.93-1.41 1.41"></path>
+          </svg>
+        </button>
+
+        <button type="button" class="mobile-menu-btn dot-box" id="openMobileMenu" aria-label="Open Navigation Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </header>
+  </div>
+
+  <!-- FULLSCREEN MOBILE NAVIGATION DRAWER -->
+  <div class="mobile-drawer-overlay" id="mobileDrawer">
+    <div class="drawer-top-bar">
+      <img src="logo.png" alt="Nyghto Studio Logo" class="brand-logo-img">
+      <button type="button" class="drawer-close-btn dot-box" id="closeMobileMenu" aria-label="Close Navigation">✕</button>
+    </div>
+
+    <nav class="drawer-links-stack">
+      <a href="index.html#about" class="drawer-link">ABOUT</a>
+      <a href="index.html#services" class="drawer-link">SERVICES</a>
+      <a href="work.html" class="drawer-link">WORK ↗</a>
+      <a href="manifesto.html" class="drawer-link">MANIFESTO ↗</a>
+      <a href="domains.html" class="drawer-link" style="opacity: 0.5;">DOMAINS ↗</a>
+      <a href="index.html#faq" class="drawer-link">FAQ</a>
+      <a href="index.html#location" class="drawer-link">LOCATION</a>
+      <a href="index.html#contact" class="drawer-link">CONTACT</a>
+    </nav>
+
+    <div class="drawer-footer-info font-mono">
+      <span>hello@nyghto.in</span>
+    </div>
+  </div>
+
+  <!-- MAIN SCROLLABLE VIEWPORT -->
+  <main class="page-container domains-tool-page">
+    
+    <!-- TOOL HERO HEADER -->
+    <header class="domains-hero-header">
+      <div class="domains-meta-tag font-mono">[TOOLS // DOMAIN &amp; DNS INTELLIGENCE]</div>
+      <h1 class="domains-headline font-display">Find your next brand name.</h1>
+      <p class="domains-sub-lead font-sans">
+        Instant real-time multi-TLD availability, live DNS inspection, and sub-second Cloudflare DoH telemetry for founders and engineers.
+      </p>
+    </header>
+
+    <!-- SEARCH & CONTROLS COMPOSER -->
+    <section class="domain-composer-section">
+      <div class="domain-input-hud dot-box">
+        <div class="hud-search-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </div>
+        
+        <input 
+          type="text" 
+          id="domainSearchInput" 
+          class="domain-main-input font-mono" 
+          placeholder="type a name (e.g. nyghto, fixowe, ecoshop)..." 
+          autocomplete="off" 
+          spellcheck="false"
+          autofocus
+          aria-label="Domain Name to Check"
+        >
+
+        <button type="button" class="domain-clear-btn" id="domainClearBtn" aria-label="Clear Search Input" style="display: none;">✕</button>
+
+        <button type="button" class="domain-submit-btn dot-box font-mono" id="domainSearchBtn">
+          <span>SCAN ALL TLDS ↵</span>
+        </button>
+      </div>
+
+      <!-- Quick TLD Category Filters -->
+      <div class="tld-filter-bar font-mono">
+        <span class="filter-label">Filter:</span>
+        <button type="button" class="tld-pill-btn active" data-filter="all">ALL (14 TLDS)</button>
+        <button type="button" class="tld-pill-btn" data-filter="popular">POPULAR (.com, .in, .io, .co)</button>
+        <button type="button" class="tld-pill-btn" data-filter="tech">TECH (.ai, .dev, .tech, .app)</button>
+        <button type="button" class="tld-pill-btn" data-filter="creative">CREATIVE (.design, .studio, .me)</button>
+        <button type="button" class="tld-pill-btn" data-filter="india">INDIA (.in, .co.in)</button>
+      </div>
+
+      <!-- Live Search Status Bar -->
+      <div class="domain-status-bar font-mono" id="domainStatusBar">
+        <span class="status-indicator-dot"></span>
+        <span id="domainStatusText">Ready for search. Type a brand name to run real-time Cloudflare DoH queries.</span>
+      </div>
+    </section>
+
+    <!-- LIVE RESULTS GRID -->
+    <section class="domain-results-section" id="domainResultsSection">
+      <div class="results-grid" id="domainResultsGrid">
+        <!-- Rendered dynamically via domains.js -->
+      </div>
+    </section>
+
+    <!-- DEEP DNS LOOKUP & TELEMETRY TOOL -->
+    <section class="dns-inspector-section" id="dnsInspectorSection">
+      <div class="dns-hud-header">
+        <span class="hud-tag font-mono">[DNS TELEMETRY // REAL-TIME LOOKUP]</span>
+        <h2 class="dns-inspector-title font-display">Deep DNS Record Inspector</h2>
+        <p class="dns-inspector-sub font-sans">
+          Query live A, AAAA, MX, TXT, NS, and CNAME records directly from Cloudflare 1.1.1.1 and Google DNS resolvers.
+        </p>
+      </div>
+
+      <div class="dns-lookup-card">
+        <div class="dns-query-bar">
+          <input type="text" id="dnsLookupDomain" class="dns-query-input font-mono" placeholder="nyghto.in" aria-label="Domain for DNS Lookup">
+          
+          <select id="dnsRecordType" class="dns-type-select font-mono" aria-label="DNS Record Type">
+            <option value="A" selected>A (IPv4)</option>
+            <option value="AAAA">AAAA (IPv6)</option>
+            <option value="MX">MX (Mail Servers)</option>
+            <option value="TXT">TXT (Verification &amp; SPF)</option>
+            <option value="NS">NS (Nameservers)</option>
+            <option value="CNAME">CNAME (Alias)</option>
+            <option value="SOA">SOA (Start of Authority)</option>
+          </select>
+
+          <button type="button" class="dns-query-btn dot-box font-mono" id="dnsQueryBtn">
+            <span>RESOLVE RECORDS ↗</span>
+          </button>
+        </div>
+
+        <!-- Terminal Console Output -->
+        <div class="dns-console-wrap font-mono" id="dnsConsoleWrap">
+          <div class="console-header">
+            <span class="console-dot dot-red"></span>
+            <span class="console-dot dot-yellow"></span>
+            <span class="console-dot dot-green"></span>
+            <span class="console-title">DNS RESOLVER TELEMETRY (1.1.1.1 DoH)</span>
+          </div>
+          <pre class="console-body" id="dnsConsoleBody">// Enter a domain above and click "Resolve Records" to inspect live DNS entries.</pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- BOTTOM CALLOUT: ENGINEER ON YOUR DOMAIN WITH NYGHTO -->
+    <section class="domains-bottom-cta">
+      <div class="domain-cta-box dot-box">
+        <div class="cta-left">
+          <h3 class="cta-headline font-display">Found the perfect name? Let's build it.</h3>
+          <p class="cta-sub font-sans">
+            From high-speed web flagships to iOS/Android applications and SaaS backends, we turn domains into world-class digital products.
+          </p>
+        </div>
+        <div class="cta-right font-mono">
+          <a href="index.html#contact" class="cta-action-btn dot-box">
+            <span>START A PROJECT ↗</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MONUMENTAL FOOTER -->
+  <footer class="monumental-footer">
+    <div class="footer-top-hud">
+      <div class="hud-col">
+        <span class="hud-muted font-mono">[STUDIO HEADQUARTERS]</span>
+        <p class="hud-val font-sans">Kerala, India (Global Remote)</p>
+      </div>
+
+      <div class="hud-col">
+        <span class="hud-muted font-mono">[DIRECT CONTACT]</span>
+        <p class="hud-val font-mono"><a href="mailto:hello@nyghto.in" style="color: inherit; text-decoration: underline;">hello@nyghto.in</a></p>
+      </div>
+
+      <div class="hud-col">
+        <span class="hud-muted font-mono">[DISCORD COMMAND]</span>
+        <p class="hud-val font-mono">Active Ingestion Online</p>
+      </div>
+
+      <div class="hud-col hud-right">
+        <a href="index.html#hero" class="back-to-top font-mono dot-box" aria-label="Back to Top">
+          <span>TOP ↑</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="giant-footer-title" aria-label="Nyghto Studio">
+      <span class="footer-letter-reveal">N</span>
+      <span class="footer-letter-reveal">Y</span>
+      <span class="footer-letter-reveal">G</span>
+      <span class="footer-letter-reveal">H</span>
+      <span class="footer-letter-reveal">T</span>
+      <span class="footer-letter-reveal">O</span>
+    </div>
+
+    <div class="footer-bottom-bar font-mono">
+      <div>© 2026 NYGHTO STUDIO. ALL RIGHTS RESERVED.</div>
+      <div>DISCIPLINE &amp; HIGH-CRAFT ENGINEERING.</div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+  <script src="domains.js"></script>
+</body>
+</html>

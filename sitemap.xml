@@ -23,9 +23,17 @@
   <!-- Studio Manifesto / Creed -->
   <url>
     <loc>https://nyghto.in/manifesto.html</loc>
-    <lastmod>2026-08-15</lastmod>
+    <lastmod>2026-08-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
+  </url>
+
+  <!-- Domain & DNS Intelligence Tool -->
+  <url>
+    <loc>https://nyghto.in/domains.html</loc>
+    <lastmod>2026-08-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
   </url>
 
 </urlset>
