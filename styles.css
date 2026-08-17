@@ -1422,37 +1422,37 @@ body.theme-yellow .stack-inquire-btn {
 }
 
 /* ==========================================================================
-   ELEVATED CAL-STYLE INTERACTIVE MEETING SCHEDULER (SOLID & OPAQUE)
+   ELEVATED CAL-STYLE INTERACTIVE MEETING SCHEDULER (SEAMLESS STUDIO CARD)
    ========================================================================== */
 .cal-scheduler-card {
   max-width: 1100px;
-  background: #01186B;
-  border: 1px solid rgba(219, 234, 254, 0.25);
-  border-radius: 16px;
+  background: rgba(1, 30, 130, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 20px;
   display: grid;
   grid-template-columns: 1fr 1.2fr;
   overflow: hidden;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  box-shadow: 0 30px 70px rgba(0, 5, 25, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.28);
 }
 
 body.theme-yellow .cal-scheduler-card {
-  background: #FFFFFF;
-  border: 2px solid #0A0A0A;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12);
+  background: rgba(255, 245, 51, 0.96);
+  border: 1px solid rgba(10, 10, 10, 0.22);
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.7);
 }
 
 .cal-info-side {
   padding: 3.2rem 3rem;
-  border-right: 1px solid rgba(219, 234, 254, 0.2);
+  border-right: 1px solid var(--c-border);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background: #011459;
 }
 
 body.theme-yellow .cal-info-side {
-  background: #F9FAFB;
-  border-right: 2px solid #0A0A0A;
+  border-right: 1px solid var(--c-border);
 }
 
 /* Host Profile Badge */
@@ -1598,8 +1598,8 @@ body.theme-yellow .cal-info-side {
 }
 
 .date-card {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(219, 234, 254, 0.18);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--c-border);
   border-radius: 8px;
   padding: 12px 4px;
   display: flex;
@@ -1607,14 +1607,14 @@ body.theme-yellow .cal-info-side {
   align-items: center;
   gap: 3px;
   cursor: pointer;
-  color: var(--c-text-sub);
+  color: var(--c-text);
   transition: all 0.15s ease;
 }
 
 body.theme-yellow .date-card {
-  background: #F3F4F6;
-  border: 1px solid #D1D5DB;
-  color: #111827;
+  background: rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--c-border);
+  color: #0A0A0A;
 }
 
 .date-card:hover {
@@ -1660,7 +1660,7 @@ body.theme-yellow .date-card.active {
 
 .slot-pill {
   background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(219, 234, 254, 0.2);
+  border: 1px solid var(--c-border);
   color: var(--c-text);
   font-family: var(--font-mono);
   font-size: 0.8rem;
@@ -1672,9 +1672,9 @@ body.theme-yellow .date-card.active {
 }
 
 body.theme-yellow .slot-pill {
-  background: #F3F4F6;
-  border: 1px solid #D1D5DB;
-  color: #111827;
+  background: rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--c-border);
+  color: #0A0A0A;
 }
 
 .slot-pill:hover {
@@ -1708,7 +1708,7 @@ body.theme-yellow .slot-pill.active {
 .cal-input {
   flex: 1;
   background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(219, 234, 254, 0.25);
+  border: 1px solid var(--c-border);
   border-radius: 6px;
   padding: 11px 14px;
   font-size: 0.92rem;
@@ -1718,9 +1718,9 @@ body.theme-yellow .slot-pill.active {
 }
 
 body.theme-yellow .cal-input {
-  background: #F9FAFB;
-  border: 1px solid #D1D5DB;
-  color: #111827;
+  background: rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--c-border);
+  color: #0A0A0A;
 }
 
 .cal-input:focus {
@@ -1729,7 +1729,7 @@ body.theme-yellow .cal-input {
 }
 
 body.theme-yellow .cal-input:focus {
-  background: #FFFFFF;
+  background: rgba(0, 0, 0, 0.1);
   border-color: #0A0A0A;
 }
 
@@ -1739,7 +1739,7 @@ body.theme-yellow .cal-input:focus {
 }
 
 body.theme-yellow .cal-input::placeholder {
-  color: #6B7280;
+  color: #4B5563;
 }
 
 .cal-confirm-btn {
