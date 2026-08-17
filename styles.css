@@ -1421,103 +1421,217 @@ body.theme-yellow .stack-inquire-btn {
   line-height: 1.5;
 }
 
-/* Contact Mode Tabs */
-.contact-mode-tabs {
+/* ==========================================================================
+   FOUNDER DESK & HOTLINE CONSOLE
+   ========================================================================== */
+.founder-desk-console {
+  max-width: 1150px;
   display: flex;
-  gap: 0.8rem;
-  margin-bottom: 2.8rem;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 2rem;
 }
 
-.mode-tab-btn {
-  background: var(--c-badge-bg);
+.desk-top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8rem 1.4rem;
+  background: var(--c-card-bg);
   border: 1px solid var(--c-border);
-  color: var(--c-text-sub);
-  padding: 10px 18px;
-  border-radius: 6px;
-  font-family: var(--font-mono);
+  border-radius: 8px;
   font-size: 0.8rem;
+  color: var(--c-text-sub);
+}
+
+.desk-status-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
   font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.pulse-live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #34D399;
+  box-shadow: 0 0 8px #34D399;
+  animation: radarPulse 2s infinite ease-in-out;
+}
+
+.desk-clock {
+  font-weight: 800;
+  color: var(--c-text);
+}
+
+/* 3 Channel Cards Grid */
+.desk-channels-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.desk-channel-card {
+  background: var(--c-card-bg);
+  border: 1px solid var(--c-border);
+  border-radius: 10px;
+  padding: 2rem 1.8rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 260px;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
   cursor: pointer;
+  position: relative;
+}
+
+.desk-channel-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--c-text);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+}
+
+.channel-num {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--c-text-muted);
+  opacity: 0.5;
+  margin-bottom: 1.2rem;
+}
+
+.channel-tag {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--c-text-muted);
+  letter-spacing: 0.06em;
+  margin-bottom: 0.6rem;
+}
+
+.channel-title {
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: var(--c-text);
+  letter-spacing: -0.02em;
+  margin-bottom: 0.8rem;
+  line-height: 1.15;
+}
+
+.channel-desc {
+  font-size: 0.95rem;
+  color: var(--c-text-sub);
+  line-height: 1.55;
+  margin-bottom: 1.5rem;
+}
+
+.channel-action {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: var(--c-text);
+  border-top: 1px solid var(--c-border);
+  padding-top: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: color 0.2s ease;
+}
+
+.desk-channel-card:hover .channel-action {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* Instant Signal Box */
+.instant-signal-box {
+  background: var(--c-card-bg);
+  border: 1px solid var(--c-border);
+  border-radius: 10px;
+  padding: 1.8rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.signal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--c-text-muted);
+  letter-spacing: 0.05em;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.signal-sub {
+  font-weight: 500;
+  opacity: 0.7;
+}
+
+.signal-composer {
+  display: flex;
+  gap: 0.8rem;
+}
+
+.signal-input {
+  flex: 1;
+  background: transparent;
+  border: 1.5px solid var(--c-border);
+  border-radius: 6px;
+  padding: 12px 18px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--c-text);
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.signal-input:focus {
+  border-color: var(--c-text);
+}
+
+.signal-input::placeholder {
+  color: var(--c-text-muted);
+  font-weight: 400;
+  font-size: 0.9em;
+}
+
+.signal-send-btn {
+  background: var(--c-btn-primary-bg);
+  color: var(--c-btn-primary-text);
+  font-weight: 800;
+  font-size: 0.85rem;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
   transition: all 0.2s ease;
 }
 
-.mode-tab-btn:hover {
-  border-color: var(--c-text);
-  color: var(--c-text);
+.signal-send-btn:hover {
+  transform: translateY(-2px);
 }
 
-.mode-tab-btn.active {
-  background: var(--c-text);
-  color: var(--c-bg);
-  border-color: var(--c-text);
+.signal-status-line {
+  font-size: 0.82rem;
+  color: #34D399;
 }
 
-/* Consultation Form Grid */
-.consult-form-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.6rem;
-  margin-bottom: 1.6rem;
-}
-
-.consult-field-wrap {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.consult-label {
-  font-size: 0.78rem;
-  font-weight: 700;
-  color: var(--c-text-muted);
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-.consult-input, .consult-select, .consult-textarea {
-  background: var(--c-card-bg);
-  border: 1px solid var(--c-border);
-  border-radius: 6px;
-  padding: 12px 16px;
-  font-size: 1rem;
-  color: var(--c-text);
-  outline: none;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.consult-input:focus, .consult-select:focus, .consult-textarea:focus {
-  border-color: var(--c-text);
-  box-shadow: 0 0 12px rgba(255, 255, 255, 0.08);
-}
-
-body.theme-yellow .consult-input:focus,
-body.theme-yellow .consult-select:focus,
-body.theme-yellow .consult-textarea:focus {
-  box-shadow: 0 0 12px rgba(0, 0, 0, 0.06);
-}
-
-.consult-select option {
-  background: var(--c-bg);
-  color: var(--c-text);
-}
-
-.consult-notes-wrap {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin-bottom: 2rem;
-}
-
-.consult-textarea {
-  resize: vertical;
-  min-height: 80px;
-  line-height: 1.5;
-}
-
-@media (max-width: 768px) {
-  .consult-form-grid {
+@media (max-width: 900px) {
+  .desk-channels-grid {
     grid-template-columns: 1fr;
+  }
+
+  .signal-composer {
+    flex-direction: column;
+  }
+
+  .signal-send-btn {
+    width: 100%;
   }
 }
 

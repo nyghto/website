@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initGlitchFreeScrollPhysics();
   initInteractiveEyeTracking();
   initPaperCard3DTilt();
-  initConsultationAndTabs();
+  initFounderDesk();
   initConversationalBrief();
   initServiceInquireLinks();
   initCrosshairIntersectionTracker();
@@ -652,101 +652,61 @@ function initServiceInquireLinks() {
 const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/1536735455633211535/GlxsOfAJPAUx-lnfZVuMLk2r7w3K5tXR5gcfQ7NIEEpWPtZI10elGf21j9udxA8xpdn3';
 
 /* ==========================================================================
-   7. Consultation Meeting Scheduler & Tab Switcher
+   7. Founder Desk & Live Signal Dispatch Engine
    ========================================================================== */
-function initConsultationAndTabs() {
-  const tabMeeting = document.getElementById('tabMeetingBtn');
-  const tabBrief = document.getElementById('tabBriefBtn');
-  const panelMeeting = document.getElementById('meetingSchedulerPanel');
-  const panelBrief = document.getElementById('briefFormPanel');
-
-  if (tabMeeting && tabBrief && panelMeeting && panelBrief) {
-    tabMeeting.addEventListener('click', () => {
-      tabMeeting.classList.add('active');
-      tabBrief.classList.remove('active');
-      panelMeeting.style.display = 'block';
-      panelBrief.style.display = 'none';
-      if (typeof playSynthTone === 'function') playSynthTone(523.25);
-    });
-
-    tabBrief.addEventListener('click', () => {
-      tabBrief.classList.add('active');
-      tabMeeting.classList.remove('active');
-      panelBrief.style.display = 'block';
-      panelMeeting.style.display = 'none';
-      if (typeof playSynthTone === 'function') playSynthTone(659.25);
-    });
+function initFounderDesk() {
+  // Live IST Clock
+  const clockEl = document.getElementById('deskLiveClock');
+  if (clockEl) {
+    function updateClock() {
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString('en-US', {
+        timeZone: 'Asia/Kolkata',
+        hour12: true,
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      });
+      clockEl.textContent = `${timeStr} IST`;
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
   }
 
-  // Set default minimum date to today
-  const dateInput = document.getElementById('meetDate');
-  if (dateInput) {
-    const today = new Date().toISOString().split('T')[0];
-    dateInput.min = today;
-    dateInput.value = today;
-  }
+  // Quick Signal Dispatcher
+  const signalInput = document.getElementById('signalQuickInput');
+  const signalBtn = document.getElementById('sendSignalBtn');
+  const signalStatus = document.getElementById('signalStatusText');
 
-  // Schedule meeting button handler
-  const scheduleBtn = document.getElementById('scheduleMeetingBtn');
-  const meetNameInput = document.getElementById('meetName');
-  const meetContactInput = document.getElementById('meetContact');
-  const meetTopicSelect = document.getElementById('meetTopic');
-  const meetPlatformSelect = document.getElementById('meetPlatform');
-  const meetDateInput = document.getElementById('meetDate');
-  const meetTimeSlotSelect = document.getElementById('meetTimeSlot');
-  const meetNotesInput = document.getElementById('meetNotes');
-  const meetStatusText = document.getElementById('meetStatusText');
-
-  if (scheduleBtn && meetNameInput && meetContactInput) {
-    scheduleBtn.addEventListener('click', async () => {
-      const name = meetNameInput.value.trim();
-      const contact = meetContactInput.value.trim();
-      const topic = meetTopicSelect ? meetTopicSelect.value : 'General Consultation';
-      const platform = meetPlatformSelect ? meetPlatformSelect.value : 'Google Meet';
-      const date = meetDateInput ? meetDateInput.value : 'Flexible';
-      const slot = meetTimeSlotSelect ? meetTimeSlotSelect.value : 'Flexible';
-      const notes = meetNotesInput ? meetNotesInput.value.trim() : 'None provided';
-
-      if (!name) {
-        meetNameInput.focus();
-        meetNameInput.style.borderColor = '#F43F5E';
-        if (meetStatusText) meetStatusText.innerHTML = `<span style="color:#F43F5E;">Please enter your name.</span>`;
+  if (signalBtn && signalInput) {
+    async function transmitSignal() {
+      const text = signalInput.value.trim();
+      if (!text) {
+        signalInput.focus();
+        signalInput.style.borderColor = '#F43F5E';
+        if (signalStatus) signalStatus.innerHTML = `<span style="color:#F43F5E;">Please type a quick thought or inquiry first.</span>`;
         return;
       }
 
-      if (!contact) {
-        meetContactInput.focus();
-        meetContactInput.style.borderColor = '#F43F5E';
-        if (meetStatusText) meetStatusText.innerHTML = `<span style="color:#F43F5E;">Please provide your Email or WhatsApp number.</span>`;
-        return;
-      }
-
-      meetNameInput.style.borderColor = '';
-      meetContactInput.style.borderColor = '';
-
-      scheduleBtn.disabled = true;
-      scheduleBtn.innerHTML = '<span>DISPATCHING REQUEST...</span>';
-      if (meetStatusText) meetStatusText.innerHTML = `<span style="color:var(--c-text-muted);">Scheduling 1-on-1 discovery call with Nyghto team...</span>`;
+      signalInput.style.borderColor = '';
+      signalBtn.disabled = true;
+      signalBtn.innerHTML = '<span>DISPATCHING...</span>';
+      if (signalStatus) signalStatus.innerHTML = `<span style="color:var(--c-text-muted);">Transmitting directly to founder channel...</span>`;
 
       const payload = {
-        username: "Nyghto Consultation Desk",
+        username: "Nyghto Founder Desk",
         avatar_url: "https://nyghto.in/favicon.png",
         embeds: [
           {
-            title: "📅 New 1-on-1 Consultation Requested",
-            description: `A client has requested a discovery consultation on **[nyghto.in](https://nyghto.in/#contact)**.`,
-            color: 3462009, // Emerald green
+            title: "⚡ Quick Founder Signal Transmitted",
+            description: `**"${text}"**`,
+            color: 74909, // Nyghto Cobalt
             fields: [
-              { name: "👤 Client Name", value: name, inline: true },
-              { name: "📞 Contact (Email/Phone)", value: contact, inline: true },
-              { name: "🎯 Consultation Topic", value: topic, inline: true },
-              { name: "💻 Meeting Platform", value: platform, inline: true },
-              { name: "🗓 Preferred Date", value: date, inline: true },
-              { name: "⏰ Preferred Time Slot", value: slot, inline: true },
-              { name: "📝 Notes / Project Idea", value: notes || "None provided", inline: false }
+              { name: "⏰ Sent At", value: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }) + " IST", inline: true },
+              { name: "🌐 Source", value: "nyghto.in Founder Desk", inline: true }
             ],
             footer: {
-              text: "Nyghto Studio Direct Consultation Dispatch",
+              text: "Nyghto Studio Direct Signal",
               icon_url: "https://nyghto.in/favicon.png"
             },
             timestamp: new Date().toISOString()
@@ -762,12 +722,13 @@ function initConsultationAndTabs() {
         });
 
         if (response.ok || response.status === 204) {
-          scheduleBtn.innerHTML = '<span>MEETING REQUEST SENT ✓</span>';
-          scheduleBtn.style.background = '#34D399';
-          scheduleBtn.style.color = '#064E3B';
+          signalBtn.innerHTML = '<span>SIGNAL RECEIVED ✓</span>';
+          signalBtn.style.background = '#34D399';
+          signalBtn.style.color = '#064E3B';
+          signalInput.value = '';
 
-          if (meetStatusText) {
-            meetStatusText.innerHTML = `✓ Consultation requested! Our founders will confirm at <strong>${contact}</strong>.`;
+          if (signalStatus) {
+            signalStatus.innerHTML = `✓ Signal received in our Discord channel. We will reply to your contact shortly!`;
           }
 
           if (typeof playSynthTone === 'function') {
@@ -778,20 +739,35 @@ function initConsultationAndTabs() {
         } else {
           throw new Error('Webhook error');
         }
-      } catch (e) {
-        console.warn('Direct consultation webhook fallback to mailto:', e);
-        scheduleBtn.innerHTML = '<span>OPENING EMAIL...</span>';
-        const subject = `[Consultation Request] ${name} — ${topic}`;
-        const bodyText = `Hello Nyghto Team,\n\nI would like to schedule a 1-on-1 consultation.\n\nName: ${name}\nContact: ${contact}\nTopic: ${topic}\nPlatform: ${platform}\nPreferred Date: ${date}\nTime Slot: ${slot}\nNotes: ${notes}\n\nSent from nyghto.in`;
-        window.location.href = `mailto:hello@nyghto.in?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyText)}`;
+      } catch (err) {
+        console.warn('Signal fallback to email:', err);
+        signalBtn.innerHTML = '<span>OPENING EMAIL...</span>';
+        window.location.href = `mailto:hello@nyghto.in?subject=${encodeURIComponent('[Quick Signal] Direct Studio Inquiry')}&body=${encodeURIComponent(text)}`;
       } finally {
         setTimeout(() => {
-          scheduleBtn.disabled = false;
+          signalBtn.disabled = false;
+          signalBtn.innerHTML = '<span>TRANSMIT SIGNAL ↵</span>';
+          signalBtn.style.background = '';
+          signalBtn.style.color = '';
         }, 4000);
       }
+    }
+
+    signalBtn.addEventListener('click', transmitSignal);
+    signalInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') transmitSignal();
     });
   }
 }
+
+window.triggerQuickMeetingModal = function() {
+  const signalInput = document.getElementById('signalQuickInput');
+  if (signalInput) {
+    signalInput.value = "Hey Nyghto, I'd like to book a 15-min Google Meet discovery call. Reach me at: ";
+    signalInput.focus();
+    if (typeof playSynthTone === 'function') playSynthTone(659.25);
+  }
+};
 
 /* ==========================================================================
    8. Conversational Brief Generator & Actions (Direct Discord Webhook Connection)
