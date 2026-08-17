@@ -652,72 +652,23 @@ function initServiceInquireLinks() {
 const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/1536735455633211535/GlxsOfAJPAUx-lnfZVuMLk2r7w3K5tXR5gcfQ7NIEEpWPtZI10elGf21j9udxA8xpdn3';
 
 /* ==========================================================================
-   7. Cal-Style Visual Calendar Scheduler
+   7. 1-on-1 Strategy & Consultation Request Handler
    ========================================================================== */
 function initCalScheduler() {
-  const datesStrip = document.getElementById('calDatesStrip');
-  const slotsGrid = document.getElementById('calSlotsGrid');
   const confirmBtn = document.getElementById('calConfirmBtn');
   const nameInput = document.getElementById('calClientName');
   const contactInput = document.getElementById('calClientContact');
+  const platformSelect = document.getElementById('calClientPlatform');
+  const notesInput = document.getElementById('calClientNotes');
   const statusText = document.getElementById('calStatusText');
 
-  if (!datesStrip || !confirmBtn) return;
+  if (!confirmBtn) return;
 
-  let selectedDateStr = '';
-  let selectedTimeSlot = '11:00 AM';
-
-  // Generate next 7 days
-  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  
-  datesStrip.innerHTML = '';
-  for (let i = 0; i < 7; i++) {
-    const d = new Date();
-    d.setDate(d.getDate() + i);
-
-    const dayName = days[d.getDay()];
-    const monthName = months[d.getMonth()];
-    const dateNum = d.getDate();
-    const dateFormatted = `${dayName}, ${monthName} ${dateNum}`;
-
-    if (i === 0) selectedDateStr = dateFormatted;
-
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = `date-card ${i === 0 ? 'active' : ''} font-mono`;
-    btn.setAttribute('data-date', dateFormatted);
-    btn.innerHTML = `
-      <span class="d-sub">${i === 0 ? 'TODAY' : (i === 1 ? 'TOMORROW' : dayName)}</span>
-      <span class="d-num">${dateNum}</span>
-      <span class="d-mon">${monthName}</span>
-    `;
-
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.date-card').forEach(c => c.classList.remove('active'));
-      btn.classList.add('active');
-      selectedDateStr = dateFormatted;
-      if (typeof playSynthTone === 'function') playSynthTone(587.33);
-    });
-
-    datesStrip.appendChild(btn);
-  }
-
-  // Time slot selection
-  const slotPills = document.querySelectorAll('.slot-pill');
-  slotPills.forEach(pill => {
-    pill.addEventListener('click', () => {
-      slotPills.forEach(p => p.classList.remove('active'));
-      pill.classList.add('active');
-      selectedTimeSlot = pill.getAttribute('data-time') || '11:00 AM';
-      if (typeof playSynthTone === 'function') playSynthTone(659.25);
-    });
-  });
-
-  // Confirm Booking Button
   confirmBtn.addEventListener('click', async () => {
     const name = nameInput ? nameInput.value.trim() : '';
     const contact = contactInput ? contactInput.value.trim() : '';
+    const platform = platformSelect ? platformSelect.value : 'Google Meet (Video Conference)';
+    const notes = notesInput ? notesInput.value.trim() : 'None provided';
 
     if (!name) {
       if (nameInput) {
@@ -733,7 +684,7 @@ function initCalScheduler() {
         contactInput.focus();
         contactInput.style.borderColor = '#F43F5E';
       }
-      if (statusText) statusText.innerHTML = `<span style="color:#F43F5E;">Please enter your Email or WhatsApp number.</span>`;
+      if (statusText) statusText.innerHTML = `<span style="color:#F43F5E;">Please provide your Email or WhatsApp number.</span>`;
       return;
     }
 
@@ -741,26 +692,25 @@ function initCalScheduler() {
     if (contactInput) contactInput.style.borderColor = '';
 
     confirmBtn.disabled = true;
-    confirmBtn.innerHTML = '<span>CONFIRMING SLOT...</span>';
-    if (statusText) statusText.innerHTML = `<span style="color:var(--c-text-muted);">Confirming 30-min strategy call with founders...</span>`;
+    confirmBtn.innerHTML = '<span>DISPATCHING REQUEST...</span>';
+    if (statusText) statusText.innerHTML = `<span style="color:var(--c-text-muted);">Transmitting request to Nyghto founders...</span>`;
 
     const payload = {
       username: "Nyghto Strategy Desk",
       avatar_url: "https://nyghto.in/favicon.png",
       embeds: [
         {
-          title: "🗓️ 30-Min Discovery Strategy Call Booked",
-          description: `A new client has scheduled a consultation call on **[nyghto.in](https://nyghto.in/#contact)**.`,
+          title: "📞 New 1-on-1 Strategy Call Requested",
+          description: `A client has requested a consultation with the founders on **[nyghto.in](https://nyghto.in/#contact)**.`,
           color: 3462009, // Emerald
           fields: [
             { name: "👤 Client Name", value: name, inline: true },
             { name: "📞 Contact (Email/Phone)", value: contact, inline: true },
-            { name: "📅 Scheduled Day", value: selectedDateStr, inline: true },
-            { name: "⏰ Scheduled Time", value: `${selectedTimeSlot} (IST)`, inline: true },
-            { name: "📹 Platform", value: "Google Meet", inline: true }
+            { name: "💻 Platform", value: platform, inline: true },
+            { name: "📝 Project Notes", value: notes || "None provided", inline: false }
           ],
           footer: {
-            text: "Nyghto Direct Strategy Scheduling",
+            text: "Nyghto Studio Direct Consultation Dispatch",
             icon_url: "https://nyghto.in/favicon.png"
           },
           timestamp: new Date().toISOString()
@@ -779,26 +729,19 @@ function initCalScheduler() {
         // Switch to success state
         const bookingFlow = document.getElementById('calBookingFlow');
         const successState = document.getElementById('calSuccessState');
-        const ticketTimeVal = document.getElementById('ticketTimeVal');
+        const ticketPlatformVal = document.getElementById('ticketPlatformVal');
         const successDetails = document.getElementById('successBookingDetails');
-        const gcalLink = document.getElementById('successGcalLink');
 
         if (bookingFlow && successState) {
           bookingFlow.style.display = 'none';
           successState.style.display = 'block';
 
-          if (ticketTimeVal) {
-            ticketTimeVal.textContent = `${selectedDateStr} @ ${selectedTimeSlot} IST`;
+          if (ticketPlatformVal) {
+            ticketPlatformVal.textContent = platform;
           }
 
           if (successDetails) {
-            successDetails.innerHTML = `Your 30-minute discovery consultation with Nyghto founders is confirmed for <strong>${selectedDateStr} at ${selectedTimeSlot} IST</strong>. Confirmation sent to <strong>${contact}</strong>.`;
-          }
-
-          if (gcalLink) {
-            const title = encodeURIComponent("Nyghto Studio • 1-on-1 Strategy Call");
-            const details = encodeURIComponent(`Discovery consultation with Nyghto engineering founders.\nClient: ${name}\nContact: ${contact}\nPlatform: Google Meet\nWebsite: https://nyghto.in`);
-            gcalLink.href = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${details}`;
+            successDetails.innerHTML = `Your 1-on-1 strategy call request has been received. Our founders will contact you at <strong>${contact}</strong> within 2–4 hours.`;
           }
         }
 
@@ -811,15 +754,15 @@ function initCalScheduler() {
         throw new Error('Webhook error');
       }
     } catch (err) {
-      console.warn('Meeting fallback to email:', err);
+      console.warn('Strategy call fallback to email:', err);
       confirmBtn.innerHTML = '<span>OPENING EMAIL...</span>';
-      const subject = `[Strategy Call] ${name} — ${selectedDateStr} at ${selectedTimeSlot}`;
-      const body = `Hello Nyghto Team,\n\nI would like to confirm a 30-min strategy call.\n\nName: ${name}\nContact: ${contact}\nPreferred Date: ${selectedDateStr}\nTime: ${selectedTimeSlot} IST\n\nSent from nyghto.in`;
+      const subject = `[Strategy Call Request] ${name}`;
+      const body = `Hello Nyghto Team,\n\nI would like to request a 1-on-1 strategy call.\n\nName: ${name}\nContact: ${contact}\nPlatform: ${platform}\nNotes: ${notes}\n\nSent from nyghto.in`;
       window.location.href = `mailto:hello@nyghto.in?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     } finally {
       setTimeout(() => {
         confirmBtn.disabled = false;
-        confirmBtn.innerHTML = '<span>CONFIRM 30-MIN DISCOVERY CALL ↗</span>';
+        confirmBtn.innerHTML = '<span>REQUEST 1-ON-1 DISCOVERY CALL ↗</span>';
       }, 4000);
     }
   });

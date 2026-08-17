@@ -1113,84 +1113,72 @@
           </div>
         </div>
 
-        <!-- Right Column: Interactive 7-Day & Time Picker -->
+        <!-- Right Column: Clean 1-on-1 Request Form -->
         <div class="cal-interactive-side">
           
           <!-- Default Booking Flow -->
           <div id="calBookingFlow">
             <div class="cal-step-header">
-              <span class="cal-step-badge font-mono">STEP 01</span>
-              <span class="cal-step-title font-mono">Select a Date</span>
-            </div>
-            
-            <!-- 7-Day Visual Date Strip -->
-            <div class="cal-dates-strip" id="calDatesStrip">
-              <!-- Rendered dynamically via app.js -->
+              <span class="cal-step-badge font-mono">DIRECT INQUIRY</span>
+              <span class="cal-step-title font-mono">Request a Strategy Call</span>
             </div>
 
-            <div class="cal-step-header" style="margin-top: 1.8rem;">
-              <span class="cal-step-badge font-mono">STEP 02</span>
-              <span class="cal-step-title font-mono">Select a Time Slot (IST)</span>
-            </div>
-            
-            <!-- Available Slots Grid -->
-            <div class="cal-slots-grid" id="calSlotsGrid">
-              <button type="button" class="slot-pill active" data-time="11:00 AM">11:00 AM</button>
-              <button type="button" class="slot-pill" data-time="02:30 PM">02:30 PM</button>
-              <button type="button" class="slot-pill" data-time="04:30 PM">04:30 PM</button>
-              <button type="button" class="slot-pill" data-time="07:00 PM">07:00 PM</button>
-              <button type="button" class="slot-pill" data-time="09:00 PM">09:00 PM</button>
-            </div>
-
-            <div class="cal-step-header" style="margin-top: 1.8rem;">
-              <span class="cal-step-badge font-mono">STEP 03</span>
-              <span class="cal-step-title font-mono">Your Contact Details</span>
-            </div>
-
-            <!-- Confirm Inputs -->
-            <div class="cal-confirm-box font-sans">
+            <!-- Consultation Inputs -->
+            <div class="cal-confirm-box font-sans" style="margin-top: 1.2rem;">
               <div class="cal-inputs-row">
-                <input type="text" id="calClientName" class="cal-input" placeholder="Your name" aria-label="Your Name">
-                <input type="text" id="calClientContact" class="cal-input" placeholder="Email or WhatsApp (+91)" aria-label="Email or WhatsApp">
+                <input type="text" id="calClientName" class="cal-input font-sans" placeholder="Your name *" required aria-label="Your Name">
+                <input type="text" id="calClientContact" class="cal-input font-sans" placeholder="Email or WhatsApp (+91) *" required aria-label="Email or WhatsApp">
+              </div>
+
+              <div class="cal-inputs-row">
+                <select id="calClientPlatform" class="cal-input font-mono" aria-label="Preferred Platform" style="cursor: pointer;">
+                  <option value="Google Meet (Video Conference)" selected>Platform: Google Meet (Video Call)</option>
+                  <option value="Direct Phone Call">Platform: Direct Phone Call (+91)</option>
+                  <option value="WhatsApp Audio / Chat">Platform: WhatsApp Audio / Chat</option>
+                </select>
+              </div>
+
+              <div class="cal-inputs-row">
+                <textarea id="calClientNotes" class="cal-input font-sans" rows="3" placeholder="Tell us briefly about what you're looking to build (optional)..." style="resize: vertical; min-height: 80px;"></textarea>
               </div>
 
               <button type="button" class="cal-confirm-btn font-mono" id="calConfirmBtn">
-                <span>CONFIRM 30-MIN DISCOVERY CALL ↗</span>
+                <span>REQUEST 1-ON-1 DISCOVERY CALL ↗</span>
               </button>
 
               <div class="cal-status-text font-mono" id="calStatusText" aria-live="polite"></div>
             </div>
           </div>
 
-          <!-- Interactive Success Confirmation State (Hidden until booked) -->
+          <!-- Interactive Success Confirmation State (Hidden until submitted) -->
           <div class="cal-success-state" id="calSuccessState" style="display: none;">
             <div class="success-icon-wrap font-mono">✓</div>
-            <h3 class="success-title font-display">Call Scheduled!</h3>
+            <h3 class="success-title font-display">Request Dispatched!</h3>
             <p class="success-sub font-sans" id="successBookingDetails">
-              Your 30-minute discovery consultation has been confirmed.
+              Your 1-on-1 strategy call request has been received by our founders.
             </p>
 
             <div class="success-ticket font-mono">
               <div class="ticket-row">
-                <span class="t-label">HOST</span>
+                <span class="t-label">TEAM</span>
                 <span class="t-val">Nyghto Studio Founders</span>
               </div>
               <div class="ticket-row">
-                <span class="t-label">TIME</span>
-                <span class="t-val" id="ticketTimeVal">--</span>
+                <span class="t-label">MEETING</span>
+                <span class="t-val" id="ticketPlatformVal">Google Meet</span>
               </div>
               <div class="ticket-row">
-                <span class="t-label">PLATFORM</span>
-                <span class="t-val">Google Meet</span>
+                <span class="t-label">RESPONSE</span>
+                <span class="t-val">Within 2–4 hours</span>
               </div>
             </div>
 
             <div class="success-actions">
-              <a href="#" id="successGcalLink" target="_blank" rel="noopener noreferrer" class="success-action-btn primary font-mono">
-                <span>+ ADD TO GOOGLE CALENDAR</span>
+              <a href="https://wa.me/917012028379?text=Hi%20Nyghto,%20I%20just%20submitted%20a%20strategy%20call%20request%20on%20your%20site" target="_blank" rel="noopener noreferrer" class="success-action-btn primary font-mono">
+                <span>CHAT ON WHATSAPP ↗</span>
               </a>
               <button type="button" class="success-action-btn secondary font-mono" onclick="resetCalScheduler()">
-                <span>BOOK ANOTHER SLOT</span>
+                <span>SUBMIT ANOTHER REQUEST</span>
               </button>
             </div>
           </div>
