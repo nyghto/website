@@ -1061,132 +1061,89 @@
       </div>
     </section>
 
-    <!-- INTERACTIVE 1-ON-1 MEETING & CONSULTATION SCHEDULER -->
-    <section class="creative-contact-section" id="contact" aria-label="Schedule a 1-on-1 Consultation">
-      
-      <div class="cal-scheduler-card">
+    <!-- EDITORIAL STUDIO CONSULTATION & DIRECT DISPATCH SECTION -->
+    <section class="creative-contact-section" id="contact" aria-label="Talk with the Team">
+      <div class="contact-editorial-container">
         
-        <!-- Left Column: Meeting Info -->
-        <div class="cal-info-side">
-          <div>
-            <div class="cal-host-profile">
-              <div class="host-avatar font-mono">NY</div>
-              <div class="host-details">
-                <span class="host-name font-sans">Nyghto Studio</span>
-                <span class="host-status font-mono">
-                  <span class="pulse-radar-dot"></span>
-                  <span>Founders Available</span>
-                </span>
-              </div>
-            </div>
-
-            <h2 class="cal-title font-display">1-on-1 Strategy &amp; Discovery Call.</h2>
-            <p class="cal-desc font-sans">
-              Talk directly with our engineering founders about your product roadmap, system architecture, and launch timelines.
-            </p>
-
-            <div class="cal-meta-list font-mono">
-              <div class="cal-meta-item">
-                <span class="meta-icon">⏱</span>
-                <span>30-minute discovery consultation</span>
-              </div>
-              <div class="cal-meta-item">
-                <span class="meta-icon">📹</span>
-                <span>Google Meet (Video Conference)</span>
-              </div>
-              <div class="cal-meta-item">
-                <span class="meta-icon">🔒</span>
-                <span>100% Confidential &amp; Free</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="cal-direct-links font-mono">
-            <span class="direct-label">Need an immediate answer?</span>
-            <div class="direct-row">
-              <a href="mailto:hello@nyghto.in" class="cal-link">hello@nyghto.in</a>
-              <span class="sep">•</span>
-              <a href="https://wa.me/917012028379" target="_blank" rel="noopener noreferrer" class="cal-link">WhatsApp ↗</a>
-              <span class="sep">•</span>
-              <a href="tel:+917012028379" class="cal-link">+91 70120 28379</a>
-            </div>
-          </div>
+        <div class="contact-header-block">
+          <span class="hud-tag font-mono">Talk with the Team</span>
+          <h2 class="contact-editorial-title font-display">Have a project in mind?<br>Let's build it right.</h2>
+          <p class="contact-editorial-sub font-sans">
+            Direct 1-on-1 engineering consultation with our founders. We discuss architecture, feasibility, cost estimates, and sprint timelines.
+          </p>
         </div>
 
-        <!-- Right Column: Clean 1-on-1 Request Form -->
-        <div class="cal-interactive-side">
+        <!-- 3 Direct Studio Connect Channels (Editorial Rows) -->
+        <div class="editorial-channels-list font-mono">
           
-          <!-- Default Booking Flow -->
-          <div id="calBookingFlow">
-            <div class="cal-step-header">
-              <span class="cal-step-badge font-mono">DIRECT INQUIRY</span>
-              <span class="cal-step-title font-mono">Request a Strategy Call</span>
+          <a href="https://wa.me/917012028379?text=Hi%20Nyghto,%20I'd%20like%20to%20schedule%20a%20strategy%20consultation%20for%20a%20project" target="_blank" rel="noopener noreferrer" class="channel-row dot-box">
+            <div class="channel-col-left">
+              <span class="channel-index">01</span>
+              <span class="channel-name">WhatsApp Direct Hotline</span>
             </div>
-
-            <!-- Consultation Inputs -->
-            <div class="cal-confirm-box font-sans" style="margin-top: 1.2rem;">
-              <div class="cal-inputs-row">
-                <input type="text" id="calClientName" class="cal-input font-sans" placeholder="Your name *" required aria-label="Your Name">
-                <input type="text" id="calClientContact" class="cal-input font-sans" placeholder="Email or WhatsApp (+91) *" required aria-label="Email or WhatsApp">
-              </div>
-
-              <div class="cal-inputs-row">
-                <select id="calClientPlatform" class="cal-input font-mono" aria-label="Preferred Platform" style="cursor: pointer;">
-                  <option value="Google Meet (Video Conference)" selected>Platform: Google Meet (Video Call)</option>
-                  <option value="Direct Phone Call">Platform: Direct Phone Call (+91)</option>
-                  <option value="WhatsApp Audio / Chat">Platform: WhatsApp Audio / Chat</option>
-                </select>
-              </div>
-
-              <div class="cal-inputs-row">
-                <textarea id="calClientNotes" class="cal-input font-sans" rows="3" placeholder="Tell us briefly about what you're looking to build (optional)..." style="resize: vertical; min-height: 80px;"></textarea>
-              </div>
-
-              <button type="button" class="cal-confirm-btn font-mono" id="calConfirmBtn">
-                <span>REQUEST 1-ON-1 DISCOVERY CALL ↗</span>
-              </button>
-
-              <div class="cal-status-text font-mono" id="calStatusText" aria-live="polite"></div>
+            <div class="channel-col-mid font-sans">Instant voice notes &amp; fast-track chat directly with founders (+91 70120 28379)</div>
+            <div class="channel-col-right">
+              <span>OPEN WHATSAPP ↗</span>
             </div>
+          </a>
+
+          <a href="mailto:hello@nyghto.in?subject=1-on-1%20Strategy%20Consultation%20Request" class="channel-row dot-box">
+            <div class="channel-col-left">
+              <span class="channel-index">02</span>
+              <span class="channel-name">1-on-1 Google Meet Call</span>
+            </div>
+            <div class="channel-col-mid font-sans">30-min discovery video session to map system architecture &amp; budget</div>
+            <div class="channel-col-right">
+              <span>REQUEST CALL ↗</span>
+            </div>
+          </a>
+
+          <a href="mailto:hello@nyghto.in" class="channel-row dot-box">
+            <div class="channel-col-left">
+              <span class="channel-index">03</span>
+              <span class="channel-name">Direct Studio Inbox</span>
+            </div>
+            <div class="channel-col-mid font-sans">Send RFP documents, wireframes, or detailed project briefs</div>
+            <div class="channel-col-right">
+              <span>hello@nyghto.in ↗</span>
+            </div>
+          </a>
+
+        </div>
+
+        <!-- Sleek Direct Signal Form -->
+        <div class="dispatch-form-card">
+          <div class="dispatch-header font-mono">
+            <span>⚡ DIRECT PROJECT BRIEF</span>
+            <span class="dispatch-hint">Dispatches instantly to our active team Discord</span>
           </div>
 
-          <!-- Interactive Success Confirmation State (Hidden until submitted) -->
-          <div class="cal-success-state" id="calSuccessState" style="display: none;">
-            <div class="success-icon-wrap font-mono">✓</div>
-            <h3 class="success-title font-display">Request Dispatched!</h3>
-            <p class="success-sub font-sans" id="successBookingDetails">
-              Your 1-on-1 strategy call request has been received by our founders.
-            </p>
-
-            <div class="success-ticket font-mono">
-              <div class="ticket-row">
-                <span class="t-label">TEAM</span>
-                <span class="t-val">Nyghto Studio Founders</span>
-              </div>
-              <div class="ticket-row">
-                <span class="t-label">MEETING</span>
-                <span class="t-val" id="ticketPlatformVal">Google Meet</span>
-              </div>
-              <div class="ticket-row">
-                <span class="t-label">RESPONSE</span>
-                <span class="t-val">Within 2–4 hours</span>
-              </div>
+          <form id="dispatchForm" class="dispatch-form-grid font-sans">
+            <div class="dispatch-field">
+              <label for="dispName" class="font-mono">YOUR NAME</label>
+              <input type="text" id="dispName" placeholder="Zack" required>
+            </div>
+            
+            <div class="dispatch-field">
+              <label for="dispContact" class="font-mono">EMAIL / WHATSAPP</label>
+              <input type="text" id="dispContact" placeholder="zack@company.com or +91..." required>
             </div>
 
-            <div class="success-actions">
-              <a href="https://wa.me/917012028379?text=Hi%20Nyghto,%20I%20just%20submitted%20a%20strategy%20call%20request%20on%20your%20site" target="_blank" rel="noopener noreferrer" class="success-action-btn primary font-mono">
-                <span>CHAT ON WHATSAPP ↗</span>
-              </a>
-              <button type="button" class="success-action-btn secondary font-mono" onclick="resetCalScheduler()">
-                <span>SUBMIT ANOTHER REQUEST</span>
+            <div class="dispatch-field full-width">
+              <label for="dispBrief" class="font-mono">PROJECT DESCRIPTION / TECH STACK</label>
+              <input type="text" id="dispBrief" placeholder="e.g. We're building a SaaS platform for logistics and need an MVP in 6 weeks." required>
+            </div>
+
+            <div class="dispatch-action-row full-width">
+              <button type="submit" class="dispatch-btn font-mono" id="dispatchSubmitBtn">
+                <span>SEND DIRECT BRIEF ↵</span>
               </button>
+              <div class="dispatch-status font-mono" id="dispatchStatus" aria-live="polite"></div>
             </div>
-          </div>
-
+          </form>
         </div>
 
       </div>
-
     </section>
 
     <!-- MONUMENTAL FOOTER -->

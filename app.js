@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initGlitchFreeScrollPhysics();
   initInteractiveEyeTracking();
   initPaperCard3DTilt();
-  initCalScheduler();
+  initStudioDispatchForm();
   initConversationalBrief();
   initServiceInquireLinks();
   initCrosshairIntersectionTracker();
@@ -652,130 +652,91 @@ function initServiceInquireLinks() {
 const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/1536735455633211535/GlxsOfAJPAUx-lnfZVuMLk2r7w3K5tXR5gcfQ7NIEEpWPtZI10elGf21j9udxA8xpdn3';
 
 /* ==========================================================================
-   7. 1-on-1 Strategy & Consultation Request Handler
+   7. Editorial Studio Consultation & Direct Brief Dispatch Handler
    ========================================================================== */
-function initCalScheduler() {
-  const confirmBtn = document.getElementById('calConfirmBtn');
-  const nameInput = document.getElementById('calClientName');
-  const contactInput = document.getElementById('calClientContact');
-  const platformSelect = document.getElementById('calClientPlatform');
-  const notesInput = document.getElementById('calClientNotes');
-  const statusText = document.getElementById('calStatusText');
+function initStudioDispatchForm() {
+  const form = document.getElementById('dispatchForm');
+  const submitBtn = document.getElementById('dispatchSubmitBtn');
+  const statusEl = document.getElementById('dispatchStatus');
 
-  if (!confirmBtn) return;
+  if (form && submitBtn) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const name = document.getElementById('dispName').value.trim();
+      const contact = document.getElementById('dispContact').value.trim();
+      const brief = document.getElementById('dispBrief').value.trim();
 
-  confirmBtn.addEventListener('click', async () => {
-    const name = nameInput ? nameInput.value.trim() : '';
-    const contact = contactInput ? contactInput.value.trim() : '';
-    const platform = platformSelect ? platformSelect.value : 'Google Meet (Video Conference)';
-    const notes = notesInput ? notesInput.value.trim() : 'None provided';
+      if (!name || !contact || !brief) return;
 
-    if (!name) {
-      if (nameInput) {
-        nameInput.focus();
-        nameInput.style.borderColor = '#F43F5E';
-      }
-      if (statusText) statusText.innerHTML = `<span style="color:#F43F5E;">Please enter your name.</span>`;
-      return;
-    }
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span>DISPATCHING...</span>';
+      if (statusEl) statusEl.innerHTML = `<span style="color:var(--c-text-muted);">Transmitting brief directly to founders...</span>`;
 
-    if (!contact) {
-      if (contactInput) {
-        contactInput.focus();
-        contactInput.style.borderColor = '#F43F5E';
-      }
-      if (statusText) statusText.innerHTML = `<span style="color:#F43F5E;">Please provide your Email or WhatsApp number.</span>`;
-      return;
-    }
+      const payload = {
+        username: "Nyghto Studio Dispatch",
+        avatar_url: "https://nyghto.in/favicon.png",
+        embeds: [
+          {
+            title: "🚀 New Direct Project Brief",
+            description: `**"${brief}"**`,
+            color: 74909, // Cobalt
+            fields: [
+              { name: "👤 Client Name", value: name, inline: true },
+              { name: "📞 Contact (Email/Phone)", value: contact, inline: true },
+              { name: "⏰ Sent At", value: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }) + " IST", inline: true }
+            ],
+            footer: {
+              text: "Nyghto Studio Direct Consultation Engine",
+              icon_url: "https://nyghto.in/favicon.png"
+            },
+            timestamp: new Date().toISOString()
+          }
+        ]
+      };
 
-    if (nameInput) nameInput.style.borderColor = '';
-    if (contactInput) contactInput.style.borderColor = '';
+      try {
+        const response = await fetch(DISCORD_WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
 
-    confirmBtn.disabled = true;
-    confirmBtn.innerHTML = '<span>DISPATCHING REQUEST...</span>';
-    if (statusText) statusText.innerHTML = `<span style="color:var(--c-text-muted);">Transmitting request to Nyghto founders...</span>`;
+        if (response.ok || response.status === 204) {
+          submitBtn.innerHTML = '<span>BRIEF TRANSMITTED ✓</span>';
+          submitBtn.style.background = '#34D399';
+          submitBtn.style.color = '#064E3B';
+          form.reset();
 
-    const payload = {
-      username: "Nyghto Strategy Desk",
-      avatar_url: "https://nyghto.in/favicon.png",
-      embeds: [
-        {
-          title: "📞 New 1-on-1 Strategy Call Requested",
-          description: `A client has requested a consultation with the founders on **[nyghto.in](https://nyghto.in/#contact)**.`,
-          color: 3462009, // Emerald
-          fields: [
-            { name: "👤 Client Name", value: name, inline: true },
-            { name: "📞 Contact (Email/Phone)", value: contact, inline: true },
-            { name: "💻 Platform", value: platform, inline: true },
-            { name: "📝 Project Notes", value: notes || "None provided", inline: false }
-          ],
-          footer: {
-            text: "Nyghto Studio Direct Consultation Dispatch",
-            icon_url: "https://nyghto.in/favicon.png"
-          },
-          timestamp: new Date().toISOString()
-        }
-      ]
-    };
-
-    try {
-      const res = await fetch(DISCORD_WEBHOOK_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-
-      if (res.ok || res.status === 204) {
-        // Switch to success state
-        const bookingFlow = document.getElementById('calBookingFlow');
-        const successState = document.getElementById('calSuccessState');
-        const ticketPlatformVal = document.getElementById('ticketPlatformVal');
-        const successDetails = document.getElementById('successBookingDetails');
-
-        if (bookingFlow && successState) {
-          bookingFlow.style.display = 'none';
-          successState.style.display = 'block';
-
-          if (ticketPlatformVal) {
-            ticketPlatformVal.textContent = platform;
+          if (statusEl) {
+            statusEl.innerHTML = `✓ Brief received! Our engineering founders will reach out to <strong>${contact}</strong> within hours.`;
           }
 
-          if (successDetails) {
-            successDetails.innerHTML = `Your 1-on-1 strategy call request has been received. Our founders will contact you at <strong>${contact}</strong> within 2–4 hours.`;
+          if (typeof playSynthTone === 'function') {
+            playSynthTone(523.25);
+            setTimeout(() => playSynthTone(659.25), 120);
+            setTimeout(() => playSynthTone(783.99), 240);
           }
+        } else {
+          throw new Error('Webhook error');
         }
-
-        if (typeof playSynthTone === 'function') {
-          playSynthTone(523.25);
-          setTimeout(() => playSynthTone(659.25), 120);
-          setTimeout(() => playSynthTone(783.99), 240);
-        }
-      } else {
-        throw new Error('Webhook error');
+      } catch (err) {
+        console.warn('Dispatch fallback to mailto:', err);
+        submitBtn.innerHTML = '<span>OPENING EMAIL...</span>';
+        const subject = `[Project Brief] ${name}`;
+        const body = `Hello Nyghto Team,\n\nI would like to discuss a project.\n\nName: ${name}\nContact: ${contact}\nBrief: ${brief}\n\nSent from nyghto.in`;
+        window.location.href = `mailto:hello@nyghto.in?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      } finally {
+        setTimeout(() => {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<span>SEND DIRECT BRIEF ↵</span>';
+          submitBtn.style.background = '';
+          submitBtn.style.color = '';
+        }, 5000);
       }
-    } catch (err) {
-      console.warn('Strategy call fallback to email:', err);
-      confirmBtn.innerHTML = '<span>OPENING EMAIL...</span>';
-      const subject = `[Strategy Call Request] ${name}`;
-      const body = `Hello Nyghto Team,\n\nI would like to request a 1-on-1 strategy call.\n\nName: ${name}\nContact: ${contact}\nPlatform: ${platform}\nNotes: ${notes}\n\nSent from nyghto.in`;
-      window.location.href = `mailto:hello@nyghto.in?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    } finally {
-      setTimeout(() => {
-        confirmBtn.disabled = false;
-        confirmBtn.innerHTML = '<span>REQUEST 1-ON-1 DISCOVERY CALL ↗</span>';
-      }, 4000);
-    }
-  });
-}
-
-window.resetCalScheduler = function() {
-  const bookingFlow = document.getElementById('calBookingFlow');
-  const successState = document.getElementById('calSuccessState');
-  if (bookingFlow && successState) {
-    bookingFlow.style.display = 'block';
-    successState.style.display = 'none';
+    });
   }
-};
+}
 
 /* ==========================================================================
    8. Conversational Brief Generator & Actions (Direct Discord Webhook Connection)
