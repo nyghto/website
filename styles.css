@@ -1422,30 +1422,37 @@ body.theme-yellow .stack-inquire-btn {
 }
 
 /* ==========================================================================
-   ELEVATED CAL-STYLE INTERACTIVE MEETING SCHEDULER
+   ELEVATED CAL-STYLE INTERACTIVE MEETING SCHEDULER (SOLID & OPAQUE)
    ========================================================================== */
 .cal-scheduler-card {
   max-width: 1100px;
-  background: var(--c-card-bg);
-  border: 1px solid var(--c-border);
+  background: #01186B;
+  border: 1px solid rgba(219, 234, 254, 0.25);
   border-radius: 16px;
   display: grid;
   grid-template-columns: 1fr 1.2fr;
   overflow: hidden;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+}
+
+body.theme-yellow .cal-scheduler-card {
+  background: #FFFFFF;
+  border: 2px solid #0A0A0A;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12);
 }
 
 .cal-info-side {
   padding: 3.2rem 3rem;
-  border-right: 1px solid var(--c-border);
+  border-right: 1px solid rgba(219, 234, 254, 0.2);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background: rgba(255, 255, 255, 0.015);
+  background: #011459;
 }
 
 body.theme-yellow .cal-info-side {
-  background: rgba(0, 0, 0, 0.015);
+  background: #F9FAFB;
+  border-right: 2px solid #0A0A0A;
 }
 
 /* Host Profile Badge */
@@ -1591,8 +1598,8 @@ body.theme-yellow .cal-info-side {
 }
 
 .date-card {
-  background: transparent;
-  border: 1px solid var(--c-border);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(219, 234, 254, 0.18);
   border-radius: 8px;
   padding: 12px 4px;
   display: flex;
@@ -1602,6 +1609,12 @@ body.theme-yellow .cal-info-side {
   cursor: pointer;
   color: var(--c-text-sub);
   transition: all 0.15s ease;
+}
+
+body.theme-yellow .date-card {
+  background: #F3F4F6;
+  border: 1px solid #D1D5DB;
+  color: #111827;
 }
 
 .date-card:hover {
@@ -1614,6 +1627,12 @@ body.theme-yellow .cal-info-side {
   color: var(--c-bg);
   border-color: var(--c-text);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+body.theme-yellow .date-card.active {
+  background: #0A0A0A;
+  color: #FFEF03;
+  border-color: #0A0A0A;
 }
 
 .d-sub {
@@ -1640,8 +1659,8 @@ body.theme-yellow .cal-info-side {
 }
 
 .slot-pill {
-  background: var(--c-badge-bg);
-  border: 1px solid var(--c-badge-border);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(219, 234, 254, 0.2);
   color: var(--c-text);
   font-family: var(--font-mono);
   font-size: 0.8rem;
@@ -1650,6 +1669,12 @@ body.theme-yellow .cal-info-side {
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.15s ease;
+}
+
+body.theme-yellow .slot-pill {
+  background: #F3F4F6;
+  border: 1px solid #D1D5DB;
+  color: #111827;
 }
 
 .slot-pill:hover {
@@ -1661,6 +1686,12 @@ body.theme-yellow .cal-info-side {
   color: var(--c-bg);
   border-color: var(--c-text);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+body.theme-yellow .slot-pill.active {
+  background: #0A0A0A;
+  color: #FFEF03;
+  border-color: #0A0A0A;
 }
 
 /* Confirm Box */
@@ -1676,8 +1707,8 @@ body.theme-yellow .cal-info-side {
 
 .cal-input {
   flex: 1;
-  background: transparent;
-  border: 1px solid var(--c-border);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(219, 234, 254, 0.25);
   border-radius: 6px;
   padding: 11px 14px;
   font-size: 0.92rem;
@@ -1686,13 +1717,29 @@ body.theme-yellow .cal-info-side {
   transition: border-color 0.2s ease;
 }
 
+body.theme-yellow .cal-input {
+  background: #F9FAFB;
+  border: 1px solid #D1D5DB;
+  color: #111827;
+}
+
 .cal-input:focus {
   border-color: var(--c-text);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+body.theme-yellow .cal-input:focus {
+  background: #FFFFFF;
+  border-color: #0A0A0A;
 }
 
 .cal-input::placeholder {
   color: var(--c-text-muted);
   font-size: 0.9em;
+}
+
+body.theme-yellow .cal-input::placeholder {
+  color: #6B7280;
 }
 
 .cal-confirm-btn {
