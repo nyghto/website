@@ -1387,259 +1387,68 @@ body.theme-yellow .stack-inquire-btn {
 }
 
 /* ==========================================================================
-/* ==========================================================================
-   EDITORIAL HIGH-CRAFT STUDIO CONSULTATION & DIRECT DISPATCH
+   HIGH-IMPACT STUDIO CONSULTATION & DIRECT ACTIONS (MONUMENTAL FOOTER)
    ========================================================================== */
-.creative-contact-section {
-  padding: 8rem 3.5rem;
-  border-top: 1px solid var(--c-border);
-  position: relative;
-  z-index: 10;
-  transition: border-color 0.25s ease;
-}
-
-.contact-editorial-container {
-  width: 100%;
-  max-width: 1100px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 3.5rem;
-}
-
-.contact-header-block {
-  display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
-}
-
-.contact-editorial-title {
-  font-size: clamp(2.4rem, 5.2vw, 4.8rem);
-  font-weight: 800;
-  letter-spacing: -0.035em;
-  color: var(--c-text);
-  line-height: 1.06;
-  transition: color 0.25s ease;
-}
-
-.contact-editorial-sub {
-  font-size: 1.15rem;
-  color: var(--c-text-sub);
-  max-width: 680px;
-  line-height: 1.6;
-  transition: color 0.25s ease;
-}
-
-/* 3 Editorial Channels List */
-.editorial-channels-list {
-  display: flex;
-  flex-direction: column;
-  border-top: 1px solid var(--c-border);
-}
-
-.channel-row {
-  display: grid;
-  grid-template-columns: 300px 1fr auto;
-  align-items: center;
-  padding: 2rem 0.8rem;
-  border-bottom: 1px solid var(--c-border);
-  text-decoration: none;
-  color: inherit;
-  transition: all 0.2s ease;
-  gap: 2rem;
-}
-
-.channel-row:hover {
-  background: rgba(255, 255, 255, 0.04);
-  padding-left: 1.5rem;
-  padding-right: 1.5rem;
-}
-
-body.theme-yellow .channel-row:hover {
-  background: rgba(0, 0, 0, 0.04);
-}
-
-.channel-col-left {
+.footer-consultation-bar {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 1.2rem;
-}
-
-.channel-index {
-  font-size: 0.9rem;
-  font-weight: 800;
-  color: var(--c-text-muted);
-  opacity: 0.6;
-}
-
-.channel-name {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--c-text);
-  letter-spacing: -0.01em;
-}
-
-.channel-col-mid {
-  font-size: 0.95rem;
-  color: var(--c-text-sub);
-  line-height: 1.5;
-}
-
-.channel-col-right {
-  font-size: 0.85rem;
-  font-weight: 800;
-  color: var(--c-text);
-  white-space: nowrap;
-  letter-spacing: 0.04em;
-  transition: transform 0.2s ease;
-}
-
-.channel-row:hover .channel-col-right {
-  transform: translateX(4px);
-  text-decoration: underline;
-  text-underline-offset: 4px;
-}
-
-/* Sleek Direct Dispatch Card */
-.dispatch-form-card {
-  background: #011D7D;
-  border: 1px solid var(--c-border);
-  border-radius: 12px;
-  padding: 2.2rem 2.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.8rem;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
-}
-
-body.theme-yellow .dispatch-form-card {
-  background: rgba(0, 0, 0, 0.04);
-  border: 1px solid var(--c-border);
-  box-shadow: none;
-}
-
-.dispatch-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 0.78rem;
-  font-weight: 800;
-  color: var(--c-text-muted);
-  letter-spacing: 0.06em;
+  margin-top: 3.5rem;
+  margin-bottom: 2.5rem;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  width: 100%;
 }
 
-.dispatch-hint {
-  font-weight: 500;
-  opacity: 0.7;
-}
-
-.dispatch-form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.4rem;
-}
-
-.dispatch-field {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-}
-
-.dispatch-field.full-width {
-  grid-column: span 2;
-}
-
-.dispatch-field label {
-  font-size: 0.72rem;
+.consult-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.92rem;
   font-weight: 800;
-  color: var(--c-text-muted);
-  letter-spacing: 0.06em;
-}
-
-.dispatch-field input {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid var(--c-border);
+  padding: 16px 32px;
   border-radius: 6px;
-  padding: 12px 16px;
-  font-size: 1rem;
-  color: var(--c-text);
-  outline: none;
-  transition: border-color 0.2s ease, background-color 0.2s ease;
+  text-decoration: none;
+  cursor: pointer;
+  letter-spacing: 0.04em;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.25s ease, color 0.25s ease;
 }
 
-body.theme-yellow .dispatch-field input {
-  background: rgba(0, 0, 0, 0.04);
-}
-
-.dispatch-field input:focus {
-  border-color: var(--c-text);
-  background: rgba(255, 255, 255, 0.1);
-}
-
-body.theme-yellow .dispatch-field input:focus {
-  background: #FFFFFF;
-}
-
-.dispatch-field input::placeholder {
-  color: var(--c-text-muted);
-  font-size: 0.9em;
-  opacity: 0.6;
-}
-
-.dispatch-action-row {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  margin-top: 0.5rem;
-  flex-wrap: wrap;
-}
-
-.dispatch-action-row.full-width {
-  grid-column: span 2;
-}
-
-.dispatch-btn {
+.consult-cta-btn.primary {
   background: var(--c-btn-primary-bg);
   color: var(--c-btn-primary-text);
-  font-weight: 800;
-  font-size: 0.9rem;
-  padding: 14px 28px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  white-space: nowrap;
-  letter-spacing: 0.04em;
-  transition: all 0.2s ease;
 }
 
-.dispatch-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+.consult-cta-btn.primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
 }
 
-.dispatch-status {
-  font-size: 0.85rem;
-  color: #34D399;
+.consult-cta-btn.secondary {
+  background: transparent;
+  border: 1px solid var(--c-border);
+  color: var(--c-text);
+}
+
+.consult-cta-btn.secondary:hover {
+  border-color: var(--c-text);
+  background: rgba(255, 255, 255, 0.06);
+  transform: translateY(-3px);
+}
+
+body.theme-yellow .consult-cta-btn.secondary:hover {
+  background: rgba(0, 0, 0, 0.06);
 }
 
 @media (max-width: 900px) {
-  .channel-row {
-    grid-template-columns: 1fr;
-    gap: 0.8rem;
+  .footer-consultation-bar {
+    flex-direction: column;
+    align-items: stretch;
   }
 
-  .dispatch-form-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .dispatch-field.full-width, .dispatch-action-row.full-width {
-    grid-column: span 1;
-  }
-
-  .dispatch-btn {
+  .consult-cta-btn {
     width: 100%;
+    text-align: center;
   }
 }
 
