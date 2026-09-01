@@ -1,0 +1,342 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NyghtoOS — Founder & Engineer Chat Console</title>
+  <meta name="theme-color" content="#0284C7">
+  <link rel="icon" type="image/png" href="favicon.png">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css?v=25.0">
+  <link rel="stylesheet" href="portal.css?v=25.0">
+
+  <!-- Firebase 10 App, Auth & Firestore SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <script src="firebase-config.js?v=25.0"></script>
+
+  <style>
+    body {
+      background: #0B132B;
+      color: #F8FAFC;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .nyghto-os-header {
+      background: #0F172A;
+      border-bottom: 1px solid #1E293B;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .os-badge {
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid #38BDF8;
+      color: #38BDF8;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .os-badge-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10B981;
+      box-shadow: 0 0 8px #10B981;
+    }
+    .os-container {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      flex: 1;
+      height: calc(100vh - 70px);
+    }
+    .os-client-sidebar {
+      background: #0D1B2A;
+      border-right: 1px solid #1E293B;
+      display: flex;
+      flex-direction: column;
+    }
+    .os-client-item {
+      padding: 14px 18px;
+      border-bottom: 1px solid #1E293B;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .os-client-item:hover, .os-client-item.active {
+      background: #1B263B;
+      border-left: 4px solid #38BDF8;
+    }
+    .os-chat-main {
+      display: flex;
+      flex-direction: column;
+      background: #0B132B;
+      height: 100%;
+    }
+    .os-chat-header {
+      padding: 1rem 1.8rem;
+      background: #0F172A;
+      border-bottom: 1px solid #1E293B;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .os-chat-thread {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.5rem 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .os-msg {
+      max-width: 70%;
+      padding: 12px 16px;
+      border-radius: 14px;
+      font-size: 0.92rem;
+      line-height: 1.5;
+    }
+    .os-msg-client {
+      align-self: flex-start;
+      background: #1E293B;
+      color: #F8FAFC;
+      border: 1px solid #334155;
+      border-bottom-left-radius: 3px;
+    }
+    .os-msg-team {
+      align-self: flex-end;
+      background: #0284C7;
+      color: #FFFFFF;
+      border-bottom-right-radius: 3px;
+    }
+    .os-input-bar {
+      padding: 1.2rem 2rem;
+      background: #0F172A;
+      border-top: 1px solid #1E293B;
+      display: flex;
+      gap: 12px;
+    }
+    .os-input {
+      flex: 1;
+      background: #1E293B;
+      border: 1px solid #334155;
+      color: #FFFFFF;
+      padding: 12px 18px;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      outline: none;
+    }
+    .os-send-btn {
+      background: #38BDF8;
+      color: #0F172A;
+      border: none;
+      font-weight: 800;
+      padding: 0 24px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-family: 'Space Grotesk', sans-serif;
+      transition: all 0.15s ease;
+    }
+    .os-send-btn:hover {
+      background: #7DD3FC;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top NyghtoOS Status Header -->
+  <header class="nyghto-os-header">
+    <div style="display: flex; align-items: center; gap: 14px;">
+      <a href="portal.html" style="display: flex; align-items: center; gap: 8px; text-decoration: none;">
+        <span class="font-display" style="font-weight: 800; font-size: 1.2rem; color: #FFFFFF; letter-spacing: -0.02em;">NYGHTO<span style="color: #38BDF8;">OS</span></span>
+      </a>
+      <span class="os-badge">
+        <span class="os-badge-dot"></span>
+        <span>FIRESTORE LIVE DISPATCH</span>
+      </span>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <a href="portal.html" target="_blank" class="font-mono" style="color: #94A3B8; font-size: 0.8rem; text-decoration: none; border: 1px solid #334155; padding: 6px 12px; border-radius: 6px;">Open Client Portal ↗</a>
+      <span class="font-mono" style="font-size: 0.8rem; color: #38BDF8;">Logged in as: Founder / Team Lead</span>
+    </div>
+  </header>
+
+  <!-- Main OS Workspace -->
+  <div class="os-container">
+    
+    <!-- Left: Client Conversations Feed -->
+    <aside class="os-client-sidebar">
+      <div style="padding: 14px 18px; border-bottom: 1px solid #1E293B; background: #0F172A;">
+        <span class="font-mono" style="font-size: 0.72rem; font-weight: 700; color: #94A3B8; text-transform: uppercase;">Active Clients</span>
+      </div>
+      <div id="osClientsList" style="overflow-y: auto; flex: 1;">
+        <!-- Client items dynamically rendered -->
+      </div>
+    </aside>
+
+    <!-- Right: Live Real-Time 2-Way Chat Stream -->
+    <main class="os-chat-main">
+      
+      <!-- Thread Header -->
+      <div class="os-chat-header">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div id="osCurrentClientAvatar" style="width: 38px; height: 38px; border-radius: 50%; background: #0284C7; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #FFFFFF;">
+            C
+          </div>
+          <div>
+            <h3 id="osCurrentClientName" style="margin: 0; font-size: 1.05rem; font-weight: 700; color: #FFFFFF;">Select a client</h3>
+            <span id="osCurrentClientEmail" class="font-mono" style="font-size: 0.72rem; color: #94A3B8;">Real-time Firestore Channel</span>
+          </div>
+        </div>
+
+        <div>
+          <span class="font-mono" style="font-size: 0.72rem; color: #10B981;">● WhatsApp Style 2-Way Sync</span>
+        </div>
+      </div>
+
+      <!-- Live Messages -->
+      <div class="os-chat-thread" id="osChatThread">
+        <div style="text-align: center; color: #64748B; font-size: 0.85rem; margin-top: 40px;">
+          Loading conversation from Firestore...
+        </div>
+      </div>
+
+      <!-- Quick Preset Reply Chips -->
+      <div style="padding: 6px 2rem; background: #0D1B2A; border-top: 1px solid #1E293B; display: flex; gap: 8px; overflow-x: auto;">
+        <button type="button" onclick="osQuickPreset('🚀 Next sprint deploy is live on staging! Ready for your review.')" class="font-mono" style="background: #1E293B; border: 1px solid #334155; color: #94A3B8; padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; cursor: pointer; white-space: nowrap;">+ Staging Live</button>
+        <button type="button" onclick="osQuickPreset('🎨 Figma prototype updated with the requested layout feedback.')" class="font-mono" style="background: #1E293B; border: 1px solid #334155; color: #94A3B8; padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; cursor: pointer; white-space: nowrap;">+ Figma Updated</button>
+        <button type="button" onclick="osQuickPreset('🛠️ We are working on this right now. Will update you in 30 mins.')" class="font-mono" style="background: #1E293B; border: 1px solid #334155; color: #94A3B8; padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; cursor: pointer; white-space: nowrap;">+ In Progress</button>
+      </div>
+
+      <!-- Send Input Bar -->
+      <form class="os-input-bar" onsubmit="handleSendOsMessage(event)">
+        <input type="text" id="osMsgInput" class="os-input" placeholder="Type message as Nyghto Founder / Team..." autocomplete="off">
+        <button type="submit" class="os-send-btn">Send to Client ↗</button>
+      </form>
+
+    </main>
+
+  </div>
+
+  <script>
+    let activeClientId = null;
+    let activeClientName = 'Client';
+
+    function initNyghtoOs() {
+      // 1. Identify active clients from session / Firestore
+      const session = JSON.parse(localStorage.getItem('nyghto_user_session') || '{}');
+      const clientsListEl = document.getElementById('osClientsList');
+      
+      const currentId = session.id || 'usr_client';
+      const currentName = session.name || 'Zack X';
+      const currentEmail = session.email || 'zackedt@gmail.com';
+
+      activeClientId = currentId;
+      activeClientName = currentName;
+
+      // Render Active Client in sidebar
+      if (clientsListEl) {
+        clientsListEl.innerHTML = `
+          <div class="os-client-item active" onclick="selectClient('${currentId}', '${currentName}', '${currentEmail}')">
+            <div style="width: 36px; height: 36px; border-radius: 50%; background: #0284C7; color: #FFF; display: flex; align-items: center; justify-content: center; font-weight: 700;">
+              ${currentName.charAt(0)}
+            </div>
+            <div style="flex: 1; overflow: hidden;">
+              <div style="font-weight: 700; font-size: 0.9rem; color: #FFF;">${currentName}</div>
+              <div style="font-size: 0.72rem; color: #94A3B8; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">${currentEmail}</div>
+            </div>
+          </div>
+        `;
+      }
+
+      document.getElementById('osCurrentClientName').textContent = currentName;
+      document.getElementById('osCurrentClientEmail').textContent = currentEmail;
+
+      // 2. Real-Time Listen to Firestore Messages
+      if (window.nyghtoFirebase) {
+        window.nyghtoFirebase.subscribeToChat(activeClientId, (msgs) => {
+          renderOsThread(msgs);
+        });
+      }
+    }
+
+    function renderOsThread(msgs) {
+      const thread = document.getElementById('osChatThread');
+      if (!thread) return;
+
+      if (!msgs || msgs.length === 0) {
+        thread.innerHTML = '<div style="text-align: center; color: #64748B; font-size: 0.85rem; margin-top: 40px;">No messages yet. Send a message to start the conversation!</div>';
+        return;
+      }
+
+      thread.innerHTML = msgs.map(m => {
+        const isTeam = (m.sender === 'team');
+        const time = m.time || (m.createdAt ? new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '');
+        return `
+          <div class="os-msg ${isTeam ? 'os-msg-team' : 'os-msg-client'} font-sans">
+            <div style="font-size: 0.7rem; font-weight: 700; margin-bottom: 3px; color: ${isTeam ? '#E0F2FE' : '#38BDF8'}; font-family: monospace;">
+              ${isTeam ? '⚡ Nyghto Team (You)' : (m.senderName || activeClientName)}
+            </div>
+            <div>${m.text}</div>
+            <div style="font-size: 0.65rem; color: ${isTeam ? 'rgba(255,255,255,0.7)' : '#94A3B8'}; text-align: right; margin-top: 4px; font-family: monospace;">
+              ${time} ${isTeam ? '✓✓' : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      thread.scrollTop = thread.scrollHeight;
+    }
+
+    function osQuickPreset(text) {
+      const input = document.getElementById('osMsgInput');
+      if (input) {
+        input.value = text;
+        input.focus();
+      }
+    }
+
+    async function handleSendOsMessage(e) {
+      if (e && e.preventDefault) e.preventDefault();
+      const input = document.getElementById('osMsgInput');
+      if (!input || !input.value.trim()) return;
+
+      const text = input.value.trim();
+      input.value = '';
+
+      if (window.nyghtoFirebase && activeClientId) {
+        await window.nyghtoFirebase.sendChatMessage(activeClientId, {
+          id: 'msg_team_' + Date.now(),
+          sender: 'team',
+          senderName: 'Nyghto Team',
+          text: text,
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        });
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(initNyghtoOs, 500);
+    });
+  </script>
+</body>
+</html>

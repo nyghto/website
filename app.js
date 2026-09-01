@@ -655,31 +655,10 @@ const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/153673545563321153
    7. Cta1 Interactive Founder Hotline Handler
    ========================================================================== */
 function initCta1FounderHotline() {
-  const triggerBtn = document.getElementById('cta1TriggerBtn');
-  const initialState = document.getElementById('cta1InitialState');
-  const phoneState = document.getElementById('cta1PhoneState');
-  const contactState = document.getElementById('cta1ContactState');
   const phoneForm = document.getElementById('cta1PhoneForm');
   const phoneInput = document.getElementById('cta1UserPhone');
   const submitBtn = document.getElementById('cta1SubmitBtn');
-  const skipBtn = document.getElementById('cta1SkipBtn');
-
-  if (triggerBtn && initialState && phoneState) {
-    triggerBtn.addEventListener('click', () => {
-      initialState.style.display = 'none';
-      phoneState.style.display = 'flex';
-      if (phoneInput) setTimeout(() => phoneInput.focus(), 50);
-      if (typeof playSynthTone === 'function') playSynthTone(587.33);
-    });
-  }
-
-  if (skipBtn && phoneState && contactState) {
-    skipBtn.addEventListener('click', () => {
-      phoneState.style.display = 'none';
-      contactState.style.display = 'flex';
-      if (typeof playSynthTone === 'function') playSynthTone(659.25);
-    });
-  }
+  const statusEl = document.getElementById('cta1Status');
 
   if (phoneForm && submitBtn) {
     phoneForm.addEventListener('submit', async (e) => {
@@ -689,21 +668,22 @@ function initCta1FounderHotline() {
 
       submitBtn.disabled = true;
       submitBtn.innerHTML = '<span>CONNECTING...</span>';
+      if (statusEl) statusEl.innerHTML = `<span style="color:var(--c-text-muted);">Transmitting number to founders & opening WhatsApp...</span>`;
 
       const payload = {
         username: "Nyghto Founder Hotline",
         avatar_url: "https://nyghto.in/favicon.png",
         embeds: [
           {
-            title: "📞 Talk with Founders Hotline Connect",
-            description: `Client entered their phone/WhatsApp number on the **[Cta1 Hotline](https://nyghto.in/#consultation)**: **\`${phoneVal}\`**`,
+            title: "📞 New Direct Number Received (Talk with Founders)",
+            description: `Client submitted their phone number: **\`${phoneVal}\`** on **[nyghto.in](https://nyghto.in/#consultation)**.`,
             color: 3462009, // Emerald
             fields: [
-              { name: "📱 Client Phone / WhatsApp", value: phoneVal, inline: true },
-              { name: "⏰ Time", value: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }) + " IST", inline: true }
+              { name: "📱 Phone / WhatsApp", value: phoneVal, inline: true },
+              { name: "⏰ Submitted At", value: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }) + " IST", inline: true }
             ],
             footer: {
-              text: "Nyghto Studio Instant Founder Connect",
+              text: "Nyghto Studio Direct Founder Connection",
               icon_url: "https://nyghto.in/favicon.png"
             },
             timestamp: new Date().toISOString()
@@ -717,36 +697,37 @@ function initCta1FounderHotline() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
+
+        submitBtn.innerHTML = '<span>CONNECTED ✓</span>';
+        submitBtn.style.background = '#34D399';
+        submitBtn.style.color = '#064E3B';
+        if (statusEl) statusEl.innerHTML = `<span style="color:#34D399;">✓ Number received! Connecting directly with founders on WhatsApp...</span>`;
+
+        if (typeof playSynthTone === 'function') {
+          playSynthTone(523.25);
+          setTimeout(() => playSynthTone(659.25), 120);
+          setTimeout(() => playSynthTone(783.99), 240);
+        }
+
+        setTimeout(() => {
+          const waUrl = `https://wa.me/917012028379?text=${encodeURIComponent(`Hi Nyghto Founders, I'm reaching out from your website. My number is ${phoneVal}. I'd like to discuss a project.`)}`;
+          window.open(waUrl, '_blank');
+        }, 300);
       } catch (err) {
-        console.warn('Webhook error:', err);
+        console.warn('Hotline error:', err);
+        const waUrl = `https://wa.me/917012028379?text=${encodeURIComponent(`Hi Nyghto Founders, I'm reaching out from your website. My number is ${phoneVal}.`)}`;
+        window.open(waUrl, '_blank');
+      } finally {
+        setTimeout(() => {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<span>CONNECT WITH FOUNDERS ↗</span>';
+          submitBtn.style.background = '';
+          submitBtn.style.color = '';
+        }, 6000);
       }
-
-      phoneState.style.display = 'none';
-      contactState.style.display = 'flex';
-
-      if (typeof playSynthTone === 'function') {
-        playSynthTone(523.25);
-        setTimeout(() => playSynthTone(659.25), 120);
-        setTimeout(() => playSynthTone(783.99), 240);
-      }
-
-      // Open WhatsApp directly with founders
-      const waUrl = `https://wa.me/917012028379?text=${encodeURIComponent(`Hi Nyghto Founders, I just connected on your site. My contact is ${phoneVal}. Let's discuss my project.`)}`;
-      window.open(waUrl, '_blank');
     });
   }
 }
-
-window.resetCta1State = function() {
-  const initialState = document.getElementById('cta1InitialState');
-  const phoneState = document.getElementById('cta1PhoneState');
-  const contactState = document.getElementById('cta1ContactState');
-  if (initialState && phoneState && contactState) {
-    initialState.style.display = 'flex';
-    phoneState.style.display = 'none';
-    contactState.style.display = 'none';
-  }
-};
 
 /* ==========================================================================
    8. Conversational Brief Generator & Actions (Direct Discord Webhook Connection)

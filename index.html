@@ -381,13 +381,22 @@
         <a href="work.html" class="frame-link dot-box">WORK ↗</a>
         <a href="manifesto.html" class="frame-link dot-box">MANIFESTO ↗</a>
         <a href="domains.html" class="frame-link dot-box">DOMAINS ↗</a>
+        <a href="portal.html" class="frame-link dot-box" style="color: #60A5FA; font-weight: 800;">PORTAL ↗</a>
         <a href="#faq" class="frame-link dot-box">FAQ</a>
         <a href="#location" class="frame-link dot-box">LOCATION</a>
         <a href="#contact" class="frame-link dot-box">CONTACT</a>
       </nav>
 
-      <!-- Top Right Group (Theme Switcher + Mobile Menu Button) -->
+      <!-- Top Right Group (Account Icon + Theme Switcher + Mobile Menu Button) -->
       <div class="frame-top-right-group">
+        <!-- Account / Client Portal Icon Button -->
+        <a href="portal.html" class="account-icon-btn dot-box" aria-label="Client Portal & Account" title="Client Account & Projects">
+          <svg class="account-header-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+        </a>
+
         <button type="button" class="theme-icon-btn dot-box" id="themeToggleBtn" aria-label="Toggle Theme (Studio Cobalt / Onam Gold)">
           <svg class="theme-switch-icon theme-icon-cobalt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="9"></circle>
@@ -431,6 +440,7 @@
       <a href="work.html" class="drawer-link">WORK ↗</a>
       <a href="manifesto.html" class="drawer-link">MANIFESTO ↗</a>
       <a href="domains.html" class="drawer-link">DOMAINS ↗</a>
+      <a href="portal.html" class="drawer-link" style="color: #60A5FA; font-weight: 800;">CLIENT PORTAL ↗</a>
       <a href="#faq" class="drawer-link">FAQ</a>
       <a href="#location" class="drawer-link">LOCATION</a>
       <a href="#contact" class="drawer-link">CONTACT</a>
@@ -1061,8 +1071,8 @@
       </div>
     </section>
 
-    <!-- MODERN CTA1 BANNER SECTION WITH INTERACTIVE FOUNDER HOTLINE -->
-    <section class="cta1-wrapper" id="consultation" aria-label="Talk with the Team">
+    <!-- MODERN CTA1 BANNER: TALK DIRECTLY WITH NYGHTO FOUNDERS -->
+    <section class="cta1-wrapper" id="consultation" aria-label="Talk Directly with Nyghto Founders">
       <div class="cta1-container">
         <div class="cta1-card" id="cta1Card">
           <!-- Background Ambient Glow Polygon Shards -->
@@ -1073,81 +1083,68 @@
             <div class="cta1-polygon-mesh"></div>
           </div>
 
-          <!-- 1. Initial State -->
-          <div class="cta1-state-wrap" id="cta1InitialState">
-            <div class="cta1-text-block">
-              <h2 class="cta1-title font-display">Supercharge your project with direct founder engineering</h2>
+          <div class="cta1-founders-hub">
+            <!-- Header Block -->
+            <div class="cta1-hub-top">
+              <h2 class="cta1-title font-display">Talk Directly with Nyghto Founders</h2>
               <p class="cta1-description font-sans">
-                Schedule a 30-minute discovery consultation or chat directly on WhatsApp. Technical architecture, cost estimates, and sprint timelines.
+                Leave your number below for an instant callback, or reach out to our engineering team directly via WhatsApp, phone, or email.
               </p>
             </div>
 
-            <div class="cta1-btn-wrap font-mono">
-              <button type="button" class="cta1-action-btn" id="cta1TriggerBtn">
-                <span>Talk with Founders</span>
-                <svg class="cta1-arrow-icon" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true">
-                  <path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0-105.5 105.5c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/>
-                </svg>
-              </button>
-            </div>
-          </div>
-
-          <!-- 2. Phone / WhatsApp Prompt State -->
-          <div class="cta1-state-wrap" id="cta1PhoneState" style="display: none; width: 100%;">
-            <div class="cta1-text-block">
-              <span class="cta1-state-badge font-mono">DIRECT FOUNDER CONNECTION</span>
-              <h2 class="cta1-title font-display" style="font-size: clamp(1.6rem, 2.6vw, 2.2rem);">What's your WhatsApp or phone number?</h2>
-              <p class="cta1-description font-sans">
-                We'll reach out directly to discuss your project, or connect with you on WhatsApp instantly.
-              </p>
-            </div>
-
-            <form id="cta1PhoneForm" class="cta1-phone-form font-sans">
-              <div class="cta1-input-group">
-                <input type="tel" id="cta1UserPhone" class="cta1-phone-input font-mono" placeholder="Your phone / WhatsApp number *" required aria-label="Your Phone Number">
+            <!-- Fast Number Giving Input -->
+            <form id="cta1PhoneForm" class="cta1-direct-connect-form font-sans">
+              <div class="cta1-input-row">
+                <input type="tel" id="cta1UserPhone" class="cta1-phone-input font-mono" placeholder="Enter your phone or WhatsApp number *" required aria-label="Your Phone Number">
                 <button type="submit" class="cta1-submit-btn font-mono" id="cta1SubmitBtn">
-                  <span>CONNECT NOW ↗</span>
+                  <span>CONNECT WITH FOUNDERS ↗</span>
                 </button>
               </div>
-              <button type="button" class="cta1-skip-btn font-mono" id="cta1SkipBtn">or view our direct studio lines ↵</button>
+              <div class="cta1-form-status font-mono" id="cta1Status" aria-live="polite"></div>
             </form>
-          </div>
 
-          <!-- 3. Direct Contact Hub State (Our Email, Phone Numbers, and WhatsApp) -->
-          <div class="cta1-state-wrap cta1-contact-hub" id="cta1ContactState" style="display: none; width: 100%;">
-            <div class="cta1-hub-header">
-              <div>
-                <span class="cta1-state-badge success font-mono">✓ HOTLINE ACTIVE</span>
-                <h2 class="cta1-title font-display" style="font-size: clamp(1.6rem, 2.6vw, 2.2rem);">Talk Directly with Nyghto Founders</h2>
-              </div>
-              <button type="button" class="cta1-reset-link font-mono" onclick="resetCta1State()">← Back</button>
-            </div>
-
-            <!-- Studio Direct Contacts Grid -->
-            <div class="cta1-contacts-grid font-mono">
-              <a href="https://wa.me/917012028379?text=Hi%20Nyghto,%20I'm%20reaching%20out%20to%20discuss%20a%20project" target="_blank" rel="noopener noreferrer" class="cta1-contact-card primary">
-                <span class="card-icon">💬</span>
-                <div class="card-text-group">
-                  <span class="card-label">WHATSAPP DIRECT</span>
-                  <span class="card-val">+91 70120 28379</span>
+            <!-- All Founder Contact Channels & Studio Location -->
+            <div class="cta1-channels-grid font-mono">
+              
+              <!-- 1. WhatsApp -->
+              <a href="https://wa.me/917012028379?text=Hi%20Nyghto%20Founders,%20I'm%20reaching%20out%20from%20your%20website%20to%20discuss%20a%20project" target="_blank" rel="noopener noreferrer" class="cta1-channel-item primary">
+                <span class="channel-icon-wrap">
+                  <svg class="channel-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                  </svg>
+                </span>
+                <div class="channel-info">
+                  <span class="channel-lbl">WHATSAPP DIRECT</span>
+                  <span class="channel-txt">+91 70120 28379</span>
                 </div>
-                <span class="card-arrow">↗</span>
+                <span class="channel-ext">↗</span>
               </a>
 
-              <a href="mailto:hello@nyghto.in" class="cta1-contact-card">
-                <span class="card-icon">✉️</span>
-                <div class="card-text-group">
-                  <span class="card-label">STUDIO INBOX</span>
-                  <span class="card-val">hello@nyghto.in</span>
+              <!-- 2. Email -->
+              <a href="mailto:hello@nyghto.in" class="cta1-channel-item">
+                <span class="channel-icon-wrap">
+                  <svg class="channel-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                    <polyline points="22,6 12,13 2,6"></polyline>
+                  </svg>
+                </span>
+                <div class="channel-info">
+                  <span class="channel-lbl">STUDIO INBOX</span>
+                  <span class="channel-txt">hello@nyghto.in</span>
                 </div>
-                <span class="card-arrow">↗</span>
+                <span class="channel-ext">↗</span>
               </a>
 
-              <div class="cta1-contact-card phones-block">
-                <span class="card-icon">📞</span>
-                <div class="card-text-group">
-                  <span class="card-label">DIRECT FOUNDER LINES</span>
-                  <div class="phones-list">
+              <!-- 3. Phone Lines -->
+              <div class="cta1-channel-item phones-item">
+                <span class="channel-icon-wrap">
+                  <svg class="channel-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                  </svg>
+                </span>
+                <div class="channel-info">
+                  <span class="channel-lbl">FOUNDER PHONE LINES</span>
+                  <div class="channel-phones-links">
                     <a href="tel:+917012028379">+91 70120 28379</a>
                     <span class="sep">•</span>
                     <a href="tel:+918075911860">+91 80759 11860</a>
@@ -1156,6 +1153,22 @@
                   </div>
                 </div>
               </div>
+
+              <!-- 4. Location & Directions -->
+              <a href="https://www.google.com/maps/place/Nyghto/@11.1337493,76.0346842,282m/data=!3m1!1e3!4m14!1m7!3m6!1s0x3ba64977c5b7ce65:0xd05d207f2b482a75!2sNyghto!8m2!3d11.1337291!4d76.0350576!16s%2Fg%2F11zdt4_96z!3m5!1s0x3ba64977c5b7ce65:0xd05d207f2b482a75!8m2!3d11.1337291!4d76.0350576!16s%2Fg%2F11zdt4_96z" target="_blank" rel="noopener noreferrer" class="cta1-channel-item">
+                <span class="channel-icon-wrap">
+                  <svg class="channel-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                    <circle cx="12" cy="10" r="3"></circle>
+                  </svg>
+                </span>
+                <div class="channel-info">
+                  <span class="channel-lbl">STUDIO LOCATION</span>
+                  <span class="channel-txt">Kerala, India (Directions)</span>
+                </div>
+                <span class="channel-ext">↗</span>
+              </a>
+
             </div>
           </div>
 
@@ -1176,16 +1189,6 @@
         <div class="footer-headline-row">
           <span class="right-word footer-letter-reveal">EXTRAORDINARY</span>
         </div>
-      </div>
-
-      <!-- High-Impact Studio Consultation Bar -->
-      <div class="footer-consultation-bar font-mono">
-        <a href="https://wa.me/917012028379?text=Hi%20Nyghto,%20I'd%20like%20to%20schedule%20a%20strategy%20consultation%20with%20the%20founders" target="_blank" rel="noopener noreferrer" class="consult-cta-btn primary dot-box">
-          <span>SCHEDULE 1-ON-1 DISCOVERY CALL ↗</span>
-        </a>
-        <a href="https://wa.me/917012028379" target="_blank" rel="noopener noreferrer" class="consult-cta-btn secondary dot-box">
-          <span>WHATSAPP FOUNDERS (+91 70120 28379) ↗</span>
-        </a>
       </div>
 
       <div class="footer-action-bar">
