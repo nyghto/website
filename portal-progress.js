@@ -4,6 +4,19 @@
 
 const { useState, useEffect, useMemo } = React;
 
+const CopySvg = ({ size = 12, color = 'currentColor' }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'inline-block', verticalAlign: 'middle', marginLeft: '4px' }}>
+    <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+    <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+  </svg>
+);
+
+const CheckSvg = ({ size = 12, color = '#16A34A' }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'inline-block', verticalAlign: 'middle', marginLeft: '4px' }}>
+    <polyline points="20 6 9 17 4 12"/>
+  </svg>
+);
+
 function ProjectProgressApp({ initialUser, initialProjectId }) {
   const [user, setUser] = useState(initialUser || window.currentUser || window.DEMO_USER);
   const [selectedProjectId, setSelectedProjectId] = useState(initialProjectId || null);
@@ -15,20 +28,46 @@ function ProjectProgressApp({ initialUser, initialProjectId }) {
   const [quickFeatureStatus, setQuickFeatureStatus] = useState('');
   const [isFeatureDrawerOpen, setIsFeatureDrawerOpen] = useState(false);
   const [copiedLink, setCopiedLink] = useState(null);
+  const [showFullRoadmapInReview, setShowFullRoadmapInReview] = useState(false);
 
-  // Sync with global window user updates
+  // Sync with global window user updates & direct Firestore sync
   useEffect(() => {
     const handleUserUpdate = (e) => {
       if (e.detail?.user) {
-        setUser(e.detail.user);
+        setUser({ ...e.detail.user });
         if (e.detail.selectedProjectId !== undefined) {
           setSelectedProjectId(e.detail.selectedProjectId);
         }
       }
     };
     window.addEventListener('nyghto_user_changed', handleUserUpdate);
-    return () => window.removeEventListener('nyghto_user_changed', handleUserUpdate);
-  }, []);
+
+    // Direct Firestore realtime listener
+    const uId = user?.id || (window.currentUser && window.currentUser.id);
+    let unsub = null;
+    if (window.firebase && window.firebase.firestore && uId) {
+      try {
+        const db = window.firebase.firestore();
+        unsub = db.collection('clients').doc(uId).onSnapshot((snap) => {
+          if (snap.exists) {
+            const data = snap.data();
+            if (data.projects && Array.isArray(data.projects)) {
+              setUser(prev => ({
+                ...prev,
+                ...data,
+                projects: data.projects
+              }));
+            }
+          }
+        }, (err) => console.warn('portal-progress live sync:', err));
+      } catch (e) {}
+    }
+
+    return () => {
+      window.removeEventListener('nyghto_user_changed', handleUserUpdate);
+      if (unsub) unsub();
+    };
+  }, [user?.id]);
 
   const projects = useMemo(() => {
     return (user?.projects && Array.isArray(user.projects)) ? user.projects : [];
@@ -40,10 +79,15 @@ function ProjectProgressApp({ initialUser, initialProjectId }) {
   }, [projects, selectedProjectId]);
 
   const filteredProjects = useMemo(() => {
+    const q = (searchQuery || '').trim().toLowerCase();
     return projects.filter(p => {
-      const matchesSearch = !searchQuery || 
-        p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-        (p.category && p.category.toLowerCase().includes(searchQuery.toLowerCase()));
+      const matchesSearch = !q || 
+        (p.name && p.name.toLowerCase().includes(q)) || 
+        (p.id && p.id.toLowerCase().includes(q)) || 
+        (p.category && p.category.toLowerCase().includes(q)) ||
+        (p.brief && p.brief.toLowerCase().includes(q)) ||
+        (p.stage && p.stage.toLowerCase().includes(q)) ||
+        (p.lead && p.lead.toLowerCase().includes(q));
       
       const isReview = p.status === 'Waiting for Review' || p.status === 'Under Review';
       const isCompleted = p.status === 'Completed';
@@ -125,13 +169,13 @@ function ProjectProgressApp({ initialUser, initialProjectId }) {
     const isCompleted = selectedProject.status === 'Completed';
     const isReview = selectedProject.status === 'Waiting for Review' || selectedProject.status === 'Under Review';
 
-    // SPECIAL STATE: UNDER REVIEW ONLY (Seamless Minimal Reference Layout)
-    if (isReview) {
+    // SPECIAL STATE: UNDER REVIEW ONLY (Seamless Minimal Reference Layout with toggle to view metrics)
+    if (isReview && !showFullRoadmapInReview) {
       return (
         <div className="react-sprint-container font-sans" style={{ animation: 'fadeInSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) both', padding: '2rem 1rem 4rem', textAlign: 'center', maxWidth: '580px', margin: '0 auto' }}>
           
           {/* Top Breadcrumb Navigation */}
-          <div style={{ display: 'flex', justifyContent: 'flex-start', marginBottom: '2.5rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem' }}>
             <button 
               type="button" 
               className="nyghto-back-btn font-mono" 
@@ -150,6 +194,24 @@ function ProjectProgressApp({ initialUser, initialProjectId }) {
               }}
             >
               <span>← Back to Projects</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setShowFullRoadmapInReview(true)}
+              className="font-mono"
+              style={{
+                background: '#F8FAFC',
+                border: '1px solid #CBD5E1',
+                padding: '5px 12px',
+                borderRadius: '8px',
+                fontSize: '0.75rem',
+                color: '#0F172A',
+                fontWeight: 600,
+                cursor: 'pointer'
+              }}
+            >
+              View Full Sprint Metrics & Roadmap ↗
             </button>
           </div>
 
@@ -312,9 +374,10 @@ function ProjectProgressApp({ initialUser, initialProjectId }) {
       { tag: "v1.2.0", title: "Figma UI tokens and interactive component prototype locked", time: "May 12, 2026", author: "Studio Lead" }
     ];
 
-    const deliverables = [
+    const deliverables = (selectedProject.deliverables && selectedProject.deliverables.length > 0) ? selectedProject.deliverables : [
       { id: "del-git", title: "GitHub Code Repository", desc: "Clean TypeScript codebase built with Next.js 15 & PostgreSQL", link: "#", tag: "GITHUB REPO", icon: "GIT", isCode: true },
-      { id: "del-staging", title: "Live Staging Environment", desc: "Active work-in-progress build running on edge CDN", link: "http://localhost:5173", tag: "LIVE DEMO", icon: "WEB" }
+      { id: "del-staging", title: "Live Staging Environment", desc: "Active work-in-progress build running on edge CDN", link: "http://localhost:5173", tag: "LIVE DEMO", icon: "WEB" },
+      { id: "del-figma", title: "Figma UI & Design System", desc: "Production UI component library, tokens, and prototype screens", link: "#", tag: "DESIGN TOKENS", icon: "FIGMA" }
     ];
 
     return (
@@ -342,9 +405,24 @@ function ProjectProgressApp({ initialUser, initialProjectId }) {
             <span>← Back to All Projects</span>
           </button>
 
-          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-            <span className="font-mono" style={{ fontSize: '0.72rem', background: '#F1F5F9', padding: '4px 10px', borderRadius: '6px', color: '#475569', fontWeight: 600 }}>
-              ID: {selectedProject.id}
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
+            {user?.id && (
+              <span 
+                onClick={() => copyToClipboard(user.id, 'detail_portal_id')}
+                className="font-mono" 
+                title="Click to copy Portal ID"
+                style={{ fontSize: '0.72rem', background: '#F1F5F9', border: '1px solid #CBD5E1', padding: '4px 10px', borderRadius: '6px', color: '#0F172A', fontWeight: 700, cursor: 'pointer', display: 'inline-flex', alignItems: 'center' }}
+              >
+                PORTAL ID: <strong style={{ color: '#0284C7', marginLeft: '3px' }}>{user.id}</strong> {copiedLink === 'detail_portal_id' ? <CheckSvg color="#0284C7" /> : <CopySvg color="#64748B" />}
+              </span>
+            )}
+            <span 
+              onClick={() => copyToClipboard(selectedProject.id, 'detail_proj_id')}
+              className="font-mono" 
+              title="Click to copy Project ID"
+              style={{ fontSize: '0.72rem', background: '#0F172A', color: '#FFFFFF', padding: '4px 10px', borderRadius: '6px', fontWeight: 700, cursor: 'pointer', display: 'inline-flex', alignItems: 'center' }}
+            >
+              PROJECT ID: <strong style={{ marginLeft: '3px' }}>{selectedProject.id}</strong> {copiedLink === 'detail_proj_id' ? <CheckSvg color="#38BDF8" /> : <CopySvg color="#94A3B8" />}
             </span>
             <button 
               type="button"
@@ -803,13 +881,41 @@ function ProjectProgressApp({ initialUser, initialProjectId }) {
     <div className="react-projects-view font-sans">
       
       {/* Header & New Project Trigger */}
-      <div className="nyghto-progress-header font-sans" style={{ marginBottom: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+      <div className="nyghto-progress-header font-sans" style={{ marginBottom: '1.2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
-          <h2 className="nyghto-progress-title font-sans" style={{ fontSize: '1.55rem', fontWeight: 800, color: '#0F172A', margin: '0 0 4px 0', letterSpacing: '-0.02em' }}>
-            Your Projects
-          </h2>
-          <p className="nyghto-progress-sub font-sans" style={{ color: '#64748B', fontSize: '0.88rem', margin: 0 }}>
-            Select any project to view active sprint milestones, live status, and deliverable checklist.
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px', flexWrap: 'wrap' }}>
+            <h2 className="nyghto-progress-title font-sans" style={{ fontSize: '1.55rem', fontWeight: 800, color: '#0F172A', margin: 0, letterSpacing: '-0.02em' }}>
+              Your Projects
+            </h2>
+            {user?.id && (
+              <div 
+                onClick={() => copyToClipboard(user.id, 'portal_uid')}
+                title="Click to copy your Client Portal ID"
+                className="font-mono"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '5px',
+                  background: '#F1F5F9',
+                  border: '1px solid #CBD5E1',
+                  padding: '3px 9px',
+                  borderRadius: '6px',
+                  fontSize: '0.72rem',
+                  color: '#0F172A',
+                  fontWeight: 700,
+                  cursor: 'pointer'
+                }}
+              >
+                <span>PORTAL ID:</span>
+                <span style={{ color: '#0284C7' }}>{user.id}</span>
+                <span style={{ fontSize: '0.65rem', color: '#64748B', display: 'inline-flex', alignItems: 'center' }}>
+                  {copiedLink === 'portal_uid' ? <CheckSvg color="#16A34A" /> : <CopySvg color="#64748B" />}
+                </span>
+              </div>
+            )}
+          </div>
+          <p className="nyghto-progress-sub font-sans" style={{ color: '#64748B', fontSize: '0.86rem', margin: 0 }}>
+            Quote your <strong>Portal ID</strong> or <strong>Project ID</strong> when contacting our engineering leads on phone (+91 70120 28379) or WhatsApp.
           </p>
         </div>
 
@@ -948,7 +1054,17 @@ function ProjectProgressApp({ initialUser, initialProjectId }) {
               >
                 {/* Card Top Row */}
                 <div className="nyghto-p-card-top" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div className="nyghto-p-card-tags font-mono" style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                  <div className="nyghto-p-card-tags font-mono" style={{ display: 'flex', gap: '6px', alignItems: 'center', flexWrap: 'wrap' }}>
+                    <span 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        copyToClipboard(p.id, p.id);
+                      }}
+                      title="Click to copy Project ID"
+                      style={{ fontSize: '0.68rem', background: '#0F172A', color: '#FFFFFF', padding: '3px 8px', borderRadius: '4px', fontWeight: 700, cursor: 'pointer', display: 'inline-flex', alignItems: 'center' }}
+                    >
+                      ID: {p.id} {copiedLink === p.id ? <CheckSvg color="#38BDF8" /> : <CopySvg color="#94A3B8" />}
+                    </span>
                     <span className="nyghto-p-tag-cat font-mono" style={{ fontSize: '0.68rem', background: '#F1F5F9', color: '#475569', padding: '3px 8px', borderRadius: '4px', fontWeight: 600 }}>
                       {p.category || 'Web Application'}
                     </span>

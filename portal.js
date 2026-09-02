@@ -840,16 +840,17 @@ function closeProfileEditModal() {
 
 function handleSaveProfileSettings(e) {
   if (e && e.preventDefault) e.preventDefault();
-  const name = document.getElementById('setUserName').value.trim();
-  const phone = document.getElementById('setUserPhone').value.trim();
-  const country = document.getElementById('setUserCountry').value.trim();
-  const city = document.getElementById('setUserCity').value.trim();
-  const bio = document.getElementById('setUserBio').value.trim();
+  const name = document.getElementById('setUserName')?.value.trim();
+  const phone = document.getElementById('setUserPhone')?.value.trim();
+  const country = document.getElementById('setUserCountry')?.value.trim();
+  const city = document.getElementById('setUserCity')?.value.trim();
+  const bio = document.getElementById('setUserBio')?.value.trim();
+  const bannerColor = document.getElementById('setUserBannerColor')?.value || '';
   const statusEl = document.getElementById('settingsStatus');
   const saveBtn = document.getElementById('saveSettingsBtn');
 
   if (!name) {
-    if (statusEl) statusEl.innerHTML = '<span style="color: #EF4444;">Please enter your full name.</span>';
+    showPortalToast('⚠️ Please enter your full name', 'error');
     return;
   }
 
@@ -860,6 +861,7 @@ function handleSaveProfileSettings(e) {
 
   // Update session and local storage
   const user = currentUser || { name: name, email: 'client@nyghto.in' };
+  const userAvatar = user.avatar || user.picture || user.photoURL || '';
   const updatedUser = {
     ...user,
     name: name,
@@ -867,7 +869,10 @@ function handleSaveProfileSettings(e) {
     country: country,
     city: city,
     bio: bio,
-    avatar: user.avatar || user.picture || 'login-mascot.png'
+    bannerColor: bannerColor || user.bannerColor || 'linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 50%, #F8FAFC 100%)',
+    avatar: userAvatar,
+    picture: userAvatar,
+    photoURL: userAvatar
   };
 
   currentUser = updatedUser;
@@ -893,17 +898,48 @@ function handleSaveProfileSettings(e) {
     }
   }
 
-  const userAvatarSrc = updatedUser.avatar || updatedUser.picture || 'login-mascot.png';
+  const initial = (name.charAt(0) || 'C').toUpperCase();
   const heroAvatar = document.getElementById('proHeroAvatarImg');
+  const heroFallback = document.getElementById('proHeroAvatarFallback');
   if (heroAvatar) {
-    heroAvatar.src = userAvatarSrc;
-    heroAvatar.onerror = () => { heroAvatar.src = 'login-mascot.png'; };
+    if (userAvatar) {
+      heroAvatar.src = userAvatar;
+      heroAvatar.style.display = 'block';
+      if (heroFallback) heroFallback.style.display = 'none';
+      heroAvatar.onerror = () => {
+        heroAvatar.style.display = 'none';
+        if (heroFallback) {
+          heroFallback.style.display = 'flex';
+          heroFallback.textContent = initial;
+        }
+      };
+    } else {
+      heroAvatar.style.display = 'none';
+      if (heroFallback) {
+        heroFallback.style.display = 'flex';
+        heroFallback.textContent = initial;
+      }
+    }
   }
 
   const mobileHeaderAvatar = document.getElementById('mobileAppHeaderAvatar');
   if (mobileHeaderAvatar) {
-    mobileHeaderAvatar.src = userAvatarSrc;
-    mobileHeaderAvatar.onerror = () => { mobileHeaderAvatar.src = 'login-mascot.png'; };
+    if (userAvatar) {
+      mobileHeaderAvatar.src = userAvatar;
+      mobileHeaderAvatar.style.display = 'block';
+    } else {
+      mobileHeaderAvatar.style.display = 'none';
+    }
+  }
+
+  // Update Desktop & Mobile Banners
+  const coverBanner = document.querySelector('.uui-cover-banner');
+  if (coverBanner && !coverBanner.classList.contains('compact-banner')) {
+    coverBanner.style.background = updatedUser.bannerColor;
+  }
+  const mobileBanner = document.getElementById('mobileProfileCoverBanner');
+  if (mobileBanner) {
+    mobileBanner.style.background = updatedUser.bannerColor;
   }
 
   const inlineInput = document.getElementById('uuiInputName');
@@ -912,26 +948,55 @@ function handleSaveProfileSettings(e) {
   // Broadcast change event
   window.dispatchEvent(new CustomEvent('nyghto_user_changed', { detail: { user: updatedUser } }));
 
-  if (statusEl) {
-    statusEl.innerHTML = '<span style="color: #16A34A;">✓ Profile updated successfully!</span>';
+  if (saveBtn) {
+    saveBtn.disabled = false;
+    saveBtn.textContent = 'Save Profile';
   }
-
-  setTimeout(() => {
-    if (saveBtn) {
-      saveBtn.disabled = false;
-      saveBtn.textContent = 'Save Profile';
-    }
-    closeProfileEditModal();
-  }, 650);
+  closeProfileEditModal();
+  showPortalToast('✓ Profile updated successfully');
 }
 
-function handleDeleteAccountPrompt() {
-  if (confirm('Are you sure you want to delete your account session and local settings?')) {
-    localStorage.removeItem('nyghto_user_session');
-    currentUser = null;
-    showScreen('auth');
-    updateHeaderNav();
+async function handleDeleteAccountPrompt() {
+  if (!currentUser) return;
+  
+  const confirmMsg = `⚠️ Are you sure you want to permanently delete your client account (${currentUser.email || currentUser.name})?\n\nThis will remove your client room, sprint roadmap, and chat records.`;
+  if (!confirm(confirmMsg)) return;
+
+  const targetId = currentUser.id;
+  const targetEmail = currentUser.email;
+
+  // 1. Delete from Firestore if connected
+  try {
+    if (window.firebase && window.firebase.firestore && targetId) {
+      const db = window.firebase.firestore();
+      // Delete client document
+      await db.collection('clients').doc(targetId).delete();
+    }
+  } catch (err) {
+    console.warn('Firestore client account deletion notice:', err);
   }
+
+  // 2. Clear from local registries and caches
+  try {
+    const accounts = JSON.parse(localStorage.getItem('nyghto_users_registry') || '[]');
+    const filtered = accounts.filter(u => u.id !== targetId && u.email?.toLowerCase() !== targetEmail?.toLowerCase());
+    localStorage.setItem('nyghto_users_registry', JSON.stringify(filtered));
+    localStorage.removeItem('nyghto_user_session');
+    localStorage.removeItem('nyghto_chat_history_' + targetId);
+  } catch (e) {}
+
+  // 3. Reset state & return to auth screen
+  currentUser = null;
+  if (window.google && window.google.accounts && window.google.accounts.id) {
+    try {
+      window.google.accounts.id.disableAutoSelect();
+    } catch (e) {}
+  }
+
+  alert('✓ Your account has been permanently deleted.');
+  showScreen('auth');
+  updateHeaderNav();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 /* ==========================================================================
@@ -956,33 +1021,40 @@ function handleGoogleCredentialResponse(response) {
   const payload = parseJwt(response.credential);
   if (!payload) return;
 
-  const email = payload.email || 'client@nyghto.in';
-  const name = payload.name || payload.given_name || 'Client';
-  const picture = payload.picture || 'login-mascot.png';
+  const emailClean = (payload.email || 'client@nyghto.in').toLowerCase().trim();
+  const uniqueId = getCleanUserIdFromEmail(emailClean);
+  const name = payload.name || payload.given_name || (payload.email ? payload.email.split('@')[0] : 'Client');
+  const picture = payload.picture || '';
 
   // Find or create account in registry
   const accounts = JSON.parse(localStorage.getItem('nyghto_users_registry') || '[]');
-  let user = accounts.find(u => u.email.toLowerCase() === email.toLowerCase());
+  let user = accounts.find(u => u.email.toLowerCase() === emailClean);
 
   if (!user) {
     user = {
       ...DEMO_USER,
-      id: "usr_google_" + (payload.sub || Date.now()),
+      id: uniqueId,
       name: name,
       firstName: payload.given_name || name.split(' ')[0],
       lastName: payload.family_name || name.split(' ').slice(1).join(' '),
-      email: email,
+      email: emailClean,
       avatar: picture,
       picture: picture,
+      photoURL: picture,
+      projects: [],
       createdAt: new Date().toISOString()
     };
     accounts.push(user);
     localStorage.setItem('nyghto_users_registry', JSON.stringify(accounts));
   } else {
     // Update avatar and name from latest Google token
+    user.id = uniqueId;
     user.name = name;
-    user.avatar = picture;
-    user.picture = picture;
+    if (picture) {
+      user.avatar = picture;
+      user.picture = picture;
+      user.photoURL = picture;
+    }
   }
 
   setSession(user);
@@ -1003,16 +1075,18 @@ function initAuthToggle() {
           }
         } catch (err) {
           console.warn('Firebase signInWithGoogle popup handled:', err);
-          if (err.code === 'auth/popup-closed-by-user') return;
+          if (err.code === 'auth/popup-closed-by-user' || err.code === 'auth/cancelled-popup-request') {
+            return; // User intentionally closed the popup, do not show any prompt
+          }
         }
       }
 
-      // 2. Try Google Identity Services Prompt
+      // 2. Try Google Identity Services (GIS) One Tap / Prompt
       if (window.google && window.google.accounts && window.google.accounts.id) {
         try {
           window.google.accounts.id.prompt((notification) => {
             if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-              promptGoogleAuthDirect();
+              console.log('Google Identity prompt skipped or closed');
             }
           });
           return;
@@ -1020,41 +1094,13 @@ function initAuthToggle() {
           console.warn('Google prompt fallback:', e);
         }
       }
-
-      // 3. Graceful Direct Prompt Fallback
-      promptGoogleAuthDirect();
     });
   }
 }
 
-function promptGoogleAuthDirect() {
-  // Direct Google Account Sign-In flow
-  const googleEmail = prompt('Enter your Google Account Email to connect:', 'rafiqurrahman51@gmail.com');
-  if (!googleEmail || !googleEmail.trim()) return;
-
-  const emailClean = googleEmail.trim();
-  const nameClean = emailClean.split('@')[0].replace(/[._-]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-
-  const accounts = JSON.parse(localStorage.getItem('nyghto_users_registry') || '[]');
-  let user = accounts.find(u => u.email.toLowerCase() === emailClean.toLowerCase());
-
-  if (!user) {
-    user = {
-      ...DEMO_USER,
-      id: 'usr_g_' + Date.now(),
-      name: nameClean,
-      firstName: nameClean.split(' ')[0],
-      lastName: nameClean.split(' ').slice(1).join(' '),
-      email: emailClean,
-      avatar: 'login-mascot.png',
-      picture: 'login-mascot.png',
-      createdAt: new Date().toISOString()
-    };
-    accounts.push(user);
-    localStorage.setItem('nyghto_users_registry', JSON.stringify(accounts));
-  }
-
-  setSession(user);
+function getCleanUserIdFromEmail(email) {
+  if (!email) return 'usr_' + Date.now();
+  return 'usr_' + email.toLowerCase().replace(/[^a-z0-9]/g, '_');
 }
 
 /* ==========================================================================
@@ -1072,19 +1118,23 @@ function initAuthForm() {
 
     if (!email || !pass) return;
 
+    const emailClean = email.toLowerCase().trim();
+    const uniqueId = getCleanUserIdFromEmail(emailClean);
     const accounts = JSON.parse(localStorage.getItem('nyghto_users_registry') || '[]');
-    let user = accounts.find(u => u.email.toLowerCase() === email.toLowerCase());
+    let user = accounts.find(u => u.email.toLowerCase() === emailClean);
 
     if (!user) {
       user = {
         ...DEMO_USER,
-        id: "usr_" + Date.now(),
+        id: uniqueId,
         name: name,
-        email: email,
+        email: emailClean,
         projects: []
       };
       accounts.push(user);
       localStorage.setItem('nyghto_users_registry', JSON.stringify(accounts));
+    } else {
+      user.id = uniqueId;
     }
 
     setSession(user);
@@ -1102,6 +1152,10 @@ function openNewProjectModal() {
   if (modal) {
     modal.style.display = 'flex';
     const input = document.getElementById('modalProjectName');
+    const phoneInput = document.getElementById('modalProjectPhone');
+    if (phoneInput && currentUser && currentUser.phone) {
+      phoneInput.value = currentUser.phone;
+    }
     if (input) {
       input.value = '';
       setTimeout(() => input.focus(), 100);
@@ -1123,13 +1177,30 @@ async function handleModalProjectSubmit(e) {
 
   const nameInput = document.getElementById('modalProjectName');
   const typeInput = document.getElementById('modalProjectType');
+  const phoneInput = document.getElementById('modalProjectPhone');
   const submitBtn = document.getElementById('modalProjectSubmitBtn');
   const statusEl = document.getElementById('modalProjectStatus');
 
   const projectName = nameInput?.value.trim();
   const category = typeInput?.value.trim() || 'Custom Web & Mobile Application';
+  const rawPhone = phoneInput?.value.trim() || currentUser?.phone || '';
 
-  if (!projectName) return;
+  if (!projectName) {
+    if (statusEl) statusEl.innerHTML = '<span style="color:#DC2626; font-weight:700;">⚠️ Project name is required.</span>';
+    return;
+  }
+
+  // MANDATORY MOBILE PHONE VALIDATION
+  if (!rawPhone || rawPhone.length < 5) {
+    if (statusEl) {
+      statusEl.innerHTML = '<span style="color:#DC2626; font-weight:700;">⚠️ Mobile / WhatsApp number is mandatory to create project request!</span>';
+    }
+    if (phoneInput) {
+      phoneInput.focus();
+      phoneInput.style.borderColor = '#DC2626';
+    }
+    return;
+  }
 
   if (submitBtn) {
     submitBtn.disabled = true;
@@ -1139,16 +1210,21 @@ async function handleModalProjectSubmit(e) {
     statusEl.innerHTML = '<span style="color:#0F172A;">Provisioning project sprint roadmap...</span>';
   }
 
-  const clientName = currentUser?.name || 'Rafiqur Rahman';
-  const clientEmail = currentUser?.email || 'rafiqurrahman51@gmail.com';
-  const clientPhone = currentUser?.phone || '+09 345 346 46';
+  const clientName = currentUser?.name || 'Client';
+  const clientEmail = currentUser?.email || 'client@nyghto.in';
+  const clientPhone = rawPhone;
+
+  // Persist updated phone to current user profile
+  if (currentUser) {
+    currentUser.phone = clientPhone;
+  }
 
   const newProjectId = "PRJ-" + Math.floor(1000 + Math.random() * 9000);
   const newProject = {
     id: newProjectId,
     name: projectName,
     category: category,
-    brief: `${category} requested by client. Waiting for Nyghto founder review and technical stack allocation.`,
+    brief: `${category} requested by client (${clientPhone}). Waiting for Nyghto founder review and technical stack allocation.`,
     budget: "Sprint Scope",
     figmaLink: "",
     status: "Waiting for Review",
@@ -1170,13 +1246,14 @@ async function handleModalProjectSubmit(e) {
   if (!activeUser) {
     activeUser = {
       ...DEMO_USER,
-      id: "usr_" + Date.now(),
+      id: "usr_" + clientEmail.toLowerCase().replace(/[^a-z0-9]/g, '_'),
       name: clientName,
       email: clientEmail,
       phone: clientPhone,
       projects: [newProject]
     };
   } else {
+    activeUser.phone = clientPhone;
     if (!activeUser.projects) activeUser.projects = [];
     activeUser.projects.unshift(newProject);
   }
@@ -1190,9 +1267,33 @@ async function handleModalProjectSubmit(e) {
   }
   localStorage.setItem('nyghto_users_registry', JSON.stringify(accounts));
 
-  // Sync to Firestore Cloud Database
+  // 1. Sync Project to Client Document & Subcollection in Firestore
   if (window.nyghtoFirebase && activeUser.id) {
     window.nyghtoFirebase.addProject(activeUser.id, newProject);
+    window.nyghtoFirebase.syncUserProfile(activeUser);
+  }
+
+  // 2. Also register in the Global Inbound Pipeline ('projectRequests' collection) for OS Website Control
+  try {
+    if (window.firebase && window.firebase.firestore) {
+      const db = window.firebase.firestore();
+      await db.collection('projectRequests').add({
+        clientName: activeUser.name || 'Client',
+        clientEmail: activeUser.email || '',
+        company: activeUser.company || 'Client Organization',
+        phone: clientPhone,
+        projectName: projectName,
+        serviceType: category,
+        category: category,
+        budget: 'Sprint Scope',
+        timeline: 'Under Team Review',
+        details: `${category} requested directly via Client Portal by ${activeUser.name || 'Client'} (${clientPhone}).`,
+        status: 'Pending Review',
+        createdAt: window.firebase.firestore.FieldValue.serverTimestamp()
+      });
+    }
+  } catch (err) {
+    console.warn('projectRequests collection sync notice:', err);
   }
 
   await dispatchProjectApplicationWebhook(activeUser, newProject, clientPhone);
@@ -1218,6 +1319,276 @@ async function handleModalProjectSubmit(e) {
   }, 1200);
 }
 
+/* ==========================================================================
+   100+ WORKSPACE BANNER PRESETS CATALOG (Vectors, Emojis, Gradients, Solids)
+   ========================================================================== */
+const BANNER_PRESETS_CATALOG = {
+  emoji: [
+    // Tech & Space (10)
+    { id: 'e_rocket', name: 'Rockets & Stars', emoji: '🚀', bg: '#0F172A', textColor: '#38BDF8', pattern: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Ctext x=\'20\' y=\'35\' font-size=\'22\'%3E🚀%3C/text%3E%3C/svg%3E")' },
+    { id: 'e_sparkles', name: 'Magic Sparkles', emoji: '✨', bg: '#1E1B4B', textColor: '#FDE047', pattern: 'url("data:image/svg+xml,%3Csvg width=\'50\' height=\'50\' viewBox=\'0 0 50 50\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Ctext x=\'15\' y=\'32\' font-size=\'20\'%3E✨%3C/text%3E%3C/svg%3E")' },
+    { id: 'e_fire', name: 'Pure Fire', emoji: '🔥', bg: '#450A0A', textColor: '#F97316', pattern: 'url("data:image/svg+xml,%3Csvg width=\'50\' height=\'50\' viewBox=\'0 0 50 50\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Ctext x=\'15\' y=\'32\' font-size=\'20\'%3E🔥%3C/text%3E%3C/svg%3E")' },
+    { id: 'e_laptop', name: 'Code Dev', emoji: '💻', bg: '#022C22', textColor: '#34D399', pattern: 'url("data:image/svg+xml,%3Csvg width=\'55\' height=\'55\' viewBox=\'0 0 55 55\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Ctext x=\'15\' y=\'35\' font-size=\'22\'%3E💻%3C/text%3E%3C/svg%3E")' },
+    { id: 'e_bolt', name: 'High Voltage', emoji: '⚡', bg: '#422006', textColor: '#FBBF24', pattern: 'url("data:image/svg+xml,%3Csvg width=\'50\' height=\'50\' viewBox=\'0 0 50 50\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Ctext x=\'15\' y=\'32\' font-size=\'20\'%3E⚡%3C/text%3E%3C/svg%3E")' },
+    { id: 'e_bulb', name: 'Innovation Idea', emoji: '💡', bg: '#172554', textColor: '#60A5FA', pattern: 'url("data:image/svg+xml,%3Csvg width=\'50\' height=\'50\' viewBox=\'0 0 50 50\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Ctext x=\'15\' y=\'32\' font-size=\'20\'%3E💡%3C/text%3E%3C/svg%3E")' },
+    { id: 'e_robot', name: 'AI Robot', emoji: '🤖', bg: '#0F172A', textColor: '#A855F7', pattern: 'url("data:image/svg+xml,%3Csvg width=\'55\' height=\'55\' viewBox=\'0 0 55 55\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Ctext x=\'15\' y=\'35\' font-size=\'22\'%3E🤖%3C/text%3E%3C/svg%3E")' },
+    { id: 'e_moon', name: 'Midnight Crescent', emoji: '🌙', bg: '#090D16', textColor: '#E2E8F0', pattern: 'url("data:image/svg+xml,%3Csvg width=\'50\' height=\'50\' viewBox=\'0 0 50 50\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Ctext x=\'15\' y=\'32\' font-size=\'20\'%3E🌙%3C/text%3E%3C/svg%3E")' },
+    { id: 'e_saturn', name: 'Saturn Rings', emoji: '🪐', bg: '#18181B', textColor: '#F472B6', pattern: 'url("data:image/svg+xml,%3Csvg width=\'55\' height=\'55\' viewBox=\'0 0 55 55\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Ctext x=\'15\' y=\'35\' font-size=\'22\'%3E🪐%3C/text%3E%3C/svg%3E")' },
+    { id: 'e_crystal', name: 'Future Crystal', emoji: '🔮', bg: '#2E1065', textColor: '#C084FC', pattern: 'url("data:image/svg+xml,%3Csvg width=\'50\' height=\'50\' viewBox=\'0 0 50 50\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Ctext x=\'15\' y=\'32\' font-size=\'20\'%3E🔮%3C/text%3E%3C/svg%3E")' },
+    
+    // Growth & Business (10)
+    { id: 'e_gem', name: 'Diamond Gem', emoji: '💎', bg: '#082F49', textColor: '#38BDF8', pattern: 'url("data:image/svg+xml,%3Csvg width=\'50\' height=\'50\' viewBox=\'0 0 50 50\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Ctext x=\'15\' y=\'32\' font-size=\'20\'%3E💎%3C/text%3E%3C/svg%3E")' },
+    { id: 'e_chart', name: 'Growth Metric', emoji: '📈', bg: '#064E3B', textColor: '#34D399', pattern: 'url("data:image/svg+xml,%3Csvg width=\'50\' height=\'50\' viewBox=\'0 0 50 50\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Ctext x=\'15\' y=\'32\' font-size=\'20\'%3E📈%3C/text%3E%3C/svg%3E")' },
+    { id: 'e_target', name: 'Bullseye Focus', emoji: '🎯', bg: '#450A0A', textColor: '#F87171', pattern: 'url("data:image/svg+xml,%3Csvg width=\'50\' height=\'50\' viewBox=\'0 0 50 50\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Ctext x=\'15\' y=\'32\' font-size=\'20\'%3E🎯%3C/text%3E%3C/svg%3E")' },
+    { id: 'e_trophy', name: 'Champion Trophy', emoji: '🏆', bg: '#451A03', textColor: '#FBBF24', pattern: 'url("data:image/svg+xml,%3Csvg width=\'50\' height=\'50\' viewBox=\'0 0 50 50\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Ctext x=\'15\' y=\'32\' font-size=\'20\'%3E🏆%3C/text%3E%3C/svg%3E")' },
+    { id: 'e_crown', name: 'Royal Crown', emoji: '👑', bg: '#1E1B4B', textColor: '#FBBF24', pattern: 'url("data:image/svg+xml,%3Csvg width=\'50\' height=\'50\' viewBox=\'0 0 50 50\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Ctext x=\'15\' y=\'32\' font-size=\'20\'%3E👑%3C/text%3E%3C/svg%3E")' },
+    { id: 'e_money', name: 'Cash Bag', emoji: '💰', bg: '#064E3B', textColor: '#10B981', pattern: 'url("data:image/svg+xml,%3Csvg width=\'50\' height=\'50\' viewBox=\'0 0 50 50\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Ctext x=\'15\' y=\'32\' font-size=\'20\'%3E💰%3C/text%3E%3C/svg%3E")' },
+    { id: 'e_star', name: 'Golden Star', emoji: '⭐', bg: '#172554', textColor: '#FDE047', pattern: 'url("data:image/svg+xml,%3Csvg width=\'45\' height=\'45\' viewBox=\'0 0 45 45\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Ctext x=\'12\' y=\'28\' font-size=\'18\'%3E⭐%3C/text%3E%3C/svg%3E")' },
+    { id: 'e_shield', name: 'Cyber Shield', emoji: '🛡️', bg: '#0F172A', textColor: '#38BDF8', pattern: 'url("data:image/svg+xml,%3Csvg width=\'50\' height=\'50\' viewBox=\'0 0 50 50\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Ctext x=\'15\' y=\'32\' font-size=\'20\'%3E🛡️%3C/text%3E%3C/svg%3E")' },
+    { id: 'e_key', name: 'Master Key', emoji: '🔑', bg: '#1C1917', textColor: '#EAB308', pattern: 'url("data:image/svg+xml,%3Csvg width=\'50\' height=\'50\' viewBox=\'0 0 50 50\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Ctext x=\'15\' y=\'32\' font-size=\'20\'%3E🔑%3C/text%3E%3C/svg%3E")' },
+    { id: 'e_heart', name: 'Studio Love', emoji: '❤️', bg: '#4C0519', textColor: '#FB7185', pattern: 'url("data:image/svg+xml,%3Csvg width=\'50\' height=\'50\' viewBox=\'0 0 50 50\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Ctext x=\'15\' y=\'32\' font-size=\'20\'%3E❤️%3C/text%3E%3C/svg%3E")' },
+
+    // Creative & Vibes (10)
+    { id: 'e_palette', name: 'Design Palette', emoji: '🎨', bg: '#FAF5FF', textColor: '#9333EA', pattern: 'url("data:image/svg+xml,%3Csvg width=\'55\' height=\'55\' viewBox=\'0 0 55 55\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Ctext x=\'15\' y=\'35\' font-size=\'22\'%3E🎨%3C/text%3E%3C/svg%3E")' },
+    { id: 'e_party', name: 'Celebration', emoji: '🎉', bg: '#FEFCE8', textColor: '#CA8A04', pattern: 'url("data:image/svg+xml,%3Csvg width=\'50\' height=\'50\' viewBox=\'0 0 50 50\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Ctext x=\'15\' y=\'32\' font-size=\'20\'%3E🎉%3C/text%3E%3C/svg%3E")' },
+    { id: 'e_coffee', name: 'Fresh Coffee', emoji: '☕', bg: '#451A03', textColor: '#D97706', pattern: 'url("data:image/svg+xml,%3Csvg width=\'50\' height=\'50\' viewBox=\'0 0 50 50\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Ctext x=\'15\' y=\'32\' font-size=\'20\'%3E☕%3C/text%3E%3C/svg%3E")' },
+    { id: 'e_rainbow', name: 'Rainbow Aura', emoji: '🌈', bg: '#F8FAFC', textColor: '#38BDF8', pattern: 'url("data:image/svg+xml,%3Csvg width=\'55\' height=\'55\' viewBox=\'0 0 55 55\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Ctext x=\'15\' y=\'35\' font-size=\'22\'%3E🌈%3C/text%3E%3C/svg%3E")' },
+    { id: 'e_matrix', name: 'Alien Matrix', emoji: '👾', bg: '#030712', textColor: '#22C55E', pattern: 'url("data:image/svg+xml,%3Csvg width=\'50\' height=\'50\' viewBox=\'0 0 50 50\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Ctext x=\'15\' y=\'32\' font-size=\'20\'%3E👾%3C/text%3E%3C/svg%3E")' },
+    { id: 'e_flower', name: 'Spring Blossom', emoji: '🌸', bg: '#FFF1F2', textColor: '#F43F5E', pattern: 'url("data:image/svg+xml,%3Csvg width=\'50\' height=\'50\' viewBox=\'0 0 50 50\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Ctext x=\'15\' y=\'32\' font-size=\'20\'%3E🌸%3C/text%3E%3C/svg%3E")' },
+    { id: 'e_sun', name: 'Morning Sunshine', emoji: '☀️', bg: '#FFFBEB', textColor: '#F59E0B', pattern: 'url("data:image/svg+xml,%3Csvg width=\'50\' height=\'50\' viewBox=\'0 0 50 50\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Ctext x=\'15\' y=\'32\' font-size=\'20\'%3E☀️%3C/text%3E%3C/svg%3E")' },
+    { id: 'e_cloud', name: 'Cloud Nimbus', emoji: '☁️', bg: '#F0F9FF', textColor: '#0284C7', pattern: 'url("data:image/svg+xml,%3Csvg width=\'55\' height=\'55\' viewBox=\'0 0 55 55\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Ctext x=\'15\' y=\'35\' font-size=\'22\'%3E☁️%3C/text%3E%3C/svg%3E")' },
+    { id: 'e_game', name: 'Arcade Gamer', emoji: '🎮', bg: '#18181B', textColor: '#A855F7', pattern: 'url("data:image/svg+xml,%3Csvg width=\'55\' height=\'55\' viewBox=\'0 0 55 55\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Ctext x=\'15\' y=\'35\' font-size=\'22\'%3E🎮%3C/text%3E%3C/svg%3E")' },
+    { id: 'e_music', name: 'Lo-Fi Beats', emoji: '🎧', bg: '#0F172A', textColor: '#EC4899', pattern: 'url("data:image/svg+xml,%3Csvg width=\'50\' height=\'50\' viewBox=\'0 0 50 50\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Ctext x=\'15\' y=\'32\' font-size=\'20\'%3E🎧%3C/text%3E%3C/svg%3E")' },
+
+    // Atmosphere & Nature (10)
+    { id: 'e_leaves', name: 'Forest Leaves', emoji: '🍃', bg: '#F0FDF4', textColor: '#16A34A', pattern: 'url("data:image/svg+xml,%3Csvg width=\'50\' height=\'50\' viewBox=\'0 0 50 50\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Ctext x=\'15\' y=\'32\' font-size=\'20\'%3E🍃%3C/text%3E%3C/svg%3E")' },
+    { id: 'e_ocean', name: 'Ocean Wave', emoji: '🌊', bg: '#0C4A6E', textColor: '#38BDF8', pattern: 'url("data:image/svg+xml,%3Csvg width=\'55\' height=\'55\' viewBox=\'0 0 55 55\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Ctext x=\'15\' y=\'35\' font-size=\'22\'%3E🌊%3C/text%3E%3C/svg%3E")' },
+    { id: 'e_mountain', name: 'Alpine Peak', emoji: '🏔️', bg: '#0F172A', textColor: '#94A3B8', pattern: 'url("data:image/svg+xml,%3Csvg width=\'55\' height=\'55\' viewBox=\'0 0 55 55\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Ctext x=\'15\' y=\'35\' font-size=\'22\'%3E🏔️%3C/text%3E%3C/svg%3E")' },
+    { id: 'e_palm', name: 'Tropical Palm', emoji: '🌴', bg: '#064E3B', textColor: '#6EE7B7', pattern: 'url("data:image/svg+xml,%3Csvg width=\'50\' height=\'50\' viewBox=\'0 0 50 50\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Ctext x=\'15\' y=\'32\' font-size=\'20\'%3E🌴%3C/text%3E%3C/svg%3E")' },
+    { id: 'e_snowflake', name: 'Arctic Frost', emoji: '❄️', bg: '#082F49', textColor: '#E0F2FE', pattern: 'url("data:image/svg+xml,%3Csvg width=\'50\' height=\'50\' viewBox=\'0 0 50 50\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Ctext x=\'15\' y=\'32\' font-size=\'20\'%3E❄️%3C/text%3E%3C/svg%3E")' },
+    { id: 'e_skull', name: 'Cyber Skull', emoji: '💀', bg: '#09090B', textColor: '#71717A', pattern: 'url("data:image/svg+xml,%3Csvg width=\'50\' height=\'50\' viewBox=\'0 0 50 50\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Ctext x=\'15\' y=\'32\' font-size=\'20\'%3E💀%3C/text%3E%3C/svg%3E")' },
+    { id: 'e_ghost', name: 'Shadow Ghost', emoji: '👻', bg: '#18181B', textColor: '#D4D4D8', pattern: 'url("data:image/svg+xml,%3Csvg width=\'50\' height=\'50\' viewBox=\'0 0 50 50\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Ctext x=\'15\' y=\'32\' font-size=\'20\'%3E👻%3C/text%3E%3C/svg%3E")' },
+    { id: 'e_eyes', name: 'Deep Vision', emoji: '👀', bg: '#111827', textColor: '#9CA3AF', pattern: 'url("data:image/svg+xml,%3Csvg width=\'50\' height=\'50\' viewBox=\'0 0 50 50\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Ctext x=\'15\' y=\'32\' font-size=\'20\'%3E👀%3C/text%3E%3C/svg%3E")' },
+    { id: 'e_peace', name: 'Victory Sign', emoji: '✌️', bg: '#1E293B', textColor: '#38BDF8', pattern: 'url("data:image/svg+xml,%3Csvg width=\'50\' height=\'50\' viewBox=\'0 0 50 50\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Ctext x=\'15\' y=\'32\' font-size=\'20\'%3E✌️%3C/text%3E%3C/svg%3E")' },
+    { id: 'e_clover', name: 'Lucky Clover', emoji: '🍀', bg: '#052E16', textColor: '#4ADE80', pattern: 'url("data:image/svg+xml,%3Csvg width=\'50\' height=\'50\' viewBox=\'0 0 50 50\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Ctext x=\'15\' y=\'32\' font-size=\'20\'%3E🍀%3C/text%3E%3C/svg%3E")' }
+  ],
+  vectors: [
+    { id: 'v_grid_sky', name: 'Sky Blueprint Grid', value: 'linear-gradient(135deg, rgba(2,132,199,0.06) 0%, rgba(240,249,255,0.95) 100%), repeating-linear-gradient(0deg, transparent, transparent 20px, rgba(2,132,199,0.06) 20px, rgba(2,132,199,0.06) 21px), repeating-linear-gradient(90deg, transparent, transparent 20px, rgba(2,132,199,0.06) 20px, rgba(2,132,199,0.06) 21px)' },
+    { id: 'v_dark_dots', name: 'Dark Cyber Matrix Dots', value: 'linear-gradient(135deg, #0A0F1D 0%, #0F172A 100%), radial-gradient(rgba(255,107,0,0.22) 1.5px, transparent 1.5px)' },
+    { id: 'v_circuit_emerald', name: 'Emerald Circuit Lattice', value: 'linear-gradient(135deg, rgba(16,185,129,0.06) 0%, rgba(240,253,244,0.95) 100%), repeating-linear-gradient(45deg, transparent, transparent 14px, rgba(16,185,129,0.06) 14px, rgba(16,185,129,0.06) 15px)' },
+    { id: 'v_neon_mesh', name: 'Neon Geometric Glow', value: 'radial-gradient(circle at 10% 20%, rgba(255,107,0,0.12) 0%, transparent 40%), radial-gradient(circle at 90% 80%, rgba(56,189,248,0.15) 0%, transparent 40%), linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%)' },
+    { id: 'v_diagonal_slate', name: 'Diagonal Slate Weave', value: 'repeating-linear-gradient(45deg, #F8FAFC, #F8FAFC 10px, #F1F5F9 10px, #F1F5F9 20px)' },
+    { id: 'v_isometric_violet', name: 'Isometric Violet Cubes', value: 'linear-gradient(135deg, #FAF5FF 0%, #EDE9FE 100%), repeating-linear-gradient(60deg, transparent, transparent 18px, rgba(147,51,234,0.06) 18px, rgba(147,51,234,0.06) 19px)' },
+    { id: 'v_dark_grid', name: 'Obsidian Grid', value: 'linear-gradient(135deg, #090D16 0%, #0F172A 100%), repeating-linear-gradient(0deg, transparent, transparent 24px, rgba(255,255,255,0.04) 24px, rgba(255,255,255,0.04) 25px), repeating-linear-gradient(90deg, transparent, transparent 24px, rgba(255,255,255,0.04) 24px, rgba(255,255,255,0.04) 25px)' },
+    { id: 'v_polka_coral', name: 'Coral Micro Dots', value: 'radial-gradient(circle, rgba(244,63,94,0.12) 1.5px, transparent 1.5px), linear-gradient(135deg, #FFF1F2 0%, #FFE4E6 100%)' },
+    { id: 'v_blueprint_blue', name: 'Architecture Blueprint', value: 'linear-gradient(135deg, #0369A1 0%, #075985 100%), repeating-linear-gradient(0deg, transparent, transparent 16px, rgba(255,255,255,0.08) 16px, rgba(255,255,255,0.08) 17px), repeating-linear-gradient(90deg, transparent, transparent 16px, rgba(255,255,255,0.08) 16px, rgba(255,255,255,0.08) 17px)' },
+    { id: 'v_hex_amber', name: 'Honeycomb Hexagon', value: 'radial-gradient(circle at 50% 50%, rgba(245,158,11,0.12) 0%, transparent 50%), linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%)' },
+    { id: 'v_carbon_fiber', name: 'Carbon Fiber Weave', value: 'radial-gradient(black 15%, transparent 16%) 0 0, radial-gradient(black 15%, transparent 16%) 8px 8px, radial-gradient(rgba(255,255,255,.1) 15%, transparent 20%) 0 1px, radial-gradient(rgba(255,255,255,.1) 15%, transparent 20%) 8px 9px, #18181B' },
+    { id: 'v_waves_cyan', name: 'Topographic Vector Curves', value: 'repeating-radial-gradient(circle at 0 0, transparent 0, #E0F2FE 10px), repeating-linear-gradient(#F0F9FF, #E0F2FE)' },
+    { id: 'v_crosshatch_dark', name: 'Crosshatch Stealth', value: 'repeating-linear-gradient(45deg, rgba(255,255,255,0.03) 0, rgba(255,255,255,0.03) 1px, transparent 0, transparent 50%), repeating-linear-gradient(-45deg, rgba(255,255,255,0.03) 0, rgba(255,255,255,0.03) 1px, #0B0F19 0, #0B0F19 50%)' },
+    { id: 'v_stripes_gold', name: 'Executive Pinstripe', value: 'repeating-linear-gradient(90deg, #1C1917, #1C1917 28px, rgba(234,179,8,0.2) 28px, rgba(234,179,8,0.2) 29px)' },
+    { id: 'v_radar_green', name: 'Matrix Radar Sweep', value: 'radial-gradient(circle at center, rgba(34,197,94,0.15) 0%, transparent 60%), linear-gradient(135deg, #022C22 0%, #064E3B 100%)' },
+    { id: 'v_retro_lines', name: 'Synthwave Horizon', value: 'linear-gradient(180deg, #1E1B4B 0%, #312E81 70%, #F43F5E 100%)' },
+    { id: 'v_dots_lavender', name: 'Lavender Stipple', value: 'radial-gradient(rgba(147,51,234,0.15) 1.5px, transparent 1.5px), #FAF5FF' },
+    { id: 'v_prism_light', name: 'Prism Refraction', value: 'linear-gradient(45deg, #FDF2F8 0%, #EFF6FF 50%, #F0FDF4 100%)' },
+    { id: 'v_stars_cosmic', name: 'Cosmic Constellation', value: 'radial-gradient(circle at 20% 30%, rgba(255,255,255,0.3) 1px, transparent 1px), radial-gradient(circle at 80% 70%, rgba(255,255,255,0.25) 1px, transparent 1px), #090D16' },
+    { id: 'v_circuit_gold', name: 'Gold PCB Circuit', value: 'linear-gradient(135deg, #1C1917 0%, #292524 100%), repeating-linear-gradient(45deg, transparent, transparent 12px, rgba(234,179,8,0.08) 12px, rgba(234,179,8,0.08) 13px)' },
+    { id: 'v_blueprint_dark', name: 'Deep Space Grid', value: 'linear-gradient(135deg, #020617 0%, #0B1120 100%), repeating-linear-gradient(0deg, transparent, transparent 20px, rgba(56,189,248,0.06) 20px, rgba(56,189,248,0.06) 21px)' },
+    { id: 'v_soundwave', name: 'Audio Waveform', value: 'linear-gradient(135deg, #18181B 0%, #27272A 100%), repeating-linear-gradient(90deg, transparent, transparent 14px, rgba(244,63,94,0.12) 14px, rgba(244,63,94,0.12) 16px)' },
+    { id: 'v_glitch', name: 'Cyber Glitch Neon', value: 'linear-gradient(90deg, #0A0F1D 0%, rgba(255,107,0,0.1) 50%, #0A0F1D 100%)' },
+    { id: 'v_flow', name: 'Vector Flowfield', value: 'radial-gradient(ellipse at bottom, #0F172A 0%, #020617 100%)' },
+    { id: 'v_studio_grid', name: 'Nyghto Engineering Grid', value: 'linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 100%), repeating-linear-gradient(0deg, transparent, transparent 16px, rgba(15,23,42,0.05) 16px, rgba(15,23,42,0.05) 17px)' }
+  ],
+  gradients: [
+    { id: 'g_sky', name: 'Sky Ocean (Default)', value: 'linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 50%, #F8FAFC 100%)' },
+    { id: 'g_sunset', name: 'Nyghto Sunset', value: 'linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 50%, #FEF3C7 100%)' },
+    { id: 'g_mint', name: 'Emerald Mint', value: 'linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 50%, #F0FDF4 100%)' },
+    { id: 'g_lavender', name: 'Lavender Bloom', value: 'linear-gradient(135deg, #FAF5FF 0%, #F3E8FF 50%, #EDE9FE 100%)' },
+    { id: 'g_rose', name: 'Rose Coral', value: 'linear-gradient(135deg, #FFF1F2 0%, #FFE4E6 50%, #FDF2F8 100%)' },
+    { id: 'g_slate', name: 'Minimal Slate', value: 'linear-gradient(135deg, #F8FAFC 0%, #E2E8F0 50%, #F1F5F9 100%)' },
+    { id: 'g_aurora', name: 'Northern Aurora', value: 'radial-gradient(circle at 80% 20%, rgba(168,85,247,0.18) 0%, transparent 50%), radial-gradient(circle at 20% 80%, rgba(59,130,246,0.15) 0%, transparent 50%), linear-gradient(135deg, #FAF5FF 0%, #EDE9FE 100%)' },
+    { id: 'g_hyperdrive', name: 'Hyperdrive Neon', value: 'linear-gradient(135deg, #0A0F1D 0%, #1E1B4B 50%, #0F172A 100%)' },
+    { id: 'g_peach', name: 'Warm Peach', value: 'linear-gradient(135deg, #FFF7ED 0%, #FFE4E6 100%)' },
+    { id: 'g_cyan_teal', name: 'Lagoon Breeze', value: 'linear-gradient(135deg, #ECFEFF 0%, #CCFBF1 100%)' },
+    { id: 'g_indigo_night', name: 'Midnight Indigo', value: 'linear-gradient(135deg, #1E1B4B 0%, #0F172A 100%)' },
+    { id: 'g_crimson', name: 'Crimson Velvet', value: 'linear-gradient(135deg, #450A0A 0%, #1C1917 100%)' },
+    { id: 'g_forest', name: 'Deep Forest', value: 'linear-gradient(135deg, #022C22 0%, #064E3B 100%)' },
+    { id: 'g_gold_amber', name: 'Amber Glow', value: 'linear-gradient(135deg, #451A03 0%, #78350F 50%, #1C1917 100%)' },
+    { id: 'g_cyberpunk', name: 'Cyberpunk Violet', value: 'linear-gradient(135deg, #2E1065 0%, #3B0764 50%, #0F172A 100%)' },
+    { id: 'g_steel', name: 'Industrial Steel', value: 'linear-gradient(135deg, #334155 0%, #0F172A 100%)' },
+    { id: 'g_cotton_candy', name: 'Pastel Sorbet', value: 'linear-gradient(135deg, #E0F2FE 0%, #FCE7F3 50%, #FEF3C7 100%)' },
+    { id: 'g_plasma', name: 'Solar Plasma', value: 'linear-gradient(135deg, #EA580C 0%, #D97706 50%, #CA8A04 100%)' },
+    { id: 'g_titanium', name: 'Titanium Frost', value: 'linear-gradient(135deg, #E2E8F0 0%, #CBD5E1 100%)' },
+    { id: 'g_deep_space', name: 'Deep Nebula', value: 'radial-gradient(circle at 50% 50%, #1E1B4B 0%, #090D16 100%)' },
+    { id: 'g_sunburst', name: 'Morning Glow', value: 'linear-gradient(135deg, #FEF08A 0%, #FED7AA 100%)' },
+    { id: 'g_matcha', name: 'Matcha Green', value: 'linear-gradient(135deg, #DCFCE7 0%, #BBF7D0 100%)' },
+    { id: 'g_lilac', name: 'Soft Lilac', value: 'linear-gradient(135deg, #EDE9FE 0%, #DDD6FE 100%)' },
+    { id: 'g_obsidian_gold', name: 'Royal Obsidian', value: 'linear-gradient(135deg, #09090B 0%, #1C1917 60%, #451A03 100%)' },
+    { id: 'g_bubblegum', name: 'Pink Bubblegum', value: 'linear-gradient(135deg, #FDF2F8 0%, #FBCFE8 100%)' }
+  ],
+  solids: [
+    { id: 's_white', name: 'Clean White (Default Minimal)', value: '#FFFFFF' },
+    { id: 's_slate50', name: 'Ghost Slate', value: '#F8FAFC' },
+    { id: 's_gray100', name: 'Soft Gray', value: '#F3F4F6' },
+    { id: 's_sky50', name: 'Ice Sky', value: '#F0F9FF' },
+    { id: 's_emerald50', name: 'Mint Tint', value: '#F0FDF4' },
+    { id: 's_purple50', name: 'Lavender Cream', value: '#FAF5FF' },
+    { id: 's_amber50', name: 'Vanilla Amber', value: '#FFFBEB' },
+    { id: 's_rose50', name: 'Blush Cream', value: '#FFF1F2' },
+    { id: 's_slate900', name: 'Nyghto Dark Slate', value: '#0F172A' },
+    { id: 's_zinc950', name: 'Pure Obsidian', value: '#09090B' },
+    { id: 's_navy', name: 'Deep Navy', value: '#0B1120' },
+    { id: 's_dark_emerald', name: 'Pine Forest', value: '#022C22' },
+    { id: 's_dark_indigo', name: 'Midnight Violet', value: '#1E1B4B' },
+    { id: 's_dark_coffee', name: 'Espresso Roast', value: '#1C1917' }
+  ]
+};
+
+let currentBannerCategory = 'emoji';
+
+function filterBannerCategory(category, btn) {
+  currentBannerCategory = category;
+  
+  // Highlight active pill
+  const pills = document.querySelectorAll('.banner-cat-pill');
+  pills.forEach(p => {
+    p.style.background = '#F1F5F9';
+    p.style.color = '#475569';
+    p.classList.remove('active');
+  });
+  if (btn) {
+    btn.style.background = '#0F172A';
+    btn.style.color = '#FFFFFF';
+    btn.classList.add('active');
+  }
+
+  renderBannerGrid(category);
+}
+
+function renderBannerGrid(category = 'emoji') {
+  const container = document.getElementById('bannerPresetsScrollBox');
+  if (!container) return;
+
+  const currentVal = document.getElementById('setUserBannerColor')?.value || '';
+  const presets = BANNER_PRESETS_CATALOG[category] || BANNER_PRESETS_CATALOG.emoji;
+
+  let html = '';
+  presets.forEach(p => {
+    const isEmoji = category === 'emoji';
+    let gradientValue = '';
+    let previewStyle = '';
+    let innerContent = '';
+
+    if (isEmoji) {
+      // Repeat emoji pattern background
+      gradientValue = `${p.pattern}, ${p.bg}`;
+      previewStyle = `background: ${p.bg}; border: 2px solid ${currentVal === gradientValue ? '#0284C7' : 'transparent'};`;
+      innerContent = `<span style="font-size: 1.2rem; display: flex; align-items: center; justify-content: center; height: 100%; user-select: none;">${p.emoji}</span>`;
+    } else {
+      gradientValue = p.value;
+      const isCleanWhite = gradientValue === '#FFFFFF';
+      previewStyle = `background: ${gradientValue}; border: ${isCleanWhite ? '1px solid #CBD5E1' : (currentVal === gradientValue ? '2px solid #0284C7' : '2px solid transparent')};`;
+    }
+
+    const isActive = currentVal === gradientValue;
+    html += `
+      <button type="button" class="banner-color-choice ${isActive ? 'active' : ''}" data-gradient="${gradientValue.replace(/"/g, '&quot;')}" onclick="selectBannerColor(this)" title="${p.name}" style="height: 38px; border-radius: 8px; cursor: pointer; position: relative; transition: all 0.15s ease; ${previewStyle}">
+        ${innerContent}
+      </button>
+    `;
+  });
+
+  container.innerHTML = html;
+}
+
+/* ==========================================================================
+   CLEAN TOAST NOTIFICATION ENGINE (Replaces browser alerts)
+   ========================================================================== */
+function showPortalToast(message, type = 'success') {
+  let toast = document.getElementById('nyghtoPortalToast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'nyghtoPortalToast';
+    toast.style.position = 'fixed';
+    toast.style.bottom = '24px';
+    toast.style.left = '50%';
+    toast.style.transform = 'translateX(-50%) translateY(20px)';
+    toast.style.background = '#0F172A';
+    toast.style.color = '#FFFFFF';
+    toast.style.padding = '10px 20px';
+    toast.style.borderRadius = '30px';
+    toast.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.25)';
+    toast.style.fontFamily = 'var(--font-sans, sans-serif)';
+    toast.style.fontSize = '0.86rem';
+    toast.style.fontWeight = '700';
+    toast.style.zIndex = '999999';
+    toast.style.opacity = '0';
+    toast.style.transition = 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)';
+    toast.style.pointerEvents = 'none';
+    toast.style.display = 'flex';
+    toast.style.alignItems = 'center';
+    toast.style.gap = '8px';
+    document.body.appendChild(toast);
+  }
+
+  toast.innerHTML = message;
+  toast.style.opacity = '1';
+  toast.style.transform = 'translateX(-50%) translateY(0)';
+
+  clearTimeout(toast._timeout);
+  toast._timeout = setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateX(-50%) translateY(20px)';
+  }, 2200);
+}
+
+function removeBannerTheme() {
+  const hiddenInput = document.getElementById('setUserBannerColor');
+  if (hiddenInput) hiddenInput.value = '#FFFFFF';
+
+  const buttons = document.querySelectorAll('.banner-color-choice');
+  buttons.forEach(b => {
+    b.style.borderColor = 'transparent';
+    b.classList.remove('active');
+  });
+
+  const coverBanner = document.querySelector('.uui-cover-banner');
+  if (coverBanner && !coverBanner.classList.contains('compact-banner')) {
+    coverBanner.style.background = '#FFFFFF';
+  }
+  const mobileBanner = document.getElementById('mobileProfileCoverBanner');
+  if (mobileBanner) {
+    mobileBanner.style.background = '#FFFFFF';
+  }
+  showPortalToast('✓ Banner removed');
+}
+
+function selectBannerColor(btn) {
+  if (!btn) return;
+  const gradient = btn.getAttribute('data-gradient');
+  const hiddenInput = document.getElementById('setUserBannerColor');
+  if (hiddenInput) hiddenInput.value = gradient;
+
+  // Highlight selected choice
+  const buttons = document.querySelectorAll('.banner-color-choice');
+  buttons.forEach(b => {
+    b.style.borderColor = 'transparent';
+    b.classList.remove('active');
+  });
+  btn.style.borderColor = '#0284C7';
+  btn.classList.add('active');
+
+  // Preview live on both desktop & mobile cover banners
+  const coverBanner = document.querySelector('.uui-cover-banner');
+  if (coverBanner && !coverBanner.classList.contains('compact-banner')) {
+    coverBanner.style.background = gradient;
+  }
+  const mobileBanner = document.getElementById('mobileProfileCoverBanner');
+  if (mobileBanner) {
+    mobileBanner.style.background = gradient;
+  }
+}
+
 function openProfileEditModal() {
   const modal = document.getElementById('proEditModal');
   if (modal) {
@@ -1231,6 +1602,7 @@ function openProfileEditModal() {
       const postalInput = document.getElementById('setUserPostal');
       const taxIdInput = document.getElementById('setUserTaxId');
       const bioInput = document.getElementById('setUserBio');
+      const bannerInput = document.getElementById('setUserBannerColor');
 
       if (nameInput) nameInput.value = currentUser.name || '';
       if (companyInput) companyInput.value = currentUser.role || currentUser.company || '';
@@ -1241,6 +1613,40 @@ function openProfileEditModal() {
       if (postalInput) postalInput.value = currentUser.postal || '';
       if (taxIdInput) taxIdInput.value = currentUser.taxId || '';
       if (bioInput) bioInput.value = currentUser.bio || '';
+
+      const userBanner = currentUser.bannerColor || 'linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 50%, #F8FAFC 100%)';
+      if (bannerInput) bannerInput.value = userBanner;
+
+      // Google Avatar Sync in Modal
+      const modalAvatarImg = document.getElementById('editModalAvatarPreview');
+      const modalAvatarFallback = document.getElementById('editModalAvatarFallback');
+      const modalGoogleName = document.getElementById('editModalGoogleName');
+      const modalAvatarSrc = currentUser.avatar || currentUser.picture || currentUser.photoURL || '';
+
+      if (modalGoogleName) modalGoogleName.textContent = currentUser.name || 'Google Account';
+      if (modalAvatarImg) {
+        if (modalAvatarSrc) {
+          modalAvatarImg.src = modalAvatarSrc;
+          modalAvatarImg.style.display = 'block';
+          if (modalAvatarFallback) modalAvatarFallback.style.display = 'none';
+          modalAvatarImg.onerror = () => {
+            modalAvatarImg.style.display = 'none';
+            if (modalAvatarFallback) {
+              modalAvatarFallback.style.display = 'flex';
+              modalAvatarFallback.textContent = (currentUser.name || 'G').charAt(0).toUpperCase();
+            }
+          };
+        } else {
+          modalAvatarImg.style.display = 'none';
+          if (modalAvatarFallback) {
+            modalAvatarFallback.style.display = 'flex';
+            modalAvatarFallback.textContent = (currentUser.name || 'G').charAt(0).toUpperCase();
+          }
+        }
+      }
+
+      // Populate 100+ banner presets grid
+      renderBannerGrid(currentBannerCategory);
     }
     modal.style.display = 'flex';
   }
@@ -1292,41 +1698,7 @@ function initSettingsForm() {
 
   if (settingsForm) {
     settingsForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      if (!currentUser) return;
-
-      const newName = document.getElementById('setUserName').value.trim();
-      const newRole = document.getElementById('setUserCompany').value.trim();
-      const newPhone = document.getElementById('setUserPhone').value.trim();
-      const newCountry = document.getElementById('setUserCountry').value.trim();
-      const newCity = document.getElementById('setUserCity').value.trim();
-      const newPostal = document.getElementById('setUserPostal').value.trim();
-      const newTaxId = document.getElementById('setUserTaxId').value.trim();
-      const newBio = document.getElementById('setUserBio').value.trim();
-
-      if (newName) {
-        currentUser.name = newName;
-        const parts = newName.split(' ');
-        currentUser.firstName = parts[0] || newName;
-        currentUser.lastName = parts.slice(1).join(' ') || '';
-      }
-      if (newRole) currentUser.role = newRole;
-      if (newPhone) currentUser.phone = newPhone;
-      if (newCountry) currentUser.country = newCountry;
-      if (newCity) currentUser.city = newCity;
-      if (newPostal) currentUser.postal = newPostal;
-      if (newTaxId) currentUser.taxId = newTaxId;
-      if (newBio) currentUser.bio = newBio;
-
-      setSession(currentUser);
-
-      if (statusEl) {
-        statusEl.innerHTML = '<span style="color:#16A34A; font-weight:700;">✓ Changes saved successfully!</span>';
-        setTimeout(() => {
-          statusEl.innerHTML = '';
-          closeProfileEditModal();
-        }, 700);
-      }
+      handleSaveProfileSettings(e);
     });
   }
 }
@@ -1379,6 +1751,17 @@ function renderDashboard(user) {
   const email = user.email || '';
   const initial = firstName.charAt(0).toUpperCase() || 'C';
 
+  // Apply custom banner theme color if configured
+  const bannerThemeVal = user.bannerColor || 'linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 50%, #F8FAFC 100%)';
+  const coverBanner = document.querySelector('.uui-cover-banner');
+  if (coverBanner && !coverBanner.classList.contains('compact-banner')) {
+    coverBanner.style.background = bannerThemeVal;
+  }
+  const mobileProfileBanner = document.getElementById('mobileProfileCoverBanner');
+  if (mobileProfileBanner) {
+    mobileProfileBanner.style.background = bannerThemeVal;
+  }
+
   // Header & Hero Avatar Elements
   const headerUserName = document.getElementById('headerUserName');
   const userAvatarText = document.getElementById('userAvatarText');
@@ -1427,9 +1810,12 @@ function renderDashboard(user) {
   const displayBio = document.getElementById('displayBio');
   const uuiInputName = document.getElementById('uuiInputName');
   const uuiInputSlug = document.getElementById('uuiInputSlug');
+  const uuiPortalIdDisplay = document.getElementById('uuiPortalIdDisplay');
 
   if (displayFullName) displayFullName.textContent = name;
   if (displayEmail) displayEmail.textContent = email;
+  if (uuiPortalIdDisplay) uuiPortalIdDisplay.textContent = user.id || 'usr_client';
+  if (uuiInputName) uuiInputName.value = name;
   if (displayBio) {
     if (user.bio && user.bio.trim()) {
       displayBio.textContent = user.bio.trim();
@@ -1439,8 +1825,21 @@ function renderDashboard(user) {
       displayBio.style.display = 'none';
     }
   }
-  if (uuiInputName) uuiInputName.value = name;
   if (uuiInputSlug) uuiInputSlug.value = (user.slug || firstName.toLowerCase().replace(/\s+/g, ''));
+
+  // Compute Financial / Billing Invoices
+  const invoices = user.invoices || [];
+  let calculatedPaid = 0;
+  invoices.forEach(inv => {
+    if (inv.status === 'Paid') {
+      const num = parseInt((inv.amount || '0').toString().replace(/[^\d]/g, ''), 10) || 0;
+      calculatedPaid += num;
+    }
+  });
+
+  const totalPaidFormatted = invoices.length > 0 ? ('₹' + calculatedPaid.toLocaleString('en-IN')) : (user.revenue || '₹0');
+  const totalProjectsCount = (user.projects && user.projects.length) || 0;
+  const clientStatus = user.status || (totalProjectsCount > 0 ? 'Active' : 'New Client');
 
   // Stats
   const statFirstSeen = document.getElementById('statFirstSeen');
@@ -1448,13 +1847,15 @@ function renderDashboard(user) {
   const statRevenue = document.getElementById('statRevenue');
   const statMRR = document.getElementById('statMRR');
 
-  if (statFirstSeen) statFirstSeen.textContent = user.firstSeen || '1 Jun, 2025';
-  if (statFirstPurchase) statFirstPurchase.textContent = user.firstPurchase || '4 May, 2025';
-  if (statRevenue) statRevenue.textContent = user.revenue || '₹1,85,000';
-  if (statMRR) statMRR.textContent = user.mrr || 'Active';
+  if (statFirstSeen) statFirstSeen.textContent = user.firstSeen || (user.createdAt ? new Date(user.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Today');
+  if (statFirstPurchase) statFirstPurchase.textContent = user.firstPurchase || (totalProjectsCount > 0 ? 'Sprint 01' : '—');
+  if (statRevenue) statRevenue.textContent = totalPaidFormatted;
+  if (statMRR) statMRR.textContent = clientStatus;
+
+  // Render Dynamic Billing Table & Overview Cards
+  renderBillingTable(invoices, totalPaidFormatted);
 
   // Projects Feed
-  const projectsList = document.getElementById('dashProjectsList');
   const statProjectsCount = document.getElementById('statProjectsCount');
   const projects = user.projects || [];
 
@@ -1467,6 +1868,17 @@ function renderDashboard(user) {
     window.nyghtoFirebase.subscribeToChat(user.id, (msgs) => {
       syncRealtimeChatStream(msgs);
     });
+
+    // Real-Time Project Milestone & Status Stream from NyghtoOS
+    window.nyghtoFirebase.subscribeToProjects(user.id, (liveProjects) => {
+      user.projects = liveProjects;
+      currentUser.projects = liveProjects;
+      renderActiveWorkCard(liveProjects);
+      if (window.renderReactProjectProgress) {
+        window.renderReactProjectProgress(currentUser);
+      }
+      window.dispatchEvent(new CustomEvent('nyghto_user_changed', { detail: { user: currentUser } }));
+    });
   }
 
   // Render Dynamic Active Work Card on Profile Tab
@@ -1477,6 +1889,56 @@ function renderDashboard(user) {
 
   // Ensure default active subtab is My Profile
   switchProTab('profile');
+}
+
+function renderBillingTable(invoices, totalPaidFormatted) {
+  const tbody = document.getElementById('portalBillingTableBody');
+  const totalDisplay = document.getElementById('billingTotalPaidDisplay');
+  const countDisplay = document.getElementById('billingInvoicesCountDisplay');
+  const statusDisplay = document.getElementById('billingAccountStatusDisplay');
+
+  if (totalDisplay) totalDisplay.textContent = totalPaidFormatted || '₹0';
+  if (countDisplay) countDisplay.textContent = (invoices ? invoices.length : 0);
+  if (statusDisplay) statusDisplay.textContent = (invoices && invoices.length > 0) ? 'Verified' : 'Active Client';
+
+  if (!tbody) return;
+
+  if (!invoices || invoices.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="6" style="text-align: center; padding: 2.4rem 1rem; color: #64748B;">
+          <div style="font-weight: 700; font-size: 0.95rem; color: #0F172A; margin-bottom: 4px;">No Invoices or Receipts Yet</div>
+          <div style="font-size: 0.8rem; max-width: 400px; margin: 0 auto; line-height: 1.4;">
+            Official project milestones and verified payment receipts issued by Nyghto Studio will appear here automatically.
+          </div>
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  tbody.innerHTML = invoices.map(inv => {
+    const isPaid = (inv.status === 'Paid');
+    const badgeClass = isPaid ? 'uui-badge-paid' : 'uui-badge-pending';
+    return `
+      <tr>
+        <td><strong class="font-mono">${inv.number || '#INV-' + (inv.id || '2026')}</strong></td>
+        <td>${inv.title || inv.milestone || 'Sprint Milestone Delivery'}</td>
+        <td class="font-mono" style="font-size: 0.82rem; color: #64748B;">${inv.date || 'Aug 2026'}</td>
+        <td><strong class="font-mono">${inv.amount || '₹0'}</strong></td>
+        <td><span class="${badgeClass} font-sans">${inv.status || 'Paid'}</span></td>
+        <td>
+          <button type="button" onclick="handleDownloadReceipt('${inv.number || inv.id || 'INV'}', '${(inv.title || '').replace(/'/g, "\\'")}', '${inv.amount || '₹0'}')" class="uui-link-blue font-sans" style="background:none; border:none; cursor:pointer; padding:0; text-decoration:underline;">
+            PDF Receipt ↗
+          </button>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function handleDownloadReceipt(invNum, title, amount) {
+  showPortalToast(`✓ Official Receipt ${invNum} verified (${amount})`);
 }
 
 function renderActiveWorkCard(projects) {

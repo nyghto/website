@@ -3713,11 +3713,22 @@ body.dash-active .centered-auth-layout {
     margin: 4px 6px !important;
   }
 
-  /* 4. Instagram Profile Layout: Avatar Left + Stats Right in 1 Row */
+  /* 4. Instagram Profile Layout: Banner Behind Avatar + Profile Info */
   #pane-profile {
     padding: 0 !important;
     width: 100% !important;
     box-sizing: border-box !important;
+    position: relative !important;
+  }
+
+  .uui-mobile-profile-banner {
+    display: block !important;
+    width: 100% !important;
+    height: 110px !important;
+    background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 50%, #F8FAFC 100%);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    position: relative !important;
+    transition: background 0.25s ease;
   }
 
   .uui-desktop-header-action {
@@ -3727,30 +3738,33 @@ body.dash-active .centered-auth-layout {
   .uui-profile-header {
     display: flex !important;
     flex-direction: row !important;
-    align-items: center !important;
+    align-items: flex-end !important;
     justify-content: flex-start !important;
-    padding: 16px 16px 8px !important;
+    padding: 0 16px 8px !important;
+    margin-top: -46px !important;
     gap: 12px !important;
     width: 100% !important;
     box-sizing: border-box !important;
+    position: relative !important;
+    z-index: 10 !important;
   }
 
   .uui-avatar-wrap {
-    width: 76px !important;
-    height: 76px !important;
-    min-width: 76px !important;
+    width: 82px !important;
+    height: 82px !important;
+    min-width: 82px !important;
     border-radius: 50% !important;
-    border: 3px solid #0284C7 !important;
+    border: 3.5px solid #FFFFFF !important;
     background: #FFFFFF !important;
     margin-top: 0 !important;
-    box-shadow: 0 4px 14px rgba(2, 132, 199, 0.2) !important;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12) !important;
     padding: 2px !important;
     box-sizing: border-box !important;
   }
 
   /* Instagram Header Top Row Container */
   .uui-user-meta {
-    padding: 2px 16px 10px !important;
+    padding: 6px 16px 10px !important;
     width: 100% !important;
     box-sizing: border-box !important;
     display: flex !important;
