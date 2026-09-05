@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NyghtoOS — Founder & Engineer Chat Console</title>
+  <title>NyghtoOS — Studio Control Panel & Billing Hub</title>
   <meta name="theme-color" content="#0284C7">
   <link rel="icon" type="image/png" href="favicon.png">
 
@@ -12,14 +12,14 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="styles.css?v=25.0">
-  <link rel="stylesheet" href="portal.css?v=25.0">
+  <link rel="stylesheet" href="styles.css?v=38.0">
+  <link rel="stylesheet" href="portal.css?v=38.0">
 
   <!-- Firebase 10 App, Auth & Firestore SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-  <script src="firebase-config.js?v=25.0"></script>
+  <script src="firebase-config.js?v=38.0"></script>
 
   <style>
     body {
@@ -35,7 +35,7 @@
     .nyghto-os-header {
       background: #0F172A;
       border-bottom: 1px solid #1E293B;
-      padding: 1rem 2rem;
+      padding: 0.9rem 2rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -47,7 +47,7 @@
       padding: 4px 10px;
       border-radius: 6px;
       font-family: 'JetBrains Mono', monospace;
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       font-weight: 700;
       display: inline-flex;
       align-items: center;
@@ -62,9 +62,9 @@
     }
     .os-container {
       display: grid;
-      grid-template-columns: 320px 1fr;
+      grid-template-columns: 310px 1fr;
       flex: 1;
-      height: calc(100vh - 70px);
+      height: calc(100vh - 66px);
     }
     .os-client-sidebar {
       background: #0D1B2A;
@@ -73,7 +73,7 @@
       flex-direction: column;
     }
     .os-client-item {
-      padding: 14px 18px;
+      padding: 13px 18px;
       border-bottom: 1px solid #1E293B;
       cursor: pointer;
       transition: all 0.15s ease;
@@ -85,19 +85,48 @@
       background: #1B263B;
       border-left: 4px solid #38BDF8;
     }
-    .os-chat-main {
+    .os-main-workspace {
       display: flex;
       flex-direction: column;
       background: #0B132B;
       height: 100%;
+      overflow: hidden;
     }
-    .os-chat-header {
-      padding: 1rem 1.8rem;
+    .os-workspace-header {
+      padding: 0.9rem 2rem;
       background: #0F172A;
       border-bottom: 1px solid #1E293B;
       display: flex;
       justify-content: space-between;
       align-items: center;
+    }
+    .os-nav-tabs {
+      display: inline-flex;
+      background: #1E293B;
+      border-radius: 8px;
+      padding: 3px;
+      gap: 4px;
+    }
+    .os-tab-btn {
+      background: transparent;
+      border: none;
+      color: #94A3B8;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .os-tab-btn.active {
+      background: #38BDF8;
+      color: #0F172A;
+    }
+    .os-tab-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
     }
     .os-chat-thread {
       flex: 1;
@@ -128,7 +157,7 @@
       border-bottom-right-radius: 3px;
     }
     .os-input-bar {
-      padding: 1.2rem 2rem;
+      padding: 1rem 2rem;
       background: #0F172A;
       border-top: 1px solid #1E293B;
       display: flex;
@@ -139,9 +168,9 @@
       background: #1E293B;
       border: 1px solid #334155;
       color: #FFFFFF;
-      padding: 12px 18px;
-      border-radius: 12px;
-      font-size: 0.95rem;
+      padding: 11px 16px;
+      border-radius: 10px;
+      font-size: 0.92rem;
       outline: none;
     }
     .os-send-btn {
@@ -149,8 +178,8 @@
       color: #0F172A;
       border: none;
       font-weight: 800;
-      padding: 0 24px;
-      border-radius: 12px;
+      padding: 0 20px;
+      border-radius: 10px;
       cursor: pointer;
       font-family: 'Space Grotesk', sans-serif;
       transition: all 0.15s ease;
@@ -158,80 +187,205 @@
     .os-send-btn:hover {
       background: #7DD3FC;
     }
+    .os-billing-pane {
+      flex: 1;
+      overflow-y: auto;
+      padding: 2rem;
+      display: none;
+    }
+    .os-card {
+      background: #0F172A;
+      border: 1px solid #1E293B;
+      border-radius: 14px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .os-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+    .os-table th {
+      text-align: left;
+      padding: 10px 14px;
+      color: #94A3B8;
+      border-bottom: 1px solid #1E293B;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+    }
+    .os-table td {
+      padding: 14px;
+      border-bottom: 1px solid #1E293B;
+      color: #F8FAFC;
+    }
+    .os-form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 120px 120px;
+      gap: 10px;
+      align-items: flex-end;
+    }
+    .os-form-input {
+      background: #1B263B;
+      border: 1px solid #334155;
+      color: #FFFFFF;
+      padding: 9px 12px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      outline: none;
+      width: 100%;
+      box-sizing: border-box;
+    }
   </style>
 </head>
 <body>
 
-  <!-- Top NyghtoOS Status Header -->
+  <!-- Top NyghtoOS Header -->
   <header class="nyghto-os-header">
     <div style="display: flex; align-items: center; gap: 14px;">
       <a href="portal.html" style="display: flex; align-items: center; gap: 8px; text-decoration: none;">
-        <span class="font-display" style="font-weight: 800; font-size: 1.2rem; color: #FFFFFF; letter-spacing: -0.02em;">NYGHTO<span style="color: #38BDF8;">OS</span></span>
+        <span class="font-display" style="font-weight: 800; font-size: 1.25rem; color: #FFFFFF; letter-spacing: -0.02em;">NYGHTO<span style="color: #38BDF8;">OS</span></span>
       </a>
       <span class="os-badge">
         <span class="os-badge-dot"></span>
-        <span>FIRESTORE LIVE DISPATCH</span>
+        <span>STUDIO CONTROL PANEL</span>
       </span>
     </div>
 
     <div style="display: flex; align-items: center; gap: 12px;">
-      <a href="portal.html" target="_blank" class="font-mono" style="color: #94A3B8; font-size: 0.8rem; text-decoration: none; border: 1px solid #334155; padding: 6px 12px; border-radius: 6px;">Open Client Portal ↗</a>
-      <span class="font-mono" style="font-size: 0.8rem; color: #38BDF8;">Logged in as: Founder / Team Lead</span>
+      <a href="portal.html" target="_blank" class="font-mono" style="color: #94A3B8; font-size: 0.78rem; text-decoration: none; border: 1px solid #334155; padding: 6px 12px; border-radius: 6px; background: #0F172A;">Open Client Portal ↗</a>
+      <span class="font-mono" style="font-size: 0.78rem; color: #38BDF8;">Founder / Admin Hub</span>
     </div>
   </header>
 
-  <!-- Main OS Workspace -->
+  <!-- Main OS Workspace Grid -->
   <div class="os-container">
     
-    <!-- Left: Client Conversations Feed -->
+    <!-- Left: Client List Sidebar -->
     <aside class="os-client-sidebar">
-      <div style="padding: 14px 18px; border-bottom: 1px solid #1E293B; background: #0F172A;">
-        <span class="font-mono" style="font-size: 0.72rem; font-weight: 700; color: #94A3B8; text-transform: uppercase;">Active Clients</span>
+      <div style="padding: 12px 18px; border-bottom: 1px solid #1E293B; background: #0F172A; display: flex; justify-content: space-between; align-items: center;">
+        <span class="font-mono" style="font-size: 0.7rem; font-weight: 700; color: #94A3B8; text-transform: uppercase;">Active Clients</span>
+        <button type="button" onclick="initNyghtoOs()" class="font-mono" style="background: transparent; border: none; color: #38BDF8; font-size: 0.72rem; cursor: pointer;">↻ Refresh</button>
       </div>
       <div id="osClientsList" style="overflow-y: auto; flex: 1;">
         <!-- Client items dynamically rendered -->
       </div>
     </aside>
 
-    <!-- Right: Live Real-Time 2-Way Chat Stream -->
-    <main class="os-chat-main">
+    <!-- Right: Workspace (Chat & Billing Tabs) -->
+    <main class="os-main-workspace">
       
-      <!-- Thread Header -->
-      <div class="os-chat-header">
+      <!-- Workspace Nav Strip -->
+      <div class="os-workspace-header">
         <div style="display: flex; align-items: center; gap: 12px;">
-          <div id="osCurrentClientAvatar" style="width: 38px; height: 38px; border-radius: 50%; background: #0284C7; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #FFFFFF;">
+          <div id="osCurrentClientAvatar" style="width: 36px; height: 36px; border-radius: 50%; background: #0284C7; display: flex; align-items: center; justify-content: center; font-weight: 800; color: #FFFFFF; font-size: 0.95rem;">
             C
           </div>
           <div>
-            <h3 id="osCurrentClientName" style="margin: 0; font-size: 1.05rem; font-weight: 700; color: #FFFFFF;">Select a client</h3>
+            <h3 id="osCurrentClientName" style="margin: 0; font-size: 1.05rem; font-weight: 700; color: #FFFFFF;">Select a Client</h3>
             <span id="osCurrentClientEmail" class="font-mono" style="font-size: 0.72rem; color: #94A3B8;">Real-time Firestore Channel</span>
           </div>
         </div>
 
-        <div>
-          <span class="font-mono" style="font-size: 0.72rem; color: #10B981;">● WhatsApp Style 2-Way Sync</span>
+        <!-- OS Mode Tabs: Live Chat vs Billing Invoices Engine -->
+        <div class="os-nav-tabs">
+          <button type="button" class="os-tab-btn active" id="tabBtnChat" onclick="switchOsTab('chat')">💬 Live Chat</button>
+          <button type="button" class="os-tab-btn" id="tabBtnBilling" onclick="switchOsTab('billing')">💳 Billing &amp; Invoices</button>
         </div>
       </div>
 
-      <!-- Live Messages -->
-      <div class="os-chat-thread" id="osChatThread">
-        <div style="text-align: center; color: #64748B; font-size: 0.85rem; margin-top: 40px;">
-          Loading conversation from Firestore...
+      <!-- TAB 1: LIVE CHAT -->
+      <div class="os-tab-content" id="osChatSection">
+        <div class="os-chat-thread" id="osChatThread">
+          <div style="text-align: center; color: #64748B; font-size: 0.85rem; margin-top: 40px;">
+            Loading conversation from Firestore...
+          </div>
         </div>
+
+        <!-- Quick Preset Reply Chips -->
+        <div style="padding: 6px 2rem; background: #0D1B2A; border-top: 1px solid #1E293B; display: flex; gap: 8px; overflow-x: auto;">
+          <button type="button" onclick="osQuickPreset('🚀 Next sprint deploy is live on staging! Ready for your review.')" class="font-mono" style="background: #1E293B; border: 1px solid #334155; color: #94A3B8; padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; cursor: pointer; white-space: nowrap;">+ Staging Live</button>
+          <button type="button" onclick="osQuickPreset('🎨 Figma prototype updated with the requested layout feedback.')" class="font-mono" style="background: #1E293B; border: 1px solid #334155; color: #94A3B8; padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; cursor: pointer; white-space: nowrap;">+ Figma Updated</button>
+          <button type="button" onclick="osQuickPreset('🛠️ We are working on this right now. Will update you in 30 mins.')" class="font-mono" style="background: #1E293B; border: 1px solid #334155; color: #94A3B8; padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; cursor: pointer; white-space: nowrap;">+ In Progress</button>
+        </div>
+
+        <!-- Send Input Bar -->
+        <form class="os-input-bar" onsubmit="handleSendOsMessage(event)">
+          <input type="text" id="osMsgInput" class="os-input" placeholder="Type message as Nyghto Founder / Team..." autocomplete="off">
+          <button type="submit" class="os-send-btn">Send to Client ↗</button>
+        </form>
       </div>
 
-      <!-- Quick Preset Reply Chips -->
-      <div style="padding: 6px 2rem; background: #0D1B2A; border-top: 1px solid #1E293B; display: flex; gap: 8px; overflow-x: auto;">
-        <button type="button" onclick="osQuickPreset('🚀 Next sprint deploy is live on staging! Ready for your review.')" class="font-mono" style="background: #1E293B; border: 1px solid #334155; color: #94A3B8; padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; cursor: pointer; white-space: nowrap;">+ Staging Live</button>
-        <button type="button" onclick="osQuickPreset('🎨 Figma prototype updated with the requested layout feedback.')" class="font-mono" style="background: #1E293B; border: 1px solid #334155; color: #94A3B8; padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; cursor: pointer; white-space: nowrap;">+ Figma Updated</button>
-        <button type="button" onclick="osQuickPreset('🛠️ We are working on this right now. Will update you in 30 mins.')" class="font-mono" style="background: #1E293B; border: 1px solid #334155; color: #94A3B8; padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; cursor: pointer; white-space: nowrap;">+ In Progress</button>
-      </div>
+      <!-- TAB 2: CLIENT BILLING & INVOICE MANAGER -->
+      <div class="os-billing-pane" id="osBillingSection">
+        
+        <!-- Add New Invoice / Receipt Form -->
+        <div class="os-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.1rem;">
+            <div>
+              <span class="font-mono" style="font-size: 0.68rem; font-weight: 700; color: #38BDF8; text-transform: uppercase;">BILLING DISPATCH</span>
+              <h4 style="margin: 2px 0 0 0; font-size: 1.1rem; color: #FFFFFF;">Issue New Invoice / Payment Receipt</h4>
+            </div>
+            <span class="font-mono" style="font-size: 0.75rem; color: #10B981;">● Instant Portal Sync</span>
+          </div>
 
-      <!-- Send Input Bar -->
-      <form class="os-input-bar" onsubmit="handleSendOsMessage(event)">
-        <input type="text" id="osMsgInput" class="os-input" placeholder="Type message as Nyghto Founder / Team..." autocomplete="off">
-        <button type="submit" class="os-send-btn">Send to Client ↗</button>
-      </form>
+          <form onsubmit="handleCreateInvoice(event)">
+            <div class="os-form-grid">
+              <div>
+                <label class="font-mono" style="font-size: 0.68rem; color: #94A3B8; display: block; margin-bottom: 4px;">INVOICE #</label>
+                <input type="text" id="osInvNumber" class="os-form-input font-mono" placeholder="#INV-2026-001" required>
+              </div>
+
+              <div>
+                <label class="font-mono" style="font-size: 0.68rem; color: #94A3B8; display: block; margin-bottom: 4px;">TITLE / MILESTONE</label>
+                <input type="text" id="osInvTitle" class="os-form-input font-sans" placeholder="e.g. Phase 1: MVP Architecture" required>
+              </div>
+
+              <div>
+                <label class="font-mono" style="font-size: 0.68rem; color: #94A3B8; display: block; margin-bottom: 4px;">AMOUNT (INR)</label>
+                <input type="text" id="osInvAmount" class="os-form-input font-mono" placeholder="₹1,85,000" required>
+              </div>
+
+              <div>
+                <label class="font-mono" style="font-size: 0.68rem; color: #94A3B8; display: block; margin-bottom: 4px;">STATUS</label>
+                <select id="osInvStatus" class="os-form-input font-sans" style="background: #1B263B;">
+                  <option value="Paid">Paid</option>
+                  <option value="Pending">Pending</option>
+                  <option value="In Progress">In Progress</option>
+                </select>
+              </div>
+
+              <div>
+                <button type="submit" class="os-send-btn" style="height: 38px; width: 100%; padding: 0; font-size: 0.85rem;">+ Issue ↗</button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Current Client Invoices Table -->
+        <div class="os-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <h4 style="margin: 0; font-size: 1.05rem; color: #FFFFFF;">Client Invoices &amp; Receipts Ledger</h4>
+            <span id="osClientTotalRevenueBadge" class="font-mono" style="font-size: 0.85rem; font-weight: 700; color: #38BDF8;">Total Paid: ₹0</span>
+          </div>
+
+          <table class="os-table">
+            <thead>
+              <tr>
+                <th>Invoice #</th>
+                <th>Title / Milestone</th>
+                <th>Amount</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="osInvoicesTableBody">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+
+      </div>
 
     </main>
 
@@ -240,40 +394,101 @@
   <script>
     let activeClientId = null;
     let activeClientName = 'Client';
+    let currentClientData = null;
 
-    function initNyghtoOs() {
-      // 1. Identify active clients from session / Firestore
+    async function initNyghtoOs() {
+      // 1. Identify active clients from Firestore
       const session = JSON.parse(localStorage.getItem('nyghto_user_session') || '{}');
       const clientsListEl = document.getElementById('osClientsList');
       
-      const currentId = session.id || 'usr_client';
-      const currentName = session.name || 'Zack X';
-      const currentEmail = session.email || 'zackedt@gmail.com';
-
-      activeClientId = currentId;
-      activeClientName = currentName;
-
-      // Render Active Client in sidebar
-      if (clientsListEl) {
-        clientsListEl.innerHTML = `
-          <div class="os-client-item active" onclick="selectClient('${currentId}', '${currentName}', '${currentEmail}')">
-            <div style="width: 36px; height: 36px; border-radius: 50%; background: #0284C7; color: #FFF; display: flex; align-items: center; justify-content: center; font-weight: 700;">
-              ${currentName.charAt(0)}
-            </div>
-            <div style="flex: 1; overflow: hidden;">
-              <div style="font-weight: 700; font-size: 0.9rem; color: #FFF;">${currentName}</div>
-              <div style="font-size: 0.72rem; color: #94A3B8; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">${currentEmail}</div>
-            </div>
-          </div>
-        `;
+      let clientList = [];
+      if (window.nyghtoFirebase) {
+        clientList = await window.nyghtoFirebase.getAllClients();
       }
 
-      document.getElementById('osCurrentClientName').textContent = currentName;
-      document.getElementById('osCurrentClientEmail').textContent = currentEmail;
+      if (clientList.length === 0 && session.id) {
+        clientList = [session];
+      }
 
-      // 2. Real-Time Listen to Firestore Messages
-      if (window.nyghtoFirebase) {
-        window.nyghtoFirebase.subscribeToChat(activeClientId, (msgs) => {
+      if (clientList.length > 0) {
+        const first = clientList[0];
+        activeClientId = first.id;
+        activeClientName = first.name || 'Client';
+        currentClientData = first;
+
+        if (clientsListEl) {
+          clientsListEl.innerHTML = clientList.map((c, idx) => `
+            <div class="os-client-item ${idx === 0 ? 'active' : ''}" onclick="selectClient('${c.id}', '${(c.name || 'Client').replace(/'/g, "\\'")}', '${c.email || ''}')">
+              <div style="width: 36px; height: 36px; border-radius: 50%; background: #0284C7; color: #FFF; display: flex; align-items: center; justify-content: center; font-weight: 700;">
+                ${(c.name || 'C').charAt(0).toUpperCase()}
+              </div>
+              <div style="flex: 1; overflow: hidden;">
+                <div style="font-weight: 700; font-size: 0.9rem; color: #FFF;">${c.name || 'Client'}</div>
+                <div style="font-size: 0.72rem; color: #94A3B8; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">${c.email || c.id}</div>
+              </div>
+            </div>
+          `).join('');
+        }
+
+        updateClientHeader(first);
+        subscribeClientChat(activeClientId);
+        renderOsBillingLedger(first);
+      }
+    }
+
+    function selectClient(id, name, email) {
+      activeClientId = id;
+      activeClientName = name;
+
+      document.querySelectorAll('.os-client-item').forEach(el => el.classList.remove('active'));
+      event?.currentTarget?.classList.add('active');
+
+      updateClientHeader({ id, name, email });
+      subscribeClientChat(id);
+      loadClientData(id);
+    }
+
+    async function loadClientData(userId) {
+      if (window.nyghtoFirebase && window.nyghtoFirebase.db) {
+        try {
+          const doc = await window.nyghtoFirebase.db.collection('clients').doc(userId).get();
+          if (doc.exists) {
+            currentClientData = { id: doc.id, ...doc.data() };
+            renderOsBillingLedger(currentClientData);
+          }
+        } catch (e) {}
+      }
+    }
+
+    function updateClientHeader(c) {
+      document.getElementById('osCurrentClientName').textContent = c.name || 'Client';
+      document.getElementById('osCurrentClientEmail').textContent = c.email || c.id || 'Active Client';
+      document.getElementById('osCurrentClientAvatar').textContent = (c.name || 'C').charAt(0).toUpperCase();
+    }
+
+    function switchOsTab(tab) {
+      const chatSec = document.getElementById('osChatSection');
+      const billSec = document.getElementById('osBillingSection');
+      const btnChat = document.getElementById('tabBtnChat');
+      const btnBill = document.getElementById('tabBtnBilling');
+
+      if (tab === 'chat') {
+        chatSec.style.display = 'flex';
+        billSec.style.display = 'none';
+        btnChat.classList.add('active');
+        btnBill.classList.remove('active');
+      } else {
+        chatSec.style.display = 'none';
+        billSec.style.display = 'block';
+        btnChat.classList.remove('active');
+        btnBill.classList.add('active');
+        if (activeClientId) loadClientData(activeClientId);
+      }
+    }
+
+    function subscribeClientChat(clientId) {
+      if (window.nyghtoFirebase && clientId) {
+        window.nyghtoFirebase.subscribeToChat(clientId, (msgs) => {
           renderOsThread(msgs);
         });
       }
@@ -331,6 +546,88 @@
           text: text,
           time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         });
+      }
+    }
+
+    // Billing Engine Functions
+    function renderOsBillingLedger(client) {
+      const tbody = document.getElementById('osInvoicesTableBody');
+      const badge = document.getElementById('osClientTotalRevenueBadge');
+      if (!tbody) return;
+
+      const invoices = (client && client.invoices) || [];
+      let totalPaid = 0;
+      invoices.forEach(inv => {
+        if (inv.status === 'Paid') {
+          const num = parseInt((inv.amount || '0').toString().replace(/[^\d]/g, ''), 10) || 0;
+          totalPaid += num;
+        }
+      });
+
+      if (badge) badge.textContent = `Total Paid: ₹${totalPaid.toLocaleString('en-IN')}`;
+
+      if (invoices.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6" style="text-align: center; color: #64748B; padding: 2rem;">No invoices issued for this client yet. Use the form above to add an invoice.</td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = invoices.map(inv => `
+        <tr>
+          <td><strong class="font-mono" style="color: #38BDF8;">${inv.number}</strong></td>
+          <td>${inv.title}</td>
+          <td><strong class="font-mono">${inv.amount}</strong></td>
+          <td class="font-mono" style="font-size: 0.8rem; color: #94A3B8;">${inv.date}</td>
+          <td><span style="background: ${inv.status === 'Paid' ? '#065F46' : '#92400E'}; color: ${inv.status === 'Paid' ? '#6EE7B7' : '#FDE68A'}; padding: 3px 8px; border-radius: 6px; font-size: 0.72rem; font-weight: 700;">${inv.status}</span></td>
+          <td>
+            <button type="button" onclick="handleDeleteInvoice('${inv.id}')" style="background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #EF4444; padding: 4px 8px; border-radius: 6px; font-size: 0.72rem; cursor: pointer;">Delete</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    async function handleCreateInvoice(e) {
+      if (e && e.preventDefault) e.preventDefault();
+      if (!activeClientId) {
+        alert('Please select a client first');
+        return;
+      }
+
+      const num = document.getElementById('osInvNumber').value.trim();
+      const title = document.getElementById('osInvTitle').value.trim();
+      let amount = document.getElementById('osInvAmount').value.trim();
+      const status = document.getElementById('osInvStatus').value;
+
+      if (!amount.startsWith('₹') && !amount.startsWith('$')) {
+        amount = '₹' + amount;
+      }
+
+      const invoiceData = {
+        id: 'inv_' + Date.now(),
+        number: num,
+        title: title,
+        amount: amount,
+        status: status,
+        date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+      };
+
+      if (window.nyghtoFirebase) {
+        await window.nyghtoFirebase.addClientInvoice(activeClientId, invoiceData);
+        document.getElementById('osInvNumber').value = '';
+        document.getElementById('osInvTitle').value = '';
+        document.getElementById('osInvAmount').value = '';
+        loadClientData(activeClientId);
+      }
+    }
+
+    async function handleDeleteInvoice(invId) {
+      if (!confirm('Are you sure you want to remove this invoice?')) return;
+      if (window.nyghtoFirebase && activeClientId) {
+        await window.nyghtoFirebase.deleteClientInvoice(activeClientId, invId);
+        loadClientData(activeClientId);
       }
     }
 
