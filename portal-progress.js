@@ -263,7 +263,7 @@ function ProjectProgressApp({ initialUser, initialProjectId }) {
             
             {/* Phone */}
             <a 
-              href="tel:+917012028379" 
+              href="tel:+918590564004" 
               title="Call Us"
               style={{
                 width: '38px',
@@ -286,10 +286,10 @@ function ProjectProgressApp({ initialUser, initialProjectId }) {
 
             {/* WhatsApp */}
             <a 
-              href="https://wa.me/917012028379?text=Hi%20Nyghto%20Team%2C%20I%20just%20submitted%20a%20project%20in%20the%20portal%21" 
+              href="https://wa.me/918590564004?text=Hi%20Nyghto%20Team%2C%20I%20just%20submitted%20a%20project%20in%20the%20portal%21" 
               target="_blank" 
               rel="noopener noreferrer"
-              title="WhatsApp"
+              title="WhatsApp Business"
               style={{
                 width: '38px',
                 height: '38px',
@@ -500,7 +500,7 @@ function ProjectProgressApp({ initialUser, initialProjectId }) {
             {/* Direct Founder Connect Buttons */}
             <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
               <a 
-                href="tel:+917012028379" 
+                href="tel:+918590564004" 
                 style={{
                   display: 'inline-flex',
                   alignItems: 'center',
@@ -519,11 +519,11 @@ function ProjectProgressApp({ initialUser, initialProjectId }) {
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
                 </svg>
-                <span>Call Us: +91 70120 28379</span>
+                <span>Call Us: +91 85905 64004</span>
               </a>
 
               <a 
-                href="https://wa.me/917012028379?text=Hi%20Nyghto%20Team%2C%20I%20am%20reviewing%20my%20project%20in%20the%20portal%21" 
+                href="https://wa.me/918590564004?text=Hi%20Nyghto%20Team%2C%20I%20am%20reviewing%20my%20project%20in%20the%20portal%21" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 style={{
@@ -561,14 +561,14 @@ function ProjectProgressApp({ initialUser, initialProjectId }) {
               </p>
             </div>
             <div className="nyghto-review-btns">
-              <a href="tel:+917012028379" className="nyghto-review-call-btn font-sans">
+              <a href="tel:+918590564004" className="nyghto-review-call-btn font-sans">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
                 </svg>
-                <span>Call Us: +91 70120 28379</span>
+                <span>Call Us: +91 85905 64004</span>
               </a>
               <a 
-                href="https://wa.me/917012028379?text=Hi%20Nyghto%20Team%2C%20I%20just%20submitted%20a%20project%20in%20the%20portal%21" 
+                href="https://wa.me/918590564004?text=Hi%20Nyghto%20Team%2C%20I%20just%20submitted%20a%20project%20in%20the%20portal%21" 
                 target="_blank" 
                 rel="noopener noreferrer" 
                 className="nyghto-review-wa-btn font-sans"
@@ -915,7 +915,7 @@ function ProjectProgressApp({ initialUser, initialProjectId }) {
             )}
           </div>
           <p className="nyghto-progress-sub font-sans" style={{ color: '#64748B', fontSize: '0.86rem', margin: 0 }}>
-            Quote your <strong>Portal ID</strong> or <strong>Project ID</strong> when contacting our engineering leads on phone (+91 70120 28379) or WhatsApp.
+            Quote your <strong>Portal ID</strong> or <strong>Project ID</strong> when contacting our engineering leads on phone (+91 85905 64004) or WhatsApp.
           </p>
         </div>
 

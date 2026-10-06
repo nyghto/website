@@ -6,6 +6,7 @@
 
 document.addEventListener('DOMContentLoaded', () => {
   initThemeEngine();
+  initSiteCmsOverrides();
   initMobileNavigation();
   initLenisSmoothScroll();
   initVerticalScrollSlider();
@@ -51,67 +52,13 @@ function initMobileNavigation() {
 }
 
 /* ==========================================================================
-   0. Dual-Theme Engine (Cobalt // Onam #FFEF03 Gold Edition)
+   0. Default Theme State Lock
    ========================================================================== */
 function initThemeEngine() {
-  const themeBtns = document.querySelectorAll('.theme-icon-btn, .theme-toggle-btn');
-  const savedTheme = localStorage.getItem('nyghto-theme') || 'cobalt';
-
-  applyTheme(savedTheme);
-
-  themeBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const currentTheme = document.body.classList.contains('theme-yellow') ? 'yellow' : 'cobalt';
-      const nextTheme = currentTheme === 'cobalt' ? 'yellow' : 'cobalt';
-      applyTheme(nextTheme);
-      playSynthTone(nextTheme === 'yellow' ? 880 : 440);
-      if (nextTheme === 'yellow') {
-        triggerFestiveConfetti();
-      }
-    });
-  });
-}
-
-function applyTheme(theme) {
-  const isYellow = theme === 'yellow';
-
-  if (isYellow) {
-    document.body.classList.add('theme-yellow');
-    localStorage.setItem('nyghto-theme', 'yellow');
-  } else {
-    document.body.classList.remove('theme-yellow');
-    localStorage.setItem('nyghto-theme', 'cobalt');
-  }
-
-  // Update SVG Tube Gradients for Dual Theme
-  const baseStops = document.querySelectorAll('#tubeBaseGrad stop');
-  const coreStops = document.querySelectorAll('#tubeCoreGlow stop');
-
-  if (baseStops.length >= 4) {
-    if (isYellow) {
-      baseStops[0].setAttribute('stop-color', '#F59E0B');
-      baseStops[1].setAttribute('stop-color', '#D97706');
-      baseStops[2].setAttribute('stop-color', '#92400E');
-      baseStops[3].setAttribute('stop-color', '#1C1917');
-    } else {
-      baseStops[0].setAttribute('stop-color', '#3B82F6');
-      baseStops[1].setAttribute('stop-color', '#1D4ED8');
-      baseStops[2].setAttribute('stop-color', '#0E2D8E');
-      baseStops[3].setAttribute('stop-color', '#030C2C');
-    }
-  }
-
-  if (coreStops.length >= 3) {
-    if (isYellow) {
-      coreStops[0].setAttribute('stop-color', '#FEF08A');
-      coreStops[1].setAttribute('stop-color', '#FBBF24');
-      coreStops[2].setAttribute('stop-color', '#B45309');
-    } else {
-      coreStops[0].setAttribute('stop-color', '#93C5FD');
-      coreStops[1].setAttribute('stop-color', '#3B82F6');
-      coreStops[2].setAttribute('stop-color', '#1E40AF');
-    }
-  }
+  document.body.classList.remove('theme-yellow');
+  try {
+    localStorage.removeItem('nyghto-theme');
+  } catch (e) {}
 }
 
 // Interactive tactile balloon bounce audio on click
@@ -698,6 +645,15 @@ function initCta1FounderHotline() {
           body: JSON.stringify(payload)
         });
 
+        if (window.nyghtoFirebase && typeof window.nyghtoFirebase.saveLead === 'function') {
+          window.nyghtoFirebase.saveLead({
+            type: 'Consultation Hotline',
+            phone: phoneVal,
+            source: 'Website #consultation',
+            status: 'New'
+          });
+        }
+
         submitBtn.innerHTML = '<span>CONNECTED ✓</span>';
         submitBtn.style.background = '#34D399';
         submitBtn.style.color = '#064E3B';
@@ -710,12 +666,12 @@ function initCta1FounderHotline() {
         }
 
         setTimeout(() => {
-          const waUrl = `https://wa.me/917012028379?text=${encodeURIComponent(`Hi Nyghto Founders, I'm reaching out from your website. My number is ${phoneVal}. I'd like to discuss a project.`)}`;
+          const waUrl = `https://wa.me/918590564004?text=${encodeURIComponent(`Hi Nyghto Founders, I'm reaching out from your website. My number is ${phoneVal}. I'd like to discuss a project.`)}`;
           window.open(waUrl, '_blank');
         }, 300);
       } catch (err) {
         console.warn('Hotline error:', err);
-        const waUrl = `https://wa.me/917012028379?text=${encodeURIComponent(`Hi Nyghto Founders, I'm reaching out from your website. My number is ${phoneVal}.`)}`;
+        const waUrl = `https://wa.me/918590564004?text=${encodeURIComponent(`Hi Nyghto Founders, I'm reaching out from your website. My number is ${phoneVal}.`)}`;
         window.open(waUrl, '_blank');
       } finally {
         setTimeout(() => {
@@ -820,6 +776,19 @@ function initConversationalBrief() {
         });
 
         if (response.ok || response.status === 204) {
+          if (window.nyghtoFirebase && typeof window.nyghtoFirebase.saveLead === 'function') {
+            window.nyghtoFirebase.saveLead({
+              type: 'Project Brief',
+              name: name,
+              company: company,
+              projectType: type,
+              budget: budget,
+              email: email,
+              source: 'Website #contact',
+              status: 'New'
+            });
+          }
+
           sendBtn.innerHTML = '<span>BRIEF TRANSMITTED ✓</span>';
           sendBtn.style.background = '#34D399';
           sendBtn.style.color = '#064E3B';
@@ -947,6 +916,147 @@ function initFaqAccordion() {
       }
     });
   });
+}
+
+/* ==========================================================================
+   10. Dynamic CMS Content Sync (Synced from Nyghto Studio Admin Command Center)
+   ========================================================================== */
+function initSiteCmsOverrides() {
+  function applyCms(cfg) {
+    if (!cfg) return;
+
+    // 1. Hotline / WhatsApp Phone
+    if (cfg.phone) {
+      const cleanPhone = cfg.phone.replace(/[^0-9]/g, '');
+      const waNumber = cleanPhone.length === 10 ? '91' + cleanPhone : cleanPhone;
+      
+      // Update WhatsApp links
+      document.querySelectorAll('a[href*="wa.me"]').forEach(el => {
+        el.href = `https://wa.me/${waNumber}?text=${encodeURIComponent("Hi Nyghto Founders, I'm reaching out from your website to discuss a project")}`;
+      });
+
+      // Update tel links
+      document.querySelectorAll('a[href^="tel:"]').forEach(el => {
+        if (!el.href.includes('8075911860') && !el.href.includes('9539202847')) {
+          el.href = `tel:${cfg.phone}`;
+        }
+      });
+    }
+
+    // 2. Studio Email
+    if (cfg.email) {
+      document.querySelectorAll('a[href^="mailto:"]').forEach(el => {
+        el.href = `mailto:${cfg.email}`;
+        if (el.textContent.includes('@')) {
+          el.textContent = cfg.email;
+        }
+      });
+    }
+
+    // 3. Hero Tagline
+    if (cfg.heroTagline) {
+      const heroTag = document.querySelector('.hero-info-grid .bold-tag');
+      if (heroTag) {
+        heroTag.innerHTML = cfg.heroTagline.replace(/\n/g, '<br>');
+      }
+    }
+
+    // 4. Hero Subtitle / Location
+    if (cfg.heroLocation) {
+      const heroLoc = document.querySelector('.hero-info-grid .info-block-right p');
+      if (heroLoc) {
+        heroLoc.innerHTML = cfg.heroLocation;
+      }
+    }
+
+    // 5. Studio Availability Status
+    if (cfg.availabilityStatus) {
+      const availEl = document.querySelector('.status-pill-text');
+      if (availEl) {
+        availEl.textContent = cfg.availabilityStatus;
+      }
+    }
+
+    // 6. Dynamic FAQ Items Rendering
+    if (cfg.faqs && Array.isArray(cfg.faqs) && cfg.faqs.length > 0) {
+      const faqList = document.getElementById('faqAccordionList');
+      if (faqList) {
+        faqList.innerHTML = cfg.faqs.map((f, i) => `
+          <div class="faq-item ${i === 0 ? 'active' : ''}">
+            <button type="button" class="faq-question-btn" aria-expanded="${i === 0 ? 'true' : 'false'}">
+              <span>${escapeHtml(f.question)}</span>
+              <span class="faq-icon-indicator">+</span>
+            </button>
+            <div class="faq-answer-panel">
+              <p class="faq-answer-text">${f.answer}</p>
+            </div>
+          </div>
+        `).join('');
+        // Rebind click toggles
+        if (typeof initFaqAccordion === 'function') {
+          initFaqAccordion();
+        }
+      }
+    }
+
+    // 7. Dynamic Work Projects Rendering (work.html)
+    if (cfg.projects && Array.isArray(cfg.projects) && cfg.projects.length > 0) {
+      const workList = document.getElementById('workProjectList');
+      if (workList) {
+        workList.innerHTML = cfg.projects.map((p, i) => {
+          const numStr = (i + 1).toString().padStart(2, '0');
+          return `
+            <article class="editorial-project-row">
+              <div class="project-num-col font-mono">${numStr}</div>
+              <div class="project-info-col">
+                <div class="project-header-line">
+                  <h2 class="project-big-name font-display">${escapeHtml(p.name)}</h2>
+                  ${p.url ? `
+                    <a href="${p.url}" target="_blank" rel="noopener noreferrer" class="project-live-badge font-mono dot-box" aria-label="Visit ${escapeHtml(p.name)}">
+                      ${escapeHtml(p.url.replace(/^https?:\/\//, ''))} ↗
+                    </a>
+                  ` : ''}
+                </div>
+                <p class="project-human-summary font-sans">${escapeHtml(p.summary)}</p>
+                <div class="project-details-bar font-mono">
+                  <div class="p-detail-item">
+                    <span class="p-detail-key">SCOPE</span>
+                    <span class="p-detail-val">${escapeHtml(p.scope || 'Design & Engineering')}</span>
+                  </div>
+                  <div class="p-detail-item">
+                    <span class="p-detail-key">STATUS</span>
+                    <span class="p-detail-val">${escapeHtml(p.status || 'Live in Production')}</span>
+                  </div>
+                </div>
+              </div>
+            </article>
+          `;
+        }).join('');
+      }
+    }
+  }
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return str.toString()
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  // Load from local cache immediately
+  try {
+    const cached = JSON.parse(localStorage.getItem('nyghto_site_cms') || 'null');
+    if (cached) applyCms(cached);
+  } catch (e) {}
+
+  // If Firebase is initialized, check remote config
+  if (window.nyghtoFirebase && typeof window.nyghtoFirebase.getSiteConfig === 'function') {
+    window.nyghtoFirebase.getSiteConfig().then(cfg => {
+      if (cfg) applyCms(cfg);
+    }).catch(e => console.warn('CMS remote fetch notice:', e));
+  }
 }
 
 

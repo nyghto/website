@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Nyghto Studio — Founder &amp; Client Admin Command Center</title>
+  <meta name="theme-color" content="#F8FAFC">
+  <link rel="icon" type="image/png" href="favicon.png">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="admin.css">
+
+  <!-- Firebase 10 App, Auth & Firestore SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <script src="firebase-config.js"></script>
+</head>
+<body class="admin-body">
+
+  <!-- =========================================================================
+       1. SECURITY & PASSKEY AUTH GATE
+       ========================================================================= -->
+  <div class="admin-auth-overlay" id="adminAuthOverlay">
+    <div class="admin-auth-card">
+      <div class="admin-lock-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+        </svg>
+      </div>
+
+      <h2 class="admin-auth-title">Nyghto Studio Admin</h2>
+      <p class="admin-auth-sub">Enter founder master passkey to access client workspaces, sprints &amp; billing.</p>
+
+      <form class="admin-auth-form" onsubmit="handleAdminLogin(event)">
+        <div class="admin-input-group">
+          <label class="admin-input-label font-mono" for="adminPasskeyInput">MASTER PASSKEY</label>
+          <input type="password" id="adminPasskeyInput" class="admin-input font-mono" placeholder="Enter passkey (default: nyghto2026)" required autofocus>
+        </div>
+
+        <div id="adminAuthError" class="font-mono" style="color: #EF4444; font-size: 0.78rem; min-height: 18px;"></div>
+
+        <button type="submit" class="admin-hub-btn-solid font-sans" style="margin-top: 4px;">
+          <span>Unlock Command Center</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+        </button>
+
+        <button type="button" class="admin-hub-btn-ghost font-sans" onclick="handleQuickDevUnlock()" style="margin-top: 6px;">
+          <span>⚡ Instant Local Dev Unlock</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       1.5. TV OS APP HUB & SECTION LAUNCHER ("Where do you want to go?")
+       ========================================================================= -->
+  <div class="admin-hub-screen" id="adminHubScreen">
+    
+    <!-- Center Hero Title Group -->
+    <div class="admin-hub-header">
+      <h1 class="admin-hub-title font-display">Where do you want to go?</h1>
+      <p class="admin-hub-subtitle font-sans">Choose an operating workspace to manage your client deliverables or public website.</p>
+    </div>
+
+    <!-- Ultra-Simple 2 Option Tiles -->
+    <div class="admin-hub-cards-grid">
+      
+      <!-- Option 1: Client Portal -->
+      <button type="button" class="admin-hub-card admin-hub-card-portal" onclick="selectAdminSection('portal')">
+        <div class="hub-tile-top">
+          <div class="hub-tile-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+          </div>
+          <svg class="hub-tile-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="7" y1="17" x2="17" y2="7"></line>
+            <polyline points="7 7 17 7 17 17"></polyline>
+          </svg>
+        </div>
+
+        <div class="hub-tile-meta">
+          <h2 class="hub-tile-title font-display">Client Portal</h2>
+          <p class="hub-tile-sub">Sprints, chat, invoices &amp; leads</p>
+        </div>
+      </button>
+
+      <!-- Option 2: Website CMS -->
+      <button type="button" class="admin-hub-card admin-hub-card-website" onclick="selectAdminSection('website')">
+        <div class="hub-tile-top">
+          <div class="hub-tile-icon hub-tile-icon-web">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="2" y1="12" x2="22" y2="12"></line>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+            </svg>
+          </div>
+          <svg class="hub-tile-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="7" y1="17" x2="17" y2="7"></line>
+            <polyline points="7 7 17 7 17 17"></polyline>
+          </svg>
+        </div>
+
+        <div class="hub-tile-meta">
+          <h2 class="hub-tile-title font-display">Website CMS</h2>
+          <p class="hub-tile-sub">Headlines, contact lines &amp; availability</p>
+        </div>
+      </button>
+
+    </div>
+
+    <!-- Bottom Discrete Status -->
+    <div class="admin-hub-bottom-meta font-mono">
+      <span>NYGHTO STUDIO CONTROL ROOM • AUTHENTICATED</span>
+    </div>
+
+  </div>
+
+  <!-- =========================================================================
+       2. TOP ADMIN HEADER WITH TV OS MODE SWITCHER
+       ========================================================================= -->
+  <header class="admin-header">
+    <div class="admin-brand-group">
+      <button type="button" class="admin-btn-secondary font-mono" onclick="openHubLauncher()" title="Return to TV OS Hub Launcher" style="padding: 6px 12px; margin-right: 4px;">
+        <span>⊞ Hub</span>
+      </button>
+      <a href="index.html" class="admin-brand-logo font-display">NYGHTO<span>OS</span></a>
+      
+      <!-- TV OS Section Mode Switcher -->
+      <div class="admin-mode-pill-group font-mono">
+        <button type="button" class="admin-mode-pill active" id="modeBtn_portal" onclick="switchSectionMode('portal')">
+          <span>Client Portal CMS</span>
+        </button>
+        <button type="button" class="admin-mode-pill" id="modeBtn_website" onclick="switchSectionMode('website')">
+          <span>Website CMS</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="admin-header-actions font-mono">
+      <button type="button" class="admin-btn-secondary" id="adminHeaderAddClientBtn" onclick="openAddClientModal()">
+        <span>+ Add Client</span>
+      </button>
+
+      <button type="button" class="admin-btn-secondary" onclick="previewAsClient()" title="View portal as active client">
+        <span>Preview in Portal ↗</span>
+      </button>
+
+      <a href="index.html" target="_blank" class="admin-btn-secondary" style="text-decoration: none;" title="Open live homepage">
+        <span>Live Site ↗</span>
+      </a>
+
+      <button type="button" class="admin-btn-danger" onclick="handleAdminLogout()">
+        <span>Lock Admin</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- =========================================================================
+       3. SECTION A: CLIENT PORTAL CMS SHELL
+       ========================================================================= -->
+  <div class="admin-shell" id="adminPortalShell">
+
+    <!-- LEFT SIDEBAR: CLIENT ROSTER -->
+    <aside class="admin-sidebar">
+      <div class="admin-sidebar-header">
+        <!-- Live Counters -->
+        <div class="admin-stats-strip font-mono">
+          <div class="admin-stat-card">
+            <span class="admin-stat-lbl">Clients</span>
+            <span class="admin-stat-val" id="statTotalClients">0</span>
+          </div>
+          <div class="admin-stat-card">
+            <span class="admin-stat-lbl">Sprints</span>
+            <span class="admin-stat-val" id="statActiveSprints" style="color: var(--admin-primary);">0</span>
+          </div>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="admin-search-box">
+          <svg class="admin-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="text" id="adminSearchInput" class="admin-search-input font-mono" placeholder="Search clients, email, or org...">
+        </div>
+      </div>
+
+      <!-- Clients List -->
+      <div class="admin-clients-list" id="adminClientsList">
+        <!-- Rendered dynamically by admin.js -->
+      </div>
+
+      <div class="admin-sidebar-footer">
+        <button type="button" class="admin-btn-secondary font-mono" onclick="loadAllClients()" style="width: 100%;">
+          <span>↻ Refresh Live Data</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- RIGHT MAIN WORKSPACE -->
+    <main class="admin-main">
+      
+      <!-- Top Client Strip -->
+      <div class="admin-client-banner">
+        <div class="admin-client-info-block">
+          <div class="admin-client-big-avatar" id="activeClientAvatar">C</div>
+          <div>
+            <h2 class="admin-client-title font-display" id="activeClientName">Select a Client</h2>
+            <div class="admin-client-tags font-mono">
+              <span class="admin-tag-pill" id="activeClientCompany">Studio Client</span>
+              <span class="admin-tag-pill" id="activeClientEmail">client@nyghto.in</span>
+              <span class="admin-tag-pill" id="activeClientPhone" style="color: var(--admin-wa);">📱 No phone</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="admin-tabs-nav font-mono">
+          <button type="button" class="admin-tab-btn active" id="tabBtn_projects" onclick="switchAdminTab('projects')">
+            <span>🚀 Sprints</span>
+          </button>
+          <button type="button" class="admin-tab-btn" id="tabBtn_chat" onclick="switchAdminTab('chat')">
+            <span>💬 Live Chat</span>
+          </button>
+          <button type="button" class="admin-tab-btn" id="tabBtn_billing" onclick="switchAdminTab('billing')">
+            <span>💳 Invoices</span>
+          </button>
+          <button type="button" class="admin-tab-btn" id="tabBtn_profile" onclick="switchAdminTab('profile')">
+            <span>👤 Profile</span>
+          </button>
+          <button type="button" class="admin-tab-btn" id="tabBtn_leads" onclick="switchAdminTab('leads')">
+            <span>📥 Leads &amp; Inquiries</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Tab Panes Container -->
+      <div class="admin-tab-panes">
+
+        <!-- ===================================================================
+             PANE 1: SPRINT ROADMAPS & PROJECTS
+             =================================================================== -->
+        <div class="admin-tab-pane active" id="pane_projects">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--admin-text);">Client Sprint Roadmaps</h3>
+              <p style="font-size: 0.8rem; color: var(--admin-text-sub);">Updates here instantly reflect in the client's live portal view.</p>
+            </div>
+            <button type="button" class="admin-btn-primary font-mono" onclick="openCreateProjectModal()">
+              <span>+ Provision Sprint ↗</span>
+            </button>
+          </div>
+
+          <div class="admin-projects-grid" id="adminProjectsList">
+            <!-- Rendered dynamically by admin.js -->
+          </div>
+        </div>
+
+        <!-- ===================================================================
+             PANE 2: LIVE 2-WAY CHAT STREAM
+             =================================================================== -->
+        <div class="admin-tab-pane" id="pane_chat">
+          <div class="admin-chat-wrap">
+            <!-- Messages Scroll Box -->
+            <div class="admin-chat-messages" id="adminChatThread">
+              <!-- Rendered dynamically by admin.js -->
+            </div>
+
+            <!-- Quick Preset Chips -->
+            <div class="admin-chat-chips font-mono">
+              <button type="button" class="admin-chip-btn" onclick="sendAdminQuickPreset('🚀 Next sprint deploy is live on staging! Ready for your review.')">+ Staging Live</button>
+              <button type="button" class="admin-chip-btn" onclick="sendAdminQuickPreset('🎨 Figma prototype screens updated based on latest scope review.')">+ Figma Updated</button>
+              <button type="button" class="admin-chip-btn" onclick="sendAdminQuickPreset('🛠️ We are working on this milestone now. Expect full staging build shortly.')">+ In Progress</button>
+              <button type="button" class="admin-chip-btn" onclick="sendAdminQuickPreset('🔒 Sprint architecture evaluation complete. Kick-off scheduled.')">+ Scope Locked</button>
+            </div>
+
+            <!-- Input Bar -->
+            <form class="admin-chat-form" onsubmit="handleSendAdminMessage(event)">
+              <input type="text" id="adminMsgInput" class="admin-input" placeholder="Type message as Nyghto Founder..." autocomplete="off">
+              <button type="submit" class="admin-btn-primary font-mono" style="padding: 10px 22px;">Send ↗</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- ===================================================================
+             PANE 3: BILLING & INVOICES LEDGER
+             =================================================================== -->
+        <div class="admin-tab-pane" id="pane_billing">
+          
+          <!-- Issue Invoice Card -->
+          <div class="admin-card">
+            <div class="admin-card-header">
+              <div>
+                <h4 class="admin-card-title">Issue New Invoice or Payment Receipt</h4>
+                <span class="admin-card-sub">Immediately syncs to client's portal &amp; updates total paid revenue.</span>
+              </div>
+              <span class="font-mono" style="font-size: 0.75rem; color: var(--admin-success); font-weight: 700;">● Instant Sync</span>
+            </div>
+
+            <form onsubmit="handleCreateInvoiceSubmit(event)">
+              <div class="admin-form-row">
+                <div class="admin-input-group">
+                  <label class="admin-input-label font-mono">Invoice #</label>
+                  <input type="text" id="invNumberInput" class="admin-input font-mono" placeholder="#INV-2026-001" required>
+                </div>
+
+                <div class="admin-input-group">
+                  <label class="admin-input-label font-mono">Title / Milestone</label>
+                  <input type="text" id="invTitleInput" class="admin-input" placeholder="e.g. Phase 1: MVP Architecture" required>
+                </div>
+
+                <div class="admin-input-group">
+                  <label class="admin-input-label font-mono">Amount (INR)</label>
+                  <input type="text" id="invAmountInput" class="admin-input font-mono" placeholder="₹1,25,000" required>
+                </div>
+
+                <div class="admin-input-group">
+                  <label class="admin-input-label font-mono">Status</label>
+                  <select id="invStatusInput" class="admin-input font-mono">
+                    <option value="Paid">Paid</option>
+                    <option value="Pending">Pending</option>
+                    <option value="In Progress">In Progress</option>
+                  </select>
+                </div>
+              </div>
+
+              <div style="display: flex; justify-content: flex-end; margin-top: 1rem;">
+                <button type="submit" class="admin-btn-primary font-mono">+ Issue &amp; Sync to Client ↗</button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Invoices Table Card -->
+          <div class="admin-card">
+            <div class="admin-card-header">
+              <h4 class="admin-card-title">Client Billing &amp; Receipts Ledger</h4>
+              <span id="adminClientTotalRevenue" class="font-mono" style="font-size: 0.88rem; font-weight: 800; color: var(--admin-primary);">Total Paid: ₹0</span>
+            </div>
+
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Invoice #</th>
+                  <th>Title / Milestone</th>
+                  <th>Amount</th>
+                  <th>Date</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="adminInvoicesTableBody">
+                <!-- Rendered dynamically by admin.js -->
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+
+        <!-- ===================================================================
+             PANE 4: CLIENT PROFILE & ACCESS
+             =================================================================== -->
+        <div class="admin-tab-pane" id="pane_profile">
+          <div class="admin-card">
+            <div class="admin-card-header">
+              <div>
+                <h4 class="admin-card-title">Client Account &amp; Identity Settings</h4>
+                <span class="admin-card-sub">Edit organization metadata, contact numbers, and portal credentials.</span>
+              </div>
+            </div>
+
+            <form onsubmit="handleSaveProfileSubmit(event)">
+              <div class="admin-form-row">
+                <div class="admin-input-group">
+                  <label class="admin-input-label font-mono">Full Name</label>
+                  <input type="text" id="profNameInput" class="admin-input">
+                </div>
+
+                <div class="admin-input-group">
+                  <label class="admin-input-label font-mono">Organization / Company</label>
+                  <input type="text" id="profCompanyInput" class="admin-input">
+                </div>
+              </div>
+
+              <div class="admin-form-row">
+                <div class="admin-input-group">
+                  <label class="admin-input-label font-mono">Email Address</label>
+                  <input type="email" id="profEmailInput" class="admin-input" disabled style="opacity: 0.7;">
+                </div>
+
+                <div class="admin-input-group">
+                  <label class="admin-input-label font-mono">Phone / WhatsApp Number</label>
+                  <input type="text" id="profPhoneInput" class="admin-input font-mono" placeholder="+91...">
+                </div>
+              </div>
+
+              <div class="admin-input-group" style="margin-bottom: 1.2rem;">
+                <label class="admin-input-label font-mono">Venture Bio / Summary</label>
+                <textarea id="profBioInput" class="admin-input" rows="3" placeholder="Client venture description..."></textarea>
+              </div>
+
+              <div class="admin-input-group" style="margin-bottom: 1.2rem;">
+                <label class="admin-input-label font-mono">Portal UID (Firebase Auth ID)</label>
+                <input type="text" id="profIdInput" class="admin-input font-mono" disabled style="opacity: 0.6;">
+              </div>
+
+              <div style="display: flex; justify-content: flex-end;">
+                <button type="submit" class="admin-btn-primary font-mono">Save Profile Changes ↗</button>
+              </div>
+            </form>
+          </div>
+        <!-- ===================================================================
+             PANE 5: INBOUND LEADS & HOTLINE INQUIRIES
+             =================================================================== -->
+        <div class="admin-tab-pane" id="pane_leads">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+            <div>
+              <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--admin-text);">Inbound Website Leads &amp; Consultations</h3>
+              <p style="font-size: 0.8rem; color: var(--admin-text-sub);">Real-time inquiries captured from the homepage founder hotline and project brief forms.</p>
+            </div>
+            <button type="button" class="admin-btn-secondary font-mono" onclick="renderLeadsTab()">
+              <span>↻ Refresh Leads</span>
+            </button>
+          </div>
+
+          <div id="adminLeadsList" style="display: flex; flex-direction: column; gap: 1rem;">
+            <!-- Rendered dynamically by admin.js -->
+          </div>
+        </div>
+
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- =========================================================================
+       4. SECTION B: PUBLIC WEBSITE CONTENT MANAGEMENT CMS (Studio Engine)
+       ========================================================================= -->
+  <div class="admin-shell" id="adminWebsiteShell" style="display: none;">
+    
+    <!-- LEFT SIDEBAR: STICKY TABLE OF CONTENTS & QUICK JUMP -->
+    <aside class="admin-sidebar">
+      <div class="admin-sidebar-header">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.8rem;">
+          <span class="font-mono" style="font-size: 0.72rem; font-weight: 800; color: var(--admin-text-muted); letter-spacing: 0.06em; text-transform: uppercase;">Website CMS</span>
+          <span class="admin-badge admin-badge-completed font-mono" style="font-size: 0.68rem;">Live Synced</span>
+        </div>
+        
+        <div style="background: #FFFFFF; border: 1px solid var(--admin-border); border-radius: 10px; padding: 10px 12px; display: flex; align-items: center; justify-content: space-between;">
+          <div>
+            <div class="font-display" style="font-size: 0.95rem; font-weight: 800; color: var(--admin-text);">nyghto.in</div>
+            <div class="font-mono" style="font-size: 0.7rem; color: var(--admin-text-sub);">Production Vercel Host</div>
+          </div>
+          <a href="index.html" target="_blank" class="admin-btn-secondary font-mono" style="padding: 4px 8px; font-size: 0.72rem; text-decoration: none;" title="Open live homepage">↗</a>
+        </div>
+      </div>
+
+      <!-- Quick Jump Table of Contents Navigation in Sidebar -->
+      <div class="admin-clients-list" style="padding: 0.8rem;">
+        <button type="button" class="admin-site-nav-item active" id="siteNav_general" onclick="scrollToCmsSection('section_site_general')">
+          <div class="site-nav-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+            </svg>
+          </div>
+          <div>
+            <div class="site-nav-title">Hero &amp; Availability</div>
+            <div class="site-nav-sub">Headlines, badges &amp; status</div>
+          </div>
+        </button>
+
+        <button type="button" class="admin-site-nav-item" id="siteNav_contact" onclick="scrollToCmsSection('section_site_contact')">
+          <div class="site-nav-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+            </svg>
+          </div>
+          <div>
+            <div class="site-nav-title">Hotline &amp; WhatsApp</div>
+            <div class="site-nav-sub">Founder phones &amp; studio email</div>
+          </div>
+        </button>
+
+        <button type="button" class="admin-site-nav-item" id="siteNav_work" onclick="scrollToCmsSection('section_site_work')">
+          <div class="site-nav-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+              <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+            </svg>
+          </div>
+          <div>
+            <div class="site-nav-title">Work &amp; Portfolio</div>
+            <div class="site-nav-sub">Production projects showcase</div>
+          </div>
+        </button>
+
+        <button type="button" class="admin-site-nav-item" id="siteNav_faq" onclick="scrollToCmsSection('section_site_faq')">
+          <div class="site-nav-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+              <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+          </div>
+          <div>
+            <div class="site-nav-title">FAQ Accordion</div>
+            <div class="site-nav-sub">Homepage Q&amp;A knowledgebase</div>
+          </div>
+        </button>
+
+        <button type="button" class="admin-site-nav-item" id="siteNav_consultation" onclick="scrollToCmsSection('section_site_consultation')">
+          <div class="site-nav-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+          </div>
+          <div>
+            <div class="site-nav-title">Founder Consultation</div>
+            <div class="site-nav-sub">Hotline form copy &amp; direct links</div>
+          </div>
+        </button>
+
+        <button type="button" class="admin-site-nav-item" id="siteNav_integrations" onclick="scrollToCmsSection('section_site_integrations')">
+          <div class="site-nav-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+            </svg>
+          </div>
+          <div>
+            <div class="site-nav-title">Discord &amp; Webhooks</div>
+            <div class="site-nav-sub">Inbound notifications status</div>
+          </div>
+        </button>
+      </div>
+
+      <div class="admin-sidebar-footer" style="display: flex; flex-direction: column; gap: 8px;">
+        <button type="button" class="admin-btn-primary font-mono" onclick="saveWebsiteCmsChanges()" style="width: 100%;">
+          <span>Publish Changes ↗</span>
+        </button>
+        <button type="button" class="admin-btn-secondary font-mono" onclick="resetDefaultWebsiteCms()" style="width: 100%;">
+          <span>↻ Reset Defaults</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- RIGHT MAIN WORKSPACE: UNIFIED SINGLE-PAGE EDITOR & LIVE PREVIEW -->
+    <main class="admin-main">
+      
+      <!-- Top Action Bar -->
+      <div class="admin-client-banner">
+        <div>
+          <h2 class="admin-client-title font-display">Website Content Management System</h2>
+          <p style="font-size: 0.82rem; color: var(--admin-text-sub); margin-top: 2px;">
+            Unified single-scroll workspace. Changes automatically mirror into live previews.
+          </p>
+        </div>
+
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <a href="index.html" target="_blank" class="admin-btn-secondary font-mono" style="text-decoration: none;">
+            <span>Preview Live Site ↗</span>
+          </a>
+          <button type="button" class="admin-btn-primary font-mono" onclick="saveWebsiteCmsChanges()">
+            <span>Save &amp; Publish ↗</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Unified Scroll Container for All CMS Sections -->
+      <div class="admin-tab-panes" id="websiteCmsScrollContainer" style="max-width: 980px;">
+        
+        <!-- SECTION 1: HERO & AVAILABILITY -->
+        <section class="admin-card cms-section-card" id="section_site_general">
+          <div class="admin-card-header">
+            <div>
+              <h4 class="admin-card-title">1. Hero Section Identity &amp; Availability</h4>
+              <span class="admin-card-sub">Controls the main headline, studio location tag, and floating availability badge.</span>
+            </div>
+            <span class="admin-badge admin-badge-active font-mono">index.html</span>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 1.2rem; margin-top: 1.2rem;">
+            <div class="admin-input-group">
+              <label class="admin-input-label font-mono">Hero Primary Headline (Line breaks preserved)</label>
+              <textarea id="cmsHeroTagline" class="admin-input font-display" rows="3" style="font-size: 1.1rem; font-weight: 700;" oninput="updateCmsLivePreviews()">Design &amp;
+Engineering</textarea>
+              <small style="font-size: 0.74rem; color: var(--admin-text-muted);">Displays with bold contrast typography on the homepage hero grid.</small>
+            </div>
+
+            <div class="admin-form-row">
+              <div class="admin-input-group">
+                <label class="admin-input-label font-mono">Studio Availability Status Badge</label>
+                <input type="text" id="cmsAvailabilityStatus" class="admin-input font-mono" value="ACCEPTING NEW CLIENT VENTURES" oninput="updateCmsLivePreviews()">
+                <small style="font-size: 0.74rem; color: var(--admin-text-muted);">Shown in glowing green status pill.</small>
+              </div>
+
+              <div class="admin-input-group">
+                <label class="admin-input-label font-mono">Studio Geographic Coordinates / Tag</label>
+                <input type="text" id="cmsHeroSubtitle" class="admin-input font-mono" value="11.1337° N, 76.0350° E // KOCHI • CALICUT" oninput="updateCmsLivePreviews()">
+              </div>
+            </div>
+
+            <!-- Instant Live Preview Widget -->
+            <div class="cms-live-preview-box">
+              <div class="cms-live-preview-header font-mono">
+                <span>● REAL-TIME HERO PREVIEW</span>
+                <span style="color: var(--admin-primary);">index.html#hero</span>
+              </div>
+              <div class="cms-live-preview-content">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                  <span class="live-preview-pill" id="previewPillText">● ACCEPTING NEW CLIENT VENTURES</span>
+                  <span class="font-mono" id="previewCoordsText" style="font-size: 0.72rem; color: #64748B;">11.1337° N, 76.0350° E</span>
+                </div>
+                <h3 class="font-display" id="previewHeroTitle" style="font-size: 1.6rem; font-weight: 900; line-height: 1.15; color: #0F172A; margin: 0; white-space: pre-line;">Design &amp;
+Engineering</h3>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 2: HOTLINE & GLOBAL CONTACT -->
+        <section class="admin-card cms-section-card" id="section_site_contact">
+          <div class="admin-card-header">
+            <div>
+              <h4 class="admin-card-title">2. Global Contact Lines &amp; Founders Direct Hotline</h4>
+              <span class="admin-card-sub">Syncs across all WhatsApp quick chat triggers, phone action bars, and footer.</span>
+            </div>
+            <span class="admin-badge admin-badge-active font-mono">Site-Wide</span>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 1.2rem; margin-top: 1.2rem;">
+            <div class="admin-form-row">
+              <div class="admin-input-group">
+                <label class="admin-input-label font-mono">Primary WhatsApp Business Number</label>
+                <input type="text" id="cmsSitePhone" class="admin-input font-mono" value="+91 85905 64004" oninput="updateCmsLivePreviews()">
+                <small style="font-size: 0.74rem; color: var(--admin-text-muted);">Updates all WhatsApp direct links (`wa.me/91...`).</small>
+              </div>
+
+              <div class="admin-input-group">
+                <label class="admin-input-label font-mono">Studio Official Email</label>
+                <input type="email" id="cmsSiteEmail" class="admin-input font-mono" value="hello@nyghto.in" oninput="updateCmsLivePreviews()">
+              </div>
+            </div>
+
+            <div class="admin-input-group">
+              <label class="admin-input-label font-mono">Studio Physical Headquarters Tag</label>
+              <input type="text" id="cmsSiteLocation" class="admin-input" value="Kerala, India" oninput="updateCmsLivePreviews()">
+            </div>
+
+            <!-- Instant Live Preview Widget -->
+            <div class="cms-live-preview-box">
+              <div class="cms-live-preview-header font-mono">
+                <span>● REAL-TIME CONTACT ACTION BAR PREVIEW</span>
+              </div>
+              <div class="cms-live-preview-content" style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
+                <span class="font-mono" style="font-size: 0.8rem; font-weight: 700; color: #0284C7; background: #E0F2FE; padding: 6px 12px; border-radius: 6px;" id="previewWhatsAppText">
+                  WhatsApp: +91 85905 64004
+                </span>
+                <span class="font-mono" style="font-size: 0.8rem; color: #475569;" id="previewEmailText">
+                  hello@nyghto.in
+                </span>
+                <span class="font-mono" style="font-size: 0.8rem; color: #64748B;" id="previewLocationText">
+                  • Kerala, India
+                </span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 3: WORK & PORTFOLIO SHOWCASE -->
+        <section class="admin-card cms-section-card" id="section_site_work">
+          <div class="admin-card-header">
+            <div>
+              <h4 class="admin-card-title">3. Production Case Studies &amp; Showcase (work.html)</h4>
+              <span class="admin-card-sub">Manage featured production projects, links, scopes, and descriptions.</span>
+            </div>
+            <button type="button" class="admin-btn-primary font-mono" onclick="addNewWorkProjectItem()">
+              <span>+ Add Project ↗</span>
+            </button>
+          </div>
+
+          <!-- Dynamic Projects List Container -->
+          <div id="cmsWorkProjectsContainer" style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1.2rem;">
+            <!-- Rendered dynamically by admin.js -->
+          </div>
+        </section>
+
+        <!-- SECTION 4: FAQ ACCORDION MANAGER -->
+        <section class="admin-card cms-section-card" id="section_site_faq">
+          <div class="admin-card-header">
+            <div>
+              <h4 class="admin-card-title">4. Homepage FAQ Knowledgebase (index.html#faq)</h4>
+              <span class="admin-card-sub">Edit questions and answers. Boosts SEO &amp; rich snippet search discovery.</span>
+            </div>
+            <button type="button" class="admin-btn-primary font-mono" onclick="addNewFaqItem()">
+              <span>+ Add FAQ ↗</span>
+            </button>
+          </div>
+
+          <!-- Dynamic FAQs List Container -->
+          <div id="cmsFaqItemsContainer" style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1.2rem;">
+            <!-- Rendered dynamically by admin.js -->
+          </div>
+        </section>
+
+        <!-- SECTION 5: FOUNDER CONSULTATION -->
+        <section class="admin-card cms-section-card" id="section_site_consultation">
+          <div class="admin-card-header">
+            <div>
+              <h4 class="admin-card-title">5. Consultation Hotline Section (#consultation)</h4>
+              <span class="admin-card-sub">Edit headline and description for the instant founder callback section.</span>
+            </div>
+            <span class="admin-badge admin-badge-active font-mono">index.html#consultation</span>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 1.2rem; margin-top: 1.2rem;">
+            <div class="admin-input-group">
+              <label class="admin-input-label font-mono">Section Headline</label>
+              <input type="text" id="cmsConsultTitle" class="admin-input font-display" value="Talk Directly with Nyghto Founders" oninput="updateCmsLivePreviews()">
+            </div>
+
+            <div class="admin-input-group">
+              <label class="admin-input-label font-mono">Section Subtext</label>
+              <textarea id="cmsConsultDesc" class="admin-input" rows="3" oninput="updateCmsLivePreviews()">Leave your number below for an instant callback, or reach out to our engineering team directly via WhatsApp, phone, or email.</textarea>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 6: INBOUND PIPELINE & DISCORD WEBHOOKS -->
+        <section class="admin-card cms-section-card" id="section_site_integrations">
+          <div class="admin-card-header">
+            <div>
+              <h4 class="admin-card-title">6. Inbound Pipeline &amp; Notification Webhooks</h4>
+              <span class="admin-card-sub">Status of inbound lead routing and Discord notification bots.</span>
+            </div>
+            <span class="admin-badge admin-badge-completed font-mono">Live</span>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 1.2rem; margin-top: 1.2rem;">
+            <div style="background: #F8FAFC; border: 1px solid var(--admin-border); border-radius: 12px; padding: 1.2rem;">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+                <span class="font-mono" style="font-size: 0.8rem; font-weight: 700; color: var(--admin-text);">Discord Inbound Bot</span>
+                <span class="admin-badge admin-badge-active font-mono" style="font-size: 0.7rem;">Active</span>
+              </div>
+              <p style="font-size: 0.82rem; color: var(--admin-text-sub); margin-bottom: 0.8rem;">
+                Dispatches consultation phone numbers and project briefs to the Nyghto studio Discord server instantly.
+              </p>
+              <div class="font-mono" style="font-size: 0.75rem; color: #16A34A; background: #DCFCE7; padding: 6px 12px; border-radius: 6px; display: inline-block;">
+                ✓ Connected to Discord Webhook
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 10px;">
+              <button type="button" class="admin-btn-secondary font-mono" onclick="switchSectionMode('portal'); switchAdminTab('leads');">
+                <span>📥 View Inbound Leads Inbox</span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- =========================================================================
+       MODAL 1: PROVISION NEW SPRINT
+       ========================================================================= -->
+  <div class="admin-auth-overlay" id="adminNewProjectModal" style="display: none;">
+    <div class="admin-auth-card" style="max-width: 480px; text-align: left;">
+      <h3 class="admin-auth-title" style="margin-bottom: 0.4rem;">Provision New Sprint</h3>
+      <p class="admin-auth-sub">Add a project track directly to the selected client workspace.</p>
+
+      <form onsubmit="handleCreateNewSprintSubmit(event)" style="display: flex; flex-direction: column; gap: 1rem;">
+        <div class="admin-input-group">
+          <label class="admin-input-label font-mono">Project / Sprint Name *</label>
+          <input type="text" id="newSprintName" class="admin-input" placeholder="e.g. Next-Gen Mobile App MVP" required>
+        </div>
+
+        <div class="admin-input-group">
+          <label class="admin-input-label font-mono">Category</label>
+          <input type="text" id="newSprintCategory" class="admin-input" placeholder="e.g. iOS &amp; Android App" value="Custom Web & Mobile Application">
+        </div>
+
+        <div class="admin-input-group">
+          <label class="admin-input-label font-mono">Budget / Tier</label>
+          <input type="text" id="newSprintBudget" class="admin-input" placeholder="e.g. Sprint Scope" value="Production Sprint">
+        </div>
+
+        <div style="display: flex; gap: 10px; margin-top: 0.8rem;">
+          <button type="submit" class="admin-btn-primary font-mono" style="flex: 1;">Create Sprint ↗</button>
+          <button type="button" class="admin-btn-secondary font-mono" onclick="closeCreateProjectModal()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       MODAL 2: ADD NEW CLIENT
+       ========================================================================= -->
+  <div class="admin-auth-overlay" id="adminAddClientModal" style="display: none;">
+    <div class="admin-auth-card" style="max-width: 480px; text-align: left;">
+      <h3 class="admin-auth-title" style="margin-bottom: 0.4rem;">Enroll New Client</h3>
+      <p class="admin-auth-sub">Provision a workspace for a new venture or client partner.</p>
+
+      <form onsubmit="handleAddClientSubmit(event)" style="display: flex; flex-direction: column; gap: 1rem;">
+        <div class="admin-input-group">
+          <label class="admin-input-label font-mono">Client Name *</label>
+          <input type="text" id="newClientName" class="admin-input" placeholder="e.g. Johnathan Doe" required>
+        </div>
+
+        <div class="admin-input-group">
+          <label class="admin-input-label font-mono">Email Address *</label>
+          <input type="email" id="newClientEmail" class="admin-input" placeholder="client@venture.com" required>
+        </div>
+
+        <div class="admin-input-group">
+          <label class="admin-input-label font-mono">Company / Organization</label>
+          <input type="text" id="newClientCompany" class="admin-input" placeholder="e.g. Vintora Labs">
+        </div>
+
+        <div class="admin-input-group">
+          <label class="admin-input-label font-mono">Phone / WhatsApp Number</label>
+          <input type="text" id="newClientPhone" class="admin-input font-mono" placeholder="+91...">
+        </div>
+
+        <div style="display: flex; gap: 10px; margin-top: 0.8rem;">
+          <button type="submit" class="admin-btn-primary font-mono" style="flex: 1;">Enroll Client ↗</button>
+          <button type="button" class="admin-btn-secondary font-mono" onclick="closeAddClientModal()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION PILL -->
+  <div id="adminToast" class="font-mono" style="display: none; position: fixed; bottom: 24px; right: 24px; background: #0F172A; border: 1px solid var(--admin-primary); color: #FFFFFF; padding: 12px 20px; border-radius: 8px; font-size: 0.85rem; font-weight: 700; box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 10000; transition: opacity 0.3s ease;"></div>
+
+  <script src="admin.js"></script>
+</body>
+</html>

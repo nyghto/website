@@ -403,6 +403,78 @@ class NyghtoFirebaseService {
     const history = JSON.parse(localStorage.getItem(localKey) || '[]');
     if (onMessagesUpdated) onMessagesUpdated(history);
   }
+
+  // Inbound consultation lead & brief capture
+  async saveLead(leadData) {
+    const cleanLead = {
+      ...leadData,
+      id: leadData.id || ('lead_' + Date.now()),
+      createdAt: new Date().toISOString()
+    };
+
+    try {
+      const localLeads = JSON.parse(localStorage.getItem('nyghto_leads') || '[]');
+      localLeads.unshift(cleanLead);
+      localStorage.setItem('nyghto_leads', JSON.stringify(localLeads));
+    } catch (e) {}
+
+    if (this.db) {
+      try {
+        await this.db.collection('leads').doc(cleanLead.id).set(cleanLead, { merge: true });
+      } catch (e) {
+        console.warn('Firestore saveLead error:', e);
+      }
+    }
+    return cleanLead;
+  }
+
+  // Retrieve all inbound leads
+  async getLeads() {
+    if (this.db) {
+      try {
+        const snap = await this.db.collection('leads').get();
+        if (!snap.empty) {
+          const list = [];
+          snap.forEach(doc => list.push({ id: doc.id, ...doc.data() }));
+          list.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+          return list;
+        }
+      } catch (e) {
+        console.warn('Firestore getLeads error:', e);
+      }
+    }
+    return JSON.parse(localStorage.getItem('nyghto_leads') || '[]');
+  }
+
+  // Website Global CMS Content Configuration
+  async saveSiteConfig(config) {
+    try {
+      localStorage.setItem('nyghto_site_cms', JSON.stringify(config));
+    } catch (e) {}
+
+    if (this.db) {
+      try {
+        await this.db.collection('settings').doc('site_cms').set(config, { merge: true });
+      } catch (e) {
+        console.warn('Firestore saveSiteConfig error:', e);
+      }
+    }
+    return config;
+  }
+
+  async getSiteConfig() {
+    if (this.db) {
+      try {
+        const snap = await this.db.collection('settings').doc('site_cms').get();
+        if (snap.exists) {
+          return snap.data();
+        }
+      } catch (e) {
+        console.warn('Firestore getSiteConfig notice:', e);
+      }
+    }
+    return JSON.parse(localStorage.getItem('nyghto_site_cms') || 'null');
+  }
 }
 
 window.nyghtoFirebase = new NyghtoFirebaseService();

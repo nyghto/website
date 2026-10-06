@@ -158,11 +158,6 @@ function initNavButtons() {
     switchToApplyBtn.addEventListener('click', () => showScreen('apply'));
   }
 
-  const headerApplyAltBtn = document.getElementById('headerApplyAltBtn');
-  if (headerApplyAltBtn) {
-    headerApplyAltBtn.addEventListener('click', () => showScreen('apply'));
-  }
-
   if (dashNewAppBtn) {
     dashNewAppBtn.addEventListener('click', () => showScreen('apply'));
   }
@@ -1235,7 +1230,7 @@ async function handleModalProjectSubmit(e) {
     lead: "Nyghto Team",
     date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
     phases: [
-      { name: "Phase 1: Founder Scope & Architecture Review", status: "ACTIVE", pct: "20%", items: ["Technical requirements evaluation", "Sprint timeline & stack allocation", "Founder intro & scope lock call (+91 70120 28379)"] },
+      { name: "Phase 1: Founder Scope & Architecture Review", status: "ACTIVE", pct: "20%", items: ["Technical requirements evaluation", "Sprint timeline & stack allocation", "Founder intro & scope lock call (+91 85905 64004)"] },
       { name: "Phase 2: Core Engineering & Architecture", status: "UPCOMING", pct: "0%", items: ["Repository & database setup", "Frontend & backend feature build"] },
       { name: "Phase 3: QA & Staging Verification", status: "UPCOMING", pct: "0%", items: ["Cross-device testing", "Security & performance check"] },
       { name: "Phase 4: Production CDN & Launch", status: "UPCOMING", pct: "0%", items: ["Domain DNS connection", "Live deployment handover"] }
@@ -1303,7 +1298,7 @@ async function handleModalProjectSubmit(e) {
     submitBtn.style.background = '#0F172A';
   }
   if (statusEl) {
-    statusEl.innerHTML = '<span style="color:#059669; font-weight:700;">✓ Project created! Status: Waiting for Review. Call Us: +91 70120 28379</span>';
+    statusEl.innerHTML = '<span style="color:#059669; font-weight:700;">✓ Project created! Status: Waiting for Review. Call Us: +91 85905 64004</span>';
   }
 
   setTimeout(() => {
@@ -2157,7 +2152,7 @@ function handleSendChatMessage(e) {
     if (lower.includes('sprint') || lower.includes('status')) {
       reply = "Your active sprint is on track! The latest frontend & design milestone is scheduled for deployment this week. Check your email or WhatsApp for direct preview links.";
     } else if (lower.includes('call') || lower.includes('schedule') || lower.includes('meet')) {
-      reply = "We'd love to connect! You can reach our founding team directly on WhatsApp (+91 70120 28379) or email hello@nyghto.in to lock in a fast sprint review.";
+      reply = "We'd love to connect! You can reach our founding team directly on WhatsApp (+91 85905 64004) or email hello@nyghto.in to lock in a fast sprint review.";
     } else if (lower.includes('scope') || lower.includes('feature') || lower.includes('add')) {
       reply = "Got it! Feel free to drop the specification or Figma URL here or click '+ Apply Project' in the header to submit a new scope breakdown.";
     }
